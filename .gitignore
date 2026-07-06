@@ -1,1 +1,6 @@
 glomeruli_grading/
+venv/
+dataset_glomeruli_all/
+.vscode/
+.DS_Store
+fine_tuned_resnet50_renal_pathology.h5
