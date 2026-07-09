@@ -34,7 +34,7 @@ import openslide
 PATCH_SIZE = 512
 STRIDE = 256
 CONFIDENCE_THRESHOLD = 0.7
-BATCH_SIZE = 16  # Quante immagini processare in parallelo nella GPU
+BATCH_SIZE = 8  # Quante immagini processare in parallelo nella GPU
 
 # !!! ATTENZIONE: INSERIRE QUI IL MAPPING ESATTO GENERATO DAL NOTEBOOK 02 !!!
 CLUSTER_MAPPING = {0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5} 
