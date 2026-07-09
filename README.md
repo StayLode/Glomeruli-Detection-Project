@@ -19,3 +19,9 @@ clusters within the data.
 Dataset includes:
 1. WSIs of biopsies from kidney tissue (.svs)
 2. The corresponding annotation showing the glomeruli (.xml)
+
+### Models
+The trained model is available on Google Drive:
+- https://drive.google.com/uc?export=download&id=1kYaqXSwOeYAAT0W35brLaOtfuiIwgm6K
+
+After downloading, insert it in /models/identification

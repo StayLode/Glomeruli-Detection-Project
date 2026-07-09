@@ -1,6 +1,8 @@
 glomeruli_grading/
 venv/
 dataset_glomeruli_all/
+glomeruli_test/
+models/identification/mask_rcnn_glomeruli.pth
 .vscode/
 .DS_Store
 fine_tuned_resnet50_renal_pathology.h5
