@@ -1,0 +1,18 @@
+{
+  "n_samples": 1746,
+  "n_clusters": 6,
+  "feature_type": "hybrid",
+  "silhouette_score": 0.019,
+  "davies_bouldin_score": 3.6395,
+  "calinski_harabasz_score": 53.9,
+  "class_distribution": {
+    "Class 0": 183,
+    "Class 1": 296,
+    "Class 2": 338,
+    "Class 3": 280,
+    "Class 4": 393,
+    "Class 5": 256
+  },
+  "pca_components": 244,
+  "total_runtime_sec": 62.55
+}
