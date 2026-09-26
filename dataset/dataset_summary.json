@@ -1,0 +1,69 @@
+{
+  "splits": {
+    "train": {
+      "patches": 1650,
+      "positives": 878,
+      "negatives": 772,
+      "glomeruli": 1239
+    },
+    "test": {
+      "patches": 244,
+      "positives": 122,
+      "negatives": 122,
+      "glomeruli": 172
+    },
+    "val": {
+      "patches": 213,
+      "positives": 109,
+      "negatives": 104,
+      "glomeruli": 154
+    }
+  },
+  "slides": {
+    "RECHERCHE-003": {
+      "positives": 111,
+      "negatives": 84,
+      "glomeruli": 148
+    },
+    "RECHERCHE-004": {
+      "positives": 150,
+      "negatives": 150,
+      "glomeruli": 174
+    },
+    "RECHERCHE-005": {
+      "positives": 168,
+      "negatives": 168,
+      "glomeruli": 197
+    },
+    "RECHERCHE-009": {
+      "positives": 137,
+      "negatives": 119,
+      "glomeruli": 222
+    },
+    "RECHERCHE-010": {
+      "positives": 197,
+      "negatives": 157,
+      "glomeruli": 313
+    },
+    "RECHERCHE-011": {
+      "positives": 115,
+      "negatives": 94,
+      "glomeruli": 185
+    },
+    "RECHERCHE-015": {
+      "positives": 45,
+      "negatives": 45,
+      "glomeruli": 64
+    },
+    "RECHERCHE-016": {
+      "positives": 109,
+      "negatives": 104,
+      "glomeruli": 154
+    },
+    "RECHERCHE-017": {
+      "positives": 77,
+      "negatives": 77,
+      "glomeruli": 108
+    }
+  }
+}

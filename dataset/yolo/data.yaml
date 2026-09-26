@@ -1,0 +1,6 @@
+path: /home/riccardo/Documents/UNIto/MLapp/glomeruli_detection/dataset/yolo
+train: images/train
+val: images/val
+test: images/test
+names:
+  0: glomerulus
