@@ -1,0 +1,58 @@
+# ==============================================================================
+# U-Net Glomeruli Segmentation Configuration (NVIDIA A40 - 46GB VRAM Optimized)
+# ==============================================================================
+
+# Data
+data_dir: "dataset/segmentation"
+manifest_csv: "dataset/manifest.csv"
+
+# Model Architecture
+arch: "unet"                     # Options: unet, unetplusplus, deeplabv3plus, classic
+encoder_name: "resnet34"         # Options: resnet34, resnet50, efficientnet-b3, classic
+encoder_weights: "imagenet"      # Options: imagenet, None (for from-scratch baseline)
+in_channels: 3
+out_channels: 1                  # Binary segmentation (glomerulus vs background)
+decoder_channels: [256, 128, 64, 32, 16]
+
+# Hardware & Training Hyperparameters (NVIDIA A40: 46GB VRAM, CUDA 12.8)
+device: 0                        # GPU index (0 for single A40)
+img_size: 1024                   # Native 20x patch resolution (1024x1024)
+batch_size: 4                    # Physical batch size (fits safely within VRAM, ~8-10 GB at 1024x1024)
+gradient_accumulation_steps: 4   # Effective batch size = 4 x 4 = 16
+num_workers: 8                   # Parallel DataLoader workers
+epochs: 50                       # Max training epochs
+warmup_epochs: 2                 # Linear warmup epochs
+lr: 0.0003                       # Initial learning rate for AdamW
+weight_decay: 0.0001             # AdamW L2 regularization
+min_lr: 0.000001                 # CosineAnnealingLR floor
+clip_grad_norm: 1.0              # Gradient clipping norm
+patience: 15                     # Early stopping patience on validation Dice score
+amp: true                        # PyTorch Automatic Mixed Precision
+bfloat16: false                  # True for BF16 on Ampere A40, False for FP16
+compile: false                   # Optional PyTorch 2.0 torch.compile
+
+# Loss Function Formulation
+loss_type: "combo"               # Options: combo (BCE+Dice+Focal), bce_dice, focal_tversky
+bce_weight: 0.3
+dice_weight: 0.5
+focal_weight: 0.2
+tversky_alpha: 0.3               # Active if loss_type: focal_tversky
+tversky_beta: 0.7
+tversky_gamma: 1.33
+
+# Data Augmentation (Histology-Specific)
+horizontal_flip_prob: 0.5
+vertical_flip_prob: 0.5
+rotate90_prob: 0.5
+color_jitter:
+  brightness: 0.15
+  contrast: 0.15
+  saturation: 0.15
+  hue: 0.05
+
+# Evaluation & Detection Extraction
+threshold: 0.5                   # Sigmoid probability threshold
+min_blob_area: 400               # Minimum contour area in pixels (~100 um^2 at 20x)
+project: "runs/unet"
+name: "unet_20x_resnet34"
+seed: 42

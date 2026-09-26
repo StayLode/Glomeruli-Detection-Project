@@ -1,0 +1,55 @@
+# ==============================================================================
+# Glomeruli Detection & Segmentation - Dataset Configuration
+# ==============================================================================
+
+# Paths
+raw_data_dir: "glomeruli_grading"
+output_dir: "dataset"
+
+# Resolution & Extraction Parameters
+target_mag: 20                     # 20x magnification (optimal balance of context and cellular detail)
+target_mpp: 0.5038                 # Microns per pixel at 20x (Level 0 is 0.2519 um/px)
+patch_size: 1024                   # Patch dimensions (1024x1024 px at 20x = ~516x516 um)
+stride: 768                        # Stride at 20x (25% overlap between adjacent patches)
+
+# Filtering & Quality Thresholds
+min_tissue_ratio: 0.15             # Minimum fraction of tissue in patch (discards glass background)
+min_glom_overlap_ratio: 0.20       # Minimum fraction of glomerulus area inside patch to keep bbox
+negative_sample_ratio: 1.0         # Ratio of negative (non-glomerular tissue) to positive patches
+
+# Slide-level (Patient-level) Split Definition (Zero Data Leakage)
+splits:
+  train:
+    - "RECHERCHE-003"
+    - "RECHERCHE-004"
+    - "RECHERCHE-005"
+    - "RECHERCHE-009"
+    - "RECHERCHE-010"
+    - "RECHERCHE-011"
+  val:
+    - "RECHERCHE-016"
+  test:
+    - "RECHERCHE-015"
+    - "RECHERCHE-017"
+
+# 3-Fold Cross-Validation Assignment (for future cross-fold experiments)
+folds:
+  fold_0:
+    - "RECHERCHE-003"
+    - "RECHERCHE-004"
+    - "RECHERCHE-015"
+  fold_1:
+    - "RECHERCHE-005"
+    - "RECHERCHE-009"
+    - "RECHERCHE-017"
+  fold_2:
+    - "RECHERCHE-010"
+    - "RECHERCHE-011"
+    - "RECHERCHE-016"
+
+# Classes
+classes:
+  - "glomerulus"
+
+# Reproducibility
+seed: 42

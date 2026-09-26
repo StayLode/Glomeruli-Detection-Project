@@ -1,0 +1,38 @@
+# ==============================================================================
+# YOLO Glomeruli Detection Configuration (NVIDIA A40 Optimized)
+# ==============================================================================
+
+# Data
+data_yaml: "dataset/yolo/data.yaml"
+
+# Model Architecture
+model: "yolov8m.pt"          # Options: yolov8s.pt, yolov8m.pt, yolov8l.pt, yolov8x.pt, yolo11m.pt
+task: "detect"
+
+# Training Hyperparameters
+device: 0                   # GPU index (0 for single GPU NVIDIA A40)
+imgsz: 1024                 # Matches our 20x patch size (1024x1024)
+epochs: 60                  # Sufficient for convergence on ~1.6k patches
+batch: 16                   # Ideal for 1024x1024 on NVIDIA A40 (can increase to 32)
+workers: 8                  # Parallel dataloader workers
+patience: 15                # Early stopping patience if val mAP50 does not improve
+save_period: 10             # Checkpoint save interval
+project: "runs/yolo"        # Base directory for training artifacts
+name: "yolov8m_20x_baseline"# Experiment run name
+
+# Optimizer & Scheduling
+optimizer: "AdamW"          # Robust adaptive optimizer for fine-tuning
+lr0: 0.001                  # Initial learning rate
+lrf: 0.01                   # Final learning rate fraction (cosine schedule)
+weight_decay: 0.0005
+warmup_epochs: 3.0
+
+# Histology-Specific Augmentations (Rotation & Invariance)
+fliplr: 0.5                 # Horizontal flip
+flipud: 0.5                 # Vertical flip (histology has no canonical orientation)
+degrees: 90.0               # Rotation up to 90 degrees
+hsv_h: 0.015                # Slight hue variation (color/stain normalization)
+hsv_s: 0.3                  # Saturation variation
+hsv_v: 0.3                  # Value / brightness variation
+mosaic: 0.5                 # Mosaic augmentation probability
+mixup: 0.1                  # Mixup augmentation probability

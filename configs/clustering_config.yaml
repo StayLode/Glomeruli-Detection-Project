@@ -1,0 +1,46 @@
+# ==============================================================================
+# Unsupervised Glomeruli Clustering & Manifold Learning Configuration
+# ==============================================================================
+
+# Data Source & Crop Extraction
+data:
+  manifest_csv: "dataset/manifest.csv"
+  splits: ["train", "val", "test"]     # Use all slides to capture full disease heterogeneity
+  crop_size: 512                       # Standardized square glomerulus resolution (pixels)
+  margin_ratio: 0.25                   # Parenchymal context margin around bounding box
+  min_glom_area: 400                   # Minimum pixel area to filter noise artifacts
+  max_samples: null                    # Limit number of glomeruli (null = all available)
+
+# Feature Extraction
+features:
+  feature_type: "hybrid"               # Options: 'hybrid' (deep + morpho), 'deep', 'morphological'
+  deep_backbone: "resnet34"            # Options: 'resnet34', 'resnet50'
+  pretrained: true                     # Use ImageNet pre-trained representations
+  device: 0                            # GPU index (0 for NVIDIA A40) or 'cpu'
+  batch_size: 32                       # Inference batch size for feature extraction
+  normalize_embeddings: true           # L2 normalize deep embedding vectors
+
+# Dimensionality Reduction & Manifold Learning
+manifold:
+  pca_variance: 0.95                   # Retain 95% variance (or specify int e.g. 30)
+  method: "tsne"                       # Primary 2D projection method: 'tsne', 'umap', 'pca'
+  tsne_perplexity: 30.0
+  tsne_learning_rate: "auto"
+  random_state: 42
+
+# Clustering & Clinical Grading
+clustering:
+  algorithm: "kmeans"                  # Options: 'kmeans', 'gmm'
+  # n_clusters: 3                        # Target 3 grades: Normal, Segmental Sclerosis, Global Sclerosis
+  n_clusters: 6                        # Target 6 grades
+  k_search_range: [2, 3, 4, 5, 6]      # Evaluation range for Silhouette & Elbow curves
+  order_clusters_by_progression: true  # Sort clusters along PC1/progression axis (Healthy -> Sclerotic)
+  seed: 42
+
+# Outputs & Artifacts
+output:
+  project_dir: "runs/clustering"
+  experiment_name: "unsupervised_grading_6classes"
+  save_gallery: true                   # Save representative image gallery per cluster
+  gallery_samples_per_cluster: 8       # Number of exemplar glomeruli to show per class
+  save_features_csv: true              # Export extracted features to CSV
