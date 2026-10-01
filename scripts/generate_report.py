@@ -55,7 +55,7 @@ def main() -> None:
     parser.add_argument(
         "--unet_run",
         type=str,
-        default="runs/unet/unet_20x_baseline",
+        default="runs/unet/unet_20x_resnet34",
         help="Path to U-Net experiment directory containing test_metrics.json.",
     )
     parser.add_argument(

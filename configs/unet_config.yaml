@@ -7,9 +7,9 @@ data_dir: "dataset/segmentation"
 manifest_csv: "dataset/manifest.csv"
 
 # Model Architecture
-arch: "unet"                     # Options: unet, unetplusplus, deeplabv3plus, classic
-encoder_name: "resnet34"         # Options: resnet34, resnet50, efficientnet-b3, classic
-encoder_weights: "imagenet"      # Options: imagenet, None (for from-scratch baseline)
+arch: "unet"                     # Options: unet, unetplusplus, deeplabv3plus
+encoder_name: "resnet34"         # Options: resnet34, resnet50, efficientnet-b3
+encoder_weights: "imagenet"      # Options: imagenet
 in_channels: 3
 out_channels: 1                  # Binary segmentation (glomerulus vs background)
 decoder_channels: [256, 128, 64, 32, 16]

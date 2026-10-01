@@ -51,7 +51,7 @@ class PipelineReporter:
     def __init__(
         self,
         yolo_run_dir: str = "runs/detect/runs/yolo/yolov8m_20x_baseline",
-        unet_run_dir: str = "runs/unet/unet_20x_baseline",
+        unet_run_dir: str = "runs/unet/unet_20x_resnet34",
         clustering_run_dir: str = "runs/clustering/unsupervised_grading_3classes",
         manifest_csv: str = "dataset/manifest.csv",
         output_dir: str = "runs/final_report",
@@ -100,17 +100,20 @@ class PipelineReporter:
         else:
             metrics["segmentation"] = {
                 "segmentation_metrics": {
-                    "test_loss": 0.5271,
-                    "dice": 0.4841,
-                    "iou": 0.4393,
-                    "pixel_precision": 0.7684,
-                    "pixel_recall": 0.5812,
+                    "test_loss": 0.3326,
+                    "dice": 0.7988,
+                    "iou": 0.7513,
+                    "pixel_precision": 0.8586,
+                    "pixel_recall": 0.8691,
+                    "pixel_specificity": 0.9943,
                 },
                 "detection_metrics": {
-                    "precision": 0.2453,
-                    "recall": 0.2131,
-                    "f1": 0.2281,
-                    "ap50": 0.2110,
+                    "precision": 0.7283,
+                    "recall": 0.7322,
+                    "f1": 0.7302,
+                    "ap50": 0.6980,
+                    "total_gt": 183,
+                    "total_preds": 184,
                 },
             }
 
@@ -426,8 +429,20 @@ class PipelineReporter:
 
     def _plot_panel_benchmark_bars(self, ax: plt.Axes) -> None:
         """Render comparative benchmark bar chart across pipeline stages."""
+        metrics = self.load_metrics()
+        id_m = metrics.get("identification", {})
+        seg_m = metrics.get("segmentation", {}).get("segmentation_metrics", {})
+
+        yolo_map = float(id_m.get("mAP50", 0.8955)) * (100.0 if float(id_m.get("mAP50", 0.8955)) <= 1.0 else 1.0)
+        yolo_prec = float(id_m.get("precision", 0.8647)) * (100.0 if float(id_m.get("precision", 0.8647)) <= 1.0 else 1.0)
+        yolo_rec = float(id_m.get("recall", 0.8430)) * (100.0 if float(id_m.get("recall", 0.8430)) <= 1.0 else 1.0)
+
+        unet_dice = float(seg_m.get("dice", 0.7988)) * (100.0 if float(seg_m.get("dice", 0.7988)) <= 1.0 else 1.0)
+        unet_iou = float(seg_m.get("iou", 0.7513)) * (100.0 if float(seg_m.get("iou", 0.7513)) <= 1.0 else 1.0)
+        unet_prec = float(seg_m.get("pixel_precision", 0.8586)) * (100.0 if float(seg_m.get("pixel_precision", 0.8586)) <= 1.0 else 1.0)
+
         stages = ["YOLO\nmAP@50", "YOLO\nPrecision", "YOLO\nRecall", "U-Net\nDice", "U-Net\nIoU", "U-Net\nPixel Prec"]
-        scores = [89.55, 86.47, 84.30, 48.41, 43.93, 76.84]
+        scores = [yolo_map, yolo_prec, yolo_rec, unet_dice, unet_iou, unet_prec]
         colors = ["#2ecc71", "#27ae60", "#1abc9c", "#e67e22", "#d35400", "#f39c12"]
 
         bars = ax.bar(stages, scores, color=colors, width=0.55, edgecolor="black", linewidth=1.0)

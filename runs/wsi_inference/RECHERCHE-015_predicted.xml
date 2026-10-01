@@ -1,0 +1,290 @@
+<?xml version="1.0" ?>
+<ASAP_Annotations>
+	<Annotations>
+		<Annotation Name="Glomerulus_1" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="7766.63" Y="23492.99"/>
+				<Coordinate Order="1" X="8576.16" Y="23492.99"/>
+				<Coordinate Order="2" X="8576.16" Y="24263.47"/>
+				<Coordinate Order="3" X="7766.63" Y="24263.47"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_2" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="5455.88" Y="23085.01"/>
+				<Coordinate Order="1" X="6575.58" Y="23085.01"/>
+				<Coordinate Order="2" X="6575.58" Y="24318.20"/>
+				<Coordinate Order="3" X="5455.88" Y="24318.20"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_3" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="90673.06" Y="14820.61"/>
+				<Coordinate Order="1" X="91488.06" Y="14820.61"/>
+				<Coordinate Order="2" X="91488.06" Y="15630.83"/>
+				<Coordinate Order="3" X="90673.06" Y="15630.83"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_4" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="47872.86" Y="21504.00"/>
+				<Coordinate Order="1" X="48960.59" Y="21504.00"/>
+				<Coordinate Order="2" X="48960.59" Y="22679.82"/>
+				<Coordinate Order="3" X="47872.86" Y="22679.82"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_5" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="96896.09" Y="9216.00"/>
+				<Coordinate Order="1" X="97965.59" Y="9216.00"/>
+				<Coordinate Order="2" X="97965.59" Y="10091.84"/>
+				<Coordinate Order="3" X="96896.09" Y="10091.84"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_6" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="50157.11" Y="21748.07"/>
+				<Coordinate Order="1" X="50942.72" Y="21748.07"/>
+				<Coordinate Order="2" X="50942.72" Y="22511.60"/>
+				<Coordinate Order="3" X="50157.11" Y="22511.60"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_7" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="15360.00" Y="19353.90"/>
+				<Coordinate Order="1" X="16170.20" Y="19353.90"/>
+				<Coordinate Order="2" X="16170.20" Y="20339.62"/>
+				<Coordinate Order="3" X="15360.00" Y="20339.62"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_8" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="13856.63" Y="17484.70"/>
+				<Coordinate Order="1" X="15116.27" Y="17484.70"/>
+				<Coordinate Order="2" X="15116.27" Y="18799.81"/>
+				<Coordinate Order="3" X="13856.63" Y="18799.81"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_9" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="57028.29" Y="17201.26"/>
+				<Coordinate Order="1" X="58050.49" Y="17201.26"/>
+				<Coordinate Order="2" X="58050.49" Y="18196.14"/>
+				<Coordinate Order="3" X="57028.29" Y="18196.14"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_10" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="88415.95" Y="14956.68"/>
+				<Coordinate Order="1" X="89463.48" Y="14956.68"/>
+				<Coordinate Order="2" X="89463.48" Y="15872.00"/>
+				<Coordinate Order="3" X="88415.95" Y="15872.00"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_11" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="95370.51" Y="7680.83"/>
+				<Coordinate Order="1" X="95744.00" Y="7680.83"/>
+				<Coordinate Order="2" X="95744.00" Y="8622.49"/>
+				<Coordinate Order="3" X="95370.51" Y="8622.49"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_12" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="21710.06" Y="15360.00"/>
+				<Coordinate Order="1" X="22601.93" Y="15360.00"/>
+				<Coordinate Order="2" X="22601.93" Y="16114.82"/>
+				<Coordinate Order="3" X="21710.06" Y="16114.82"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_13" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="15360.00" Y="19968.00"/>
+				<Coordinate Order="1" X="16163.51" Y="19968.00"/>
+				<Coordinate Order="2" X="16163.51" Y="20372.76"/>
+				<Coordinate Order="3" X="15360.00" Y="20372.76"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_14" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="15287.23" Y="21509.05"/>
+				<Coordinate Order="1" X="15808.18" Y="21509.05"/>
+				<Coordinate Order="2" X="15808.18" Y="21962.86"/>
+				<Coordinate Order="3" X="15287.23" Y="21962.86"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_15" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="50237.79" Y="21759.46"/>
+				<Coordinate Order="1" X="50897.87" Y="21759.46"/>
+				<Coordinate Order="2" X="50897.87" Y="22015.79"/>
+				<Coordinate Order="3" X="50237.79" Y="22015.79"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_16" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="58990.45" Y="14083.93"/>
+				<Coordinate Order="1" X="59783.99" Y="14083.93"/>
+				<Coordinate Order="2" X="59783.99" Y="14908.34"/>
+				<Coordinate Order="3" X="58990.45" Y="14908.34"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_17" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="55676.36" Y="15469.47"/>
+				<Coordinate Order="1" X="56855.32" Y="15469.47"/>
+				<Coordinate Order="2" X="56855.32" Y="16691.33"/>
+				<Coordinate Order="3" X="55676.36" Y="16691.33"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_18" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="8285.14" Y="23040.00"/>
+				<Coordinate Order="1" X="8837.82" Y="23040.00"/>
+				<Coordinate Order="2" X="8837.82" Y="23326.28"/>
+				<Coordinate Order="3" X="8285.14" Y="23326.28"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_19" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="96943.08" Y="9224.50"/>
+				<Coordinate Order="1" X="97280.00" Y="9224.50"/>
+				<Coordinate Order="2" X="97280.00" Y="9965.59"/>
+				<Coordinate Order="3" X="96943.08" Y="9965.59"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_20" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="17515.43" Y="16339.33"/>
+				<Coordinate Order="1" X="18366.33" Y="16339.33"/>
+				<Coordinate Order="2" X="18366.33" Y="17182.26"/>
+				<Coordinate Order="3" X="17515.43" Y="17182.26"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_21" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="95346.41" Y="7680.00"/>
+				<Coordinate Order="1" X="96438.69" Y="7680.00"/>
+				<Coordinate Order="2" X="96438.69" Y="8753.93"/>
+				<Coordinate Order="3" X="95346.41" Y="8753.93"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_22" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="23041.38" Y="14128.35"/>
+				<Coordinate Order="1" X="23543.76" Y="14128.35"/>
+				<Coordinate Order="2" X="23543.76" Y="14772.86"/>
+				<Coordinate Order="3" X="23041.38" Y="14772.86"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_23" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="89088.38" Y="14795.63"/>
+				<Coordinate Order="1" X="89517.15" Y="14795.63"/>
+				<Coordinate Order="2" X="89517.15" Y="15870.42"/>
+				<Coordinate Order="3" X="89088.38" Y="15870.42"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_24" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="6144.13" Y="23108.77"/>
+				<Coordinate Order="1" X="6586.82" Y="23108.77"/>
+				<Coordinate Order="2" X="6586.82" Y="24243.92"/>
+				<Coordinate Order="3" X="6144.13" Y="24243.92"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_25" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="102912.00" Y="3626.37"/>
+				<Coordinate Order="1" X="103277.44" Y="3626.37"/>
+				<Coordinate Order="2" X="103277.44" Y="4559.67"/>
+				<Coordinate Order="3" X="102912.00" Y="4559.67"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_26" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="50688.00" Y="21746.41"/>
+				<Coordinate Order="1" X="50938.55" Y="21746.41"/>
+				<Coordinate Order="2" X="50938.55" Y="22464.11"/>
+				<Coordinate Order="3" X="50688.00" Y="22464.11"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_27" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="100626.10" Y="6144.00"/>
+				<Coordinate Order="1" X="100984.96" Y="6144.00"/>
+				<Coordinate Order="2" X="100984.96" Y="6332.40"/>
+				<Coordinate Order="3" X="100626.10" Y="6332.40"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_28" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="6144.00" Y="23099.52"/>
+				<Coordinate Order="1" X="6549.84" Y="23099.52"/>
+				<Coordinate Order="2" X="6549.84" Y="23551.64"/>
+				<Coordinate Order="3" X="6144.00" Y="23551.64"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_29" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="89088.00" Y="15362.54"/>
+				<Coordinate Order="1" X="89439.85" Y="15362.54"/>
+				<Coordinate Order="2" X="89439.85" Y="16113.32"/>
+				<Coordinate Order="3" X="89088.00" Y="16113.32"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_30" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="19406.48" Y="16980.53"/>
+				<Coordinate Order="1" X="19767.94" Y="16980.53"/>
+				<Coordinate Order="2" X="19767.94" Y="17378.95"/>
+				<Coordinate Order="3" X="19406.48" Y="17378.95"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_31" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="98608.98" Y="5628.27"/>
+				<Coordinate Order="1" X="99476.51" Y="5628.27"/>
+				<Coordinate Order="2" X="99476.51" Y="6486.50"/>
+				<Coordinate Order="3" X="98608.98" Y="6486.50"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_32" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="50689.49" Y="21763.93"/>
+				<Coordinate Order="1" X="50914.13" Y="21763.93"/>
+				<Coordinate Order="2" X="50914.13" Y="22015.32"/>
+				<Coordinate Order="3" X="50689.49" Y="22015.32"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_33" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="90650.56" Y="15360.05"/>
+				<Coordinate Order="1" X="91566.80" Y="15360.05"/>
+				<Coordinate Order="2" X="91566.80" Y="15646.96"/>
+				<Coordinate Order="3" X="90650.56" Y="15646.96"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_34" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="62978.48" Y="12551.83"/>
+				<Coordinate Order="1" X="63743.54" Y="12551.83"/>
+				<Coordinate Order="2" X="63743.54" Y="12800.00"/>
+				<Coordinate Order="3" X="62978.48" Y="12800.00"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Name="Glomerulus_35" Type="Rectangle" PartOfGroup="Glomeruli_Predicted" Color="#00FF00">
+			<Coordinates>
+				<Coordinate Order="0" X="101613.74" Y="4608.00"/>
+				<Coordinate Order="1" X="101888.00" Y="4608.00"/>
+				<Coordinate Order="2" X="101888.00" Y="4995.30"/>
+				<Coordinate Order="3" X="101613.74" Y="4995.30"/>
+			</Coordinates>
+		</Annotation>
+	</Annotations>
+	<AnnotationGroups>
+		<Group Name="Glomeruli_Predicted" NumberOfAnnotations="35" Color="#00FF00">
+			<Attributes/>
+		</Group>
+	</AnnotationGroups>
+</ASAP_Annotations>

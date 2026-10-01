@@ -47,13 +47,13 @@ def main() -> None:
         "--arch",
         type=str,
         default=None,
-        help="Override architecture: unet, unetplusplus, deeplabv3plus, classic."
+        help="Override architecture: unet, unetplusplus, deeplabv3plus."
     )
     parser.add_argument(
         "--encoder",
         type=str,
         default=None,
-        help="Override encoder backbone: resnet34, resnet50, efficientnet-b3, classic."
+        help="Override encoder backbone: resnet34, resnet50, efficientnet-b3."
     )
     parser.add_argument(
         "--loss",

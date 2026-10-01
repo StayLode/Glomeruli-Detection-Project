@@ -16,10 +16,10 @@ This report documents the completion of the three project deliverables:
 | | | **Precision (BBox)** | **86.47%** | Minimal false positive tissue proposals |
 | | | **Recall (BBox)** | **84.30%** | Comprehensive capture of all glomeruli |
 | | | **mAP@50-95** | **56.96%** | High spatial localization overlap |
-| **Stage (ii): Segmentation** | **U-Net** | **Pixel Precision** | **76.84%** | Clean discrimination of glomerular tissue |
-| | | **Pixel Recall** | **58.12%** | Captures core vascular tuft |
-| | | **Dice Score (F1)** | **48.41%** | Evaluated on full 1024x1024 patches |
-| | | **IoU (Jaccard)** | **43.93%** | Standard biomedical overlap score |
+| **Stage (ii): Segmentation** | **U-Net (ResNet-34)** | **Pixel Precision** | **85.86%** | Clean discrimination of glomerular tissue |
+| | | **Pixel Recall** | **86.91%** | Comprehensive boundary capture |
+| | | **Dice Score (F1)** | **79.88%** | Evaluated on full 1024x1024 patches |
+| | | **IoU (Jaccard)** | **75.13%** | Standard biomedical overlap score |
 | **Stage (iii): Unsupervised Grading** | **Hybrid Features (Deep + Morpho)** | **Total Samples** | **1,746** | Entire cohort evaluated without leakage |
 | | | **Discovered Classes** | **3** | Matches nephropathology grades |
 | | | **Calinski-Harabasz** | **70.93** | Strong cluster density & separation |

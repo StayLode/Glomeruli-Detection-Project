@@ -44,6 +44,8 @@ nvidia-nccl-cu12==2.27.3
 nvidia-nvjitlink-cu12==12.8.93
 nvidia-nvtx-cu12==12.8.90
 opencv-python==5.0.0.93
+openslide-bin==4.0.1.2
+openslide-python==1.4.2
 packaging==26.3
 pandas==2.3.3
 pillow==11.3.0
@@ -61,6 +63,7 @@ safetensors==0.7.0
 scikit-learn==1.6.1
 scipy==1.13.1
 segmentation_models_pytorch==0.5.0
+shapely==2.0.7
 shellingham==1.5.4
 six==1.17.0
 sympy==1.14.0

@@ -1,0 +1,11 @@
+{
+  "gt_count": 46,
+  "pred_count": 33,
+  "tp": 19,
+  "fp": 14,
+  "fn": 27,
+  "precision": 0.5758,
+  "recall": 0.413,
+  "f1": 0.481,
+  "count_error": 13
+}

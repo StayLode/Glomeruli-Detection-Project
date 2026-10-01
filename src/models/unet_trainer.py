@@ -65,7 +65,7 @@ class UNetTrainer:
             logger.info(f"Using CPU device: {self.device}")
 
         # Setup output directory
-        self.run_dir = Path(self.cfg.get("project", "runs/unet")) / self.cfg.get("name", "unet_20x_baseline")
+        self.run_dir = Path(self.cfg.get("project", "runs/unet")) / self.cfg.get("name", "unet_20x_resnet34")
         self.weights_dir = self.run_dir / "weights"
         self.weights_dir.mkdir(parents=True, exist_ok=True)
 

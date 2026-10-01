@@ -3,7 +3,7 @@
 CLI Script to evaluate a trained U-Net checkpoint on the test set.
 
 Usage:
-    python scripts/evaluate_unet.py --checkpoint runs/unet/unet_20x_baseline/weights/best.pt
+    python scripts/evaluate_unet.py --checkpoint runs/unet/unet_20x_resnet34/weights/best.pt
 """
 
 import argparse

@@ -140,10 +140,13 @@ All models were evaluated on the held-out test cohort (`RECHERCHE-015` and `RECH
 | **mAP @ IoU 0.50:0.95** | **56.96%** | High spatial localization accuracy under strict IoU thresholds |
 
 ### 2. Stage (ii) — Semantic Segmentation (U-Net)
-| Model Variant | Dice (F1) | IoU (Jaccard) | Pixel Precision | Pixel Recall | Extracted Box mAP@50 |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **U-Net Scratch Baseline** | 48.41% | 43.93% | 76.84% | 58.12% | 21.10% |
-| **U-Net ResNet-34 (Pre-trained)** | **79.88%** | **75.13%** | **85.86%** | **86.91%** | **69.80%** |
+| Metric | Test Set Score | Description |
+| :--- | :---: | :--- |
+| **Dice Score (F1)** | **79.88%** | Precise overlap on glomerular tuft boundaries |
+| **IoU (Jaccard)** | **75.13%** | Intersection-over-Union spatial agreement |
+| **Pixel Precision** | **85.86%** | High specificity with minimal false positive boundary leaking |
+| **Pixel Recall** | **86.91%** | Comprehensive boundary capture across heterogeneous lesions |
+| **Extracted Box mAP@50** | **69.80%** | Object-level detection accuracy via contour analysis |
 
 *Note: In addition to pixel metrics, segmentation masks were converted to bounding boxes using contour analysis to enable a direct, apples-to-apples comparison with YOLO.*
 
