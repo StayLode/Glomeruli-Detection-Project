@@ -191,8 +191,7 @@ Glomeruli-Detection-Project/
 │   └── final_report/             # Final 6-panel summary figure, HTML and CSV reports
 ├── scripts/                      # Independent CLI execution entrypoints
 │   ├── prepare_dataset.py        # Step 1: Preprocessing & dual dataset generation
-│   ├── train_yolo.py             # Step 2A: YOLO training
-│   ├── evaluate_yolo.py          # Step 2A: YOLO checkpoint evaluation
+│   ├── train_yolo.py             # Step 2A: YOLO training & native evaluation
 │   ├── train_unet.py             # Step 2B: U-Net training
 │   ├── evaluate_unet.py          # Step 2B: U-Net test set evaluation
 │   ├── run_clustering.py         # Step 3: Unsupervised feature extraction & clustering
@@ -201,7 +200,7 @@ Glomeruli-Detection-Project/
 └── src/                          # Reusable core modules
     ├── utils/                    # XML parser for ASAP annotations
     ├── preprocessing/            # TissueDetector and PatchExtractor
-    ├── models/                   # YOLO wrapper, U-Net, ComboLoss, mask-to-bbox converter
+    ├── models/                   # U-Net, ComboLoss, mask-to-bbox converter
     ├── clustering/               # Feature extractor, manifold clusterer, visualizer
     ├── inference/                # Whole slide inference engine with global NMS
     └── visualization/            # Verification grids and pipeline report generators
@@ -264,10 +263,10 @@ python scripts/train_yolo.py --config configs/yolo_config.yaml
 
 #### Evaluate YOLO Checkpoint on Test Set:
 ```bash
-python scripts/evaluate_yolo.py \
-    --weights runs/detect/runs/yolo/yolov8m_20x_baseline/weights/best.pt \
-    --split test \
-    --save_predictions
+python scripts/train_yolo.py \
+    --config configs/yolo_config.yaml \
+    --eval_only \
+    --weights runs/yolo/yolov8m_20x_baseline/weights/best.pt
 ```
 *Outputs*: Confusion metrics in console, `test_metrics.json`, and visual overlays in `runs/detect/runs/yolo/predictions_test/`.
 
