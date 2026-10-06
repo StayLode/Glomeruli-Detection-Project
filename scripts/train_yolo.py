@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 """
-CLI Script to train YOLO on the extracted glomeruli dataset.
+CLI Script to train and/or evaluate YOLOv8 on the glomeruli dataset.
 
 Usage:
+    # To run the full training and evaluation pipeline automatically:
     python scripts/train_yolo.py --config configs/yolo_config.yaml
+    
+    # To evaluate a previously trained model on the test set:
+    python scripts/train_yolo.py --config configs/yolo_config.yaml --eval_only --weights runs/yolo/.../best.pt
 """
 
 import argparse
@@ -11,127 +15,156 @@ import json
 import logging
 import sys
 from pathlib import Path
+
 import torch
 import yaml
+from ultralytics import YOLO
 
-# Add project root to sys.path
+# Add project root to sys.path to resolve internal module imports
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
-
-from src.models.yolo_detector import YOLODetector
 
 
 def setup_logger() -> logging.Logger:
     """Configure structured console logging."""
-    logger = logging.getLogger()
+    logger = logging.getLogger("yolo_runner")
     logger.setLevel(logging.INFO)
-
-    formatter = logging.Formatter(
-        "[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
-
+    formatter = logging.Formatter("[%(asctime)s] [%(levelname)s] : %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
-
     return logger
 
 
+def ensure_data_yaml_paths(data_yaml_path: str) -> str:
+    """
+    Dynamically updates the 'path' attribute in data.yaml to match the current filesystem location.
+    This guarantees seamless execution both locally and on remote SLURM clusters.
+    """
+    p = Path(data_yaml_path).resolve()
+    if not p.exists():
+        raise FileNotFoundError(f"Dataset configuration file (data.yaml) not found at: {p}")
+
+    with open(p, "r", encoding="utf-8") as f:
+        data = yaml.safe_load(f)
+
+    # Overwrite the root dataset path with the absolute path of the current directory
+    data["path"] = str(p.parent.resolve())
+
+    with open(p, "w", encoding="utf-8") as f:
+        yaml.dump(data, f, default_flow_style=False, sort_keys=False)
+
+    return str(p)
+
+
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Train YOLO on Glomeruli Dataset.")
-    parser.add_argument(
-        "--config",
-        type=str,
-        default="configs/yolo_config.yaml",
-        help="Path to YOLO training config YAML file."
-    )
-    parser.add_argument(
-        "--model",
-        type=str,
-        default=None,
-        help="Override model architecture (e.g. yolov8s.pt, yolov8m.pt, yolov8x.pt)."
-    )
-    parser.add_argument(
-        "--batch",
-        type=int,
-        default=None,
-        help="Override batch size (e.g. 16 or 32 for NVIDIA A40)."
-    )
-    parser.add_argument(
-        "--epochs",
-        type=int,
-        default=None,
-        help="Override number of training epochs."
-    )
-    parser.add_argument(
-        "--device",
-        default=None,
-        help="Device to run on (e.g. 0, '0', 'cpu'). Defaults to config or GPU 0 if available."
-    )
+    parser = argparse.ArgumentParser(description="Train and/or Evaluate YOLOv8 on the Glomeruli Dataset.")
+    parser.add_argument("--config", type=str, default="configs/yolo_config.yaml", help="Path to YOLO configuration YAML.")
+    parser.add_argument("--eval_only", action="store_true", help="Skip training phase and run evaluation only.")
+    parser.add_argument("--weights", type=str, default=None, help="Path to pre-trained weights for eval_only mode (e.g., best.pt).")
     args = parser.parse_args()
 
     logger = setup_logger()
-    logger.info(f"Loading configuration from {args.config}...")
-
+    
+    # 1. Load configuration
     with open(args.config, "r", encoding="utf-8") as f:
         cfg = yaml.safe_load(f)
+        
+    resolved_yaml = ensure_data_yaml_paths(cfg.get("data_yaml", "dataset/yolo/data.yaml"))
 
-    # Allow CLI overrides
-    if args.model:
-        cfg["model"] = args.model
-    if args.batch:
-        cfg["batch"] = args.batch
-    if args.epochs:
-        cfg["epochs"] = args.epochs
-    if args.device is not None:
-        cfg["device"] = args.device
-
-    # Hardware verification
-    logger.info(f"PyTorch version: {torch.__version__}, CUDA available: {torch.cuda.is_available()}")
+    # 2. Hardware verification
+    device = cfg.get("device", 0)
     if torch.cuda.is_available():
-        gpu_name = torch.cuda.get_device_name(0)
-        vram_gb = torch.cuda.get_device_properties(0).total_memory / (1024**3)
-        logger.info(f"Using GPU [0]: {gpu_name} ({vram_gb:.1f} GB VRAM)")
+        logger.info(f"Using GPU: {torch.cuda.get_device_name(0)}")
     else:
-        logger.warning("CUDA is NOT detected by PyTorch! Check nvidia driver and CUDA installation.")
+        logger.warning("CUDA NOT detected! Training will be extremely slow on CPU.")
 
-    detector = YOLODetector(model_name_or_path=cfg["model"])
-
-    # 1. Train model
-    logger.info("Starting training loop...")
-    results = detector.train(cfg)
-
-    # 2. Evaluate on Test set using the best weights
-    save_dir = Path(results.save_dir) if hasattr(results, "save_dir") else (Path(cfg.get("project", "runs/yolo")) / cfg.get("name", "yolov8m_20x"))
-    best_weights = save_dir / "weights" / "best.pt"
-    if best_weights.exists():
-        logger.info(f"Loading best checkpoint for test evaluation: {best_weights}")
-        evaluator = YOLODetector(model_name_or_path=str(best_weights))
+    # ==========================================
+    # TRAINING PHASE
+    # ==========================================
+    if not args.eval_only:
+        logger.info(f"Initializing YOLO model using architecture: {cfg.get('model')}")
+        model = YOLO(cfg.get("model"))
+        
+        train_args = {
+            "data": resolved_yaml,
+            "device": device,
+            "imgsz": cfg.get("imgsz", 1024),
+            "epochs": cfg.get("epochs", 60),
+            "batch": cfg.get("batch", 16),
+            "workers": cfg.get("workers", 8),
+            "patience": cfg.get("patience", 15),
+            "project": cfg.get("project", "runs/yolo"),
+            "name": cfg.get("name", "yolov8m_20x_baseline"),
+            "optimizer": cfg.get("optimizer", "AdamW"),
+            "lr0": cfg.get("lr0", 0.001),
+            "lrf": cfg.get("lrf", 0.01),
+            "weight_decay": cfg.get("weight_decay", 0.0005),
+            # Histology-specific augmentations
+            "fliplr": cfg.get("fliplr", 0.5),
+            "flipud": cfg.get("flipud", 0.5),
+            "degrees": cfg.get("degrees", 90.0),
+            "hsv_h": cfg.get("hsv_h", 0.015),
+            "hsv_s": cfg.get("hsv_s", 0.3),
+            "hsv_v": cfg.get("hsv_v", 0.3),
+        }
+        
+        logger.info("Starting YOLO training loop...")
+        results = model.train(**train_args)
+        
+        # Dynamically resolve the path to the newly generated best weights
+        save_dir = Path(results.save_dir) if hasattr(results, "save_dir") else (Path(cfg["project"]) / cfg["name"])
+        weights_path = save_dir / "weights" / "best.pt"
     else:
-        evaluator = detector
+        # Evaluation-Only Mode
+        if not args.weights:
+            logger.error("A valid --weights path must be provided when using --eval_only flag.")
+            sys.exit(1)
+        weights_path = Path(args.weights)
+        save_dir = weights_path.parent.parent
 
-    test_metrics = evaluator.evaluate(
-        data_yaml=cfg.get("data_yaml", "dataset/yolo/data.yaml"),
-        split="test",
-        device=cfg.get("device", 0)
-    )
+    # ==========================================
+    # EVALUATION PHASE (Test Set)
+    # ==========================================
+    logger.info(f"Evaluating optimal checkpoint: {weights_path}")
+    eval_model = YOLO(str(weights_path))
+    
+    # Run quantitative validation on the test split
+    metrics = eval_model.val(data=resolved_yaml, split="test", device=device)
+    
+    # Generate visual bounding box predictions for qualitative analysis
+    test_images_dir = Path("dataset/yolo/images/test")
+    if test_images_dir.exists():
+        logger.info("Generating visual prediction overlays on the test set...")
+        eval_model.predict(
+            source=str(test_images_dir),
+            conf=0.25, 
+            iou=0.45, 
+            imgsz=cfg.get("imgsz", 1024),
+            save=True, 
+            project=str(save_dir.parent), 
+            name="predictions_test"
+        )
 
-    # 3. Save test metrics
+    
+    summary = {
+        "precision": float(metrics.box.mp),
+        "recall": float(metrics.box.mr),
+        "mAP50": float(metrics.box.map50),
+        "mAP50-95": float(metrics.box.map),
+    }
+
     metrics_path = save_dir / "test_metrics.json"
-    metrics_path.parent.mkdir(parents=True, exist_ok=True)
     with open(metrics_path, "w", encoding="utf-8") as mf:
-        json.dump(test_metrics, mf, indent=2)
+        json.dump(summary, mf, indent=2)
 
-    # Print summary
     print("\n" + "=" * 60)
-    print("YOLO TRAINING & EVALUATION COMPLETED SUCCESSFULLY")
+    print("YOLO EVALUATION COMPLETED SUCCESSFULLY")
     print("=" * 60)
-    print(f"Best Model Weights : {best_weights}")
-    print(f"Test Precision     : {test_metrics['precision']:.4f}")
-    print(f"Test Recall        : {test_metrics['recall']:.4f}")
-    print(f"Test mAP@50        : {test_metrics['mAP50']:.4f}")
-    print(f"Test mAP@50-95     : {test_metrics['mAP50-95']:.4f}")
+    print(f"Test Precision     : {summary['precision']:.4f}")
+    print(f"Test Recall        : {summary['recall']:.4f}")
+    print(f"Test mAP@50        : {summary['mAP50']:.4f}")
+    print(f"Test mAP@50-95     : {summary['mAP50-95']:.4f}")
     print("=" * 60 + "\n")
 
 
