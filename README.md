@@ -191,8 +191,7 @@ Glomeruli-Detection-Project/
 ├── scripts/                      # Independent CLI execution entrypoints
 │   ├── prepare_dataset.py        # Step 1: Preprocessing & dual dataset generation
 │   ├── train_yolo.py             # Step 2A: YOLO training & native evaluation
-│   ├── train_unet.py             # Step 2B: U-Net training
-│   ├── evaluate_unet.py          # Step 2B: U-Net test set evaluation
+│   ├── train_unet.py             # Step 2B: U-Net training & native evaluation
 │   ├── run_clustering.py         # Step 3: Unsupervised feature extraction & clustering
 │   └── run_wsi_inference.py      # Step 4: Full slide inference and ASAP XML export
 └── src/                          # Reusable core modules
@@ -280,10 +279,10 @@ python scripts/train_unet.py --config configs/unet_config.yaml
 
 #### Evaluate U-Net Checkpoint on Test Set:
 ```bash
-python scripts/evaluate_unet.py \
-    --checkpoint runs/unet/unet_20x_resnet34/weights/best.pt \
+python scripts/train_unet.py \
     --config configs/unet_config.yaml \
-    --threshold 0.5
+    --eval_only \
+    --weights runs/unet/unet_20x_resnet34/weights/best.pt
 ```
 *Outputs*: Pixel-level metrics (Dice, IoU), contour-derived detection metrics (AP50), and qualitative comparison grid `test_predictions_grid.png`.
 

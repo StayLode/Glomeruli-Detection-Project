@@ -1,15 +1,20 @@
 #!/usr/bin/env python3
 """
-CLI Script to train U-Net on the extracted glomeruli segmentation dataset.
+CLI Script to train and/or evaluate U-Net on the glomeruli segmentation dataset.
 
 Usage:
+    # Full training and evaluation pipeline:
     python scripts/train_unet.py --config configs/unet_config.yaml
+
+    # Evaluate a previously trained model on the test set:
+    python scripts/train_unet.py --config configs/unet_config.yaml --eval_only --weights runs/unet/unet_20x_resnet34/weights/best.pt
 """
 
 import argparse
 import logging
 import sys
 from pathlib import Path
+import yaml
 
 # Add project root to sys.path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -20,11 +25,11 @@ from src.models.unet_trainer import UNetTrainer
 
 def setup_logger() -> logging.Logger:
     """Configure structured console logging."""
-    logger = logging.getLogger()
+    logger = logging.getLogger("unet_runner")
     logger.setLevel(logging.INFO)
 
     formatter = logging.Formatter(
-        "[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s",
+        "[%(asctime)s] [%(levelname)s]: %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
     )
 
@@ -36,12 +41,31 @@ def setup_logger() -> logging.Logger:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Train U-Net on Glomeruli Segmentation Dataset (NVIDIA A40 Optimized).")
+    parser = argparse.ArgumentParser(description="Train and/or Evaluate U-Net on Glomeruli Segmentation Dataset.")
     parser.add_argument(
         "--config",
         type=str,
         default="configs/unet_config.yaml",
         help="Path to U-Net training configuration YAML file."
+    )
+    parser.add_argument(
+        "--eval_only",
+        action="store_true",
+        help="Skip training phase and run evaluation on the test set only."
+    )
+    parser.add_argument(
+        "--weights",
+        "--checkpoint",
+        dest="weights",
+        type=str,
+        default=None,
+        help="Path to trained checkpoint (.pt file) for evaluation."
+    )
+    parser.add_argument(
+        "--threshold",
+        type=float,
+        default=None,
+        help="Sigmoid probability threshold (default: from config or 0.5)."
     )
     parser.add_argument(
         "--arch",
@@ -93,13 +117,13 @@ def main() -> None:
     args = parser.parse_args()
 
     logger = setup_logger()
-    logger.info("Initializing U-Net Trainer...")
 
     # Load config and apply CLI overrides before initializing trainer
-    import yaml
     with open(args.config, "r", encoding="utf-8") as f:
         cfg = yaml.safe_load(f)
 
+    if args.threshold is not None:
+        cfg["threshold"] = args.threshold
     if args.arch is not None:
         cfg["arch"] = args.arch
     if args.encoder is not None:
@@ -117,14 +141,30 @@ def main() -> None:
     if args.device is not None:
         cfg["device"] = args.device
 
+    logger.info("Initializing U-Net Trainer...")
     trainer = UNetTrainer(config_path=args.config, config_dict=cfg)
 
-    # 1. Train model
-    best_checkpoint = trainer.fit()
-    logger.info(f"Training completed. Best checkpoint: {best_checkpoint}")
+    # ==========================================
+    # TRAINING PHASE
+    # ==========================================
+    if not args.eval_only:
+        logger.info("Starting U-Net training loop...")
+        checkpoint_to_eval = trainer.fit()
+        logger.info(f"Training completed. Best checkpoint: {checkpoint_to_eval}")
+    else:
+        if not args.weights:
+            logger.error("A valid --weights (or --checkpoint) path must be provided when using --eval_only.")
+            sys.exit(1)
+        checkpoint_to_eval = Path(args.weights)
+        if not checkpoint_to_eval.exists():
+            logger.error(f"Checkpoint not found at: {checkpoint_to_eval}")
+            sys.exit(1)
 
-    # 2. Evaluate on Test set
-    test_results = trainer.evaluate_test(checkpoint_path=str(best_checkpoint))
+    # ==========================================
+    # EVALUATION PHASE (Test Set)
+    # ==========================================
+    logger.info(f"Evaluating checkpoint on Test set: {checkpoint_to_eval}")
+    test_results = trainer.evaluate_test(checkpoint_path=str(checkpoint_to_eval))
 
     # Print summary table
     seg_m = test_results["segmentation_metrics"]
