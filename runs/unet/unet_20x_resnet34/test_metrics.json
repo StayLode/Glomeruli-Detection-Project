@@ -1,18 +1,18 @@
 {
   "segmentation_metrics": {
-    "test_loss": 0.3326,
-    "dice": 0.7988,
-    "iou": 0.7513,
-    "pixel_precision": 0.8586,
-    "pixel_recall": 0.8691,
-    "pixel_specificity": 0.9943
+    "test_loss": 0.0841,
+    "dice": 0.7773,
+    "iou": 0.7241,
+    "pixel_precision": 0.8158,
+    "pixel_recall": 0.8798,
+    "pixel_specificity": 0.9933
   },
   "detection_metrics": {
-    "precision": 0.7283,
-    "recall": 0.7322,
-    "f1": 0.7302,
-    "ap50": 0.698,
+    "precision": 0.7165,
+    "recall": 0.7596,
+    "f1": 0.7374,
+    "ap50": 0.7072,
     "total_gt": 183,
-    "total_preds": 184
+    "total_preds": 194
   }
 }

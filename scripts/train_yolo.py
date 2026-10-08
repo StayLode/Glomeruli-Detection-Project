@@ -82,6 +82,9 @@ def main() -> None:
     # ==========================================
     # TRAINING PHASE
     # ==========================================
+    project_dir = str((PROJECT_ROOT / cfg.get("project", "runs/yolo")).resolve())
+    exp_name = cfg.get("name", "yolov8m_20x_baseline")
+
     if not args.eval_only:
         logger.info(f"Initializing YOLO model using architecture: {cfg.get('model')}")
         model = YOLO(cfg.get("model"))
@@ -94,8 +97,8 @@ def main() -> None:
             "batch": cfg.get("batch", 16),
             "workers": cfg.get("workers", 8),
             "patience": cfg.get("patience", 15),
-            "project": cfg.get("project", "runs/yolo"),
-            "name": cfg.get("name", "yolov8m_20x_baseline"),
+            "project": project_dir,
+            "name": exp_name,
             "optimizer": cfg.get("optimizer", "AdamW"),
             "lr0": cfg.get("lr0", 0.001),
             "lrf": cfg.get("lrf", 0.01),
@@ -113,7 +116,7 @@ def main() -> None:
         results = model.train(**train_args)
         
         # Dynamically resolve the path to the newly generated best weights
-        save_dir = Path(results.save_dir) if hasattr(results, "save_dir") else (Path(cfg["project"]) / cfg["name"])
+        save_dir = Path(results.save_dir) if hasattr(results, "save_dir") else (Path(project_dir) / exp_name)
         weights_path = save_dir / "weights" / "best.pt"
     else:
         # Evaluation-Only Mode
@@ -130,7 +133,14 @@ def main() -> None:
     eval_model = YOLO(str(weights_path))
     
     # Run quantitative validation on the test split
-    metrics = eval_model.val(data=resolved_yaml, split="test", device=device)
+    metrics = eval_model.val(
+        data=resolved_yaml,
+        split="test",
+        device=device,
+        project=str(save_dir.parent),
+        name=save_dir.name,
+        exist_ok=True,
+    )
     
     # Generate visual bounding box predictions for qualitative analysis
     test_images_dir = Path("dataset/yolo/images/test")
@@ -143,7 +153,8 @@ def main() -> None:
             imgsz=cfg.get("imgsz", 1024),
             save=True, 
             project=str(save_dir.parent), 
-            name="predictions_test"
+            name="predictions_test",
+            exist_ok=True,
         )
 
     

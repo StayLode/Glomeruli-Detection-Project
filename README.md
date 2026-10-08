@@ -265,7 +265,7 @@ python scripts/train_yolo.py \
     --eval_only \
     --weights runs/yolo/yolov8m_20x_baseline/weights/best.pt
 ```
-*Outputs*: Confusion metrics in console, `test_metrics.json`, and visual overlays in `runs/detect/runs/yolo/predictions_test/`.
+*Outputs*: Confusion metrics in console, `test_metrics.json`, and visual overlays in `runs/yolo/predictions_test/`.
 
 ---
 
@@ -314,13 +314,13 @@ Runs tiled inference across an entire multi-gigapixel slide, resolves patch boun
 # Evaluate a single slide:
 python scripts/run_wsi_inference.py \
     --slide glomeruli_grading/RECHERCHE-015.svs \
-    --weights runs/detect/runs/yolo/yolov8m_20x_baseline/weights/best.pt \
+    --weights runs/yolo/yolov8m_20x_baseline/weights/best.pt \
     --output_dir runs/wsi_inference
 
 # Process all slides in the test cohort:
 python scripts/run_wsi_inference.py \
     --all_test_slides \
-    --weights runs/detect/runs/yolo/yolov8m_20x_baseline/weights/best.pt \
+    --weights runs/yolo/yolov8m_20x_baseline/weights/best.pt \
     --output_dir runs/wsi_inference
 ```
 *Outputs*:
@@ -336,7 +336,7 @@ Pre-trained weights and generated artifacts are organized as follows:
 
 | Deliverable | File Path |
 | :--- | :--- |
-| **YOLOv8m Best Weights** | `runs/detect/runs/yolo/yolov8m_20x_baseline/weights/best.pt` |
+| **YOLOv8m Best Weights** | `runs/yolo/yolov8m_20x_baseline/weights/best.pt` |
 | **U-Net ResNet-34 Best Weights** | `runs/unet/unet_20x_resnet34/weights/best.pt` |
 | **Clustering Morphological Table** | `runs/clustering/unsupervised_grading_3classes/cluster_assignments.csv` |
 | **ASAP Reviewer Annotations** | `runs/wsi_inference/*_predicted.xml` |

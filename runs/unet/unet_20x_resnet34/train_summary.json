@@ -1,7 +1,7 @@
 {
-  "best_epoch": 22,
-  "best_val_dice": 0.8177,
-  "total_time_sec": 2478.97,
+  "best_epoch": 20,
+  "best_val_dice": 0.8446,
+  "total_time_sec": 2722.47,
   "architecture": "unet",
   "encoder": "resnet34"
 }
