@@ -82,16 +82,15 @@ This repository provides a modular, reproducible, end-to-end deep learning pipel
 │  - Monotonic ordering along PC1: Grade 0 (Normal) -> Grade 1 (Segmental) -> Grade 2 (Sclerotic) │
 └─────────────────────────────────────────────┬─────────────────────────────────────────────┘
                                               │
-                      ┌───────────────────────┴───────────────────────┐
-                      ▼                                               ▼
-┌──────────────────────────────────────────┐    ┌──────────────────────────────────────────┐
-│ STAGE 4: Full WSI Stitching & Inference  │    │ STAGE 5: Executive Clinical Reporting    │
-│ (run_wsi_inference.py)                   │    │ (generate_report.py)                     │
-│  - Tiled GPU inference over tissue areas │    │  - Publication 6-panel figure (PNG/PDF)  │
-│  - Projection back to native Level 0     │    │  - Self-contained interactive HTML report│
-│  - Global NMS across patch boundaries    │    │  - Consolidated CSV & JSON metric tables │
-│  - Export to ASAP-compliant XML          │    │  - Executive Markdown summary            │
-└──────────────────────────────────────────┘    └──────────────────────────────────────────┘
+                                              ▼
+┌───────────────────────────────────────────────────────────────────────────────────────────┐
+│ STAGE 4: Full WSI Stitching & Inference (run_wsi_inference.py)                            │
+│  - Tiled GPU inference over tissue areas                                                  │
+│  - Projection back to native Level 0 coordinates                                          │
+│  - Global NMS across patch boundaries                                                     │
+│  - Slide-level clinical evaluation against ground-truth XML                               │
+│  - Export to ASAP-compliant XML annotations & high-resolution overview maps               │
+└───────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -188,22 +187,21 @@ Glomeruli-Detection-Project/
 │   ├── detect/runs/yolo/         # Trained YOLO weights (best.pt) and predictions
 │   ├── unet/                     # Trained U-Net checkpoints (best.pt) and test grids
 │   ├── clustering/               # Manifold scatter plots, elbow curves, galleries
-│   └── final_report/             # Final 6-panel summary figure, HTML and CSV reports
+│   └── wsi_inference/            # Full-slide predicted XMLs, metrics, and overview maps
 ├── scripts/                      # Independent CLI execution entrypoints
 │   ├── prepare_dataset.py        # Step 1: Preprocessing & dual dataset generation
 │   ├── train_yolo.py             # Step 2A: YOLO training & native evaluation
 │   ├── train_unet.py             # Step 2B: U-Net training
 │   ├── evaluate_unet.py          # Step 2B: U-Net test set evaluation
 │   ├── run_clustering.py         # Step 3: Unsupervised feature extraction & clustering
-│   ├── run_wsi_inference.py      # Step 4: Full slide inference and ASAP XML export
-│   └── generate_report.py        # Step 5: Master multi-stage report generation
+│   └── run_wsi_inference.py      # Step 4: Full slide inference and ASAP XML export
 └── src/                          # Reusable core modules
     ├── utils/                    # XML parser for ASAP annotations
     ├── preprocessing/            # TissueDetector and PatchExtractor
     ├── models/                   # U-Net, ComboLoss, mask-to-bbox converter
     ├── clustering/               # Feature extractor, manifold clusterer, visualizer
     ├── inference/                # Whole slide inference engine with global NMS
-    └── visualization/            # Verification grids and pipeline report generators
+    └── visualization/            # Verification grids and visual quality inspection
 ```
 
 ---
@@ -333,24 +331,6 @@ python scripts/run_wsi_inference.py \
 
 ---
 
-### Step 6: Generate Master Clinical Pipeline Report
-Harmonizes metrics across YOLO, U-Net, and Clustering into presentation and publication artifacts:
-
-```bash
-python scripts/generate_report.py \
-    --yolo_run runs/detect/runs/yolo/yolov8m_20x_baseline \
-    --unet_run runs/unet/unet_20x_resnet34 \
-    --clustering_run runs/clustering/unsupervised_grading_3classes \
-    --output_dir runs/final_report
-```
-*Outputs generated in `runs/final_report/`:*
-* `pipeline_summary_figure.png` / `.pdf`: 300 DPI 6-panel summary figure suitable for presentations or papers.
-* `final_pipeline_report.html`: Self-contained interactive report with embedded base64 figures.
-* `final_pipeline_report.md`: Executive summary document.
-* `pipeline_metrics_summary.csv` / `.json`: Consolidated numerical benchmarks.
-
----
-
 ## Artifacts & Clinical Deliverables
 
 Pre-trained weights and generated artifacts are organized as follows:
@@ -359,10 +339,9 @@ Pre-trained weights and generated artifacts are organized as follows:
 | :--- | :--- |
 | **YOLOv8m Best Weights** | `runs/detect/runs/yolo/yolov8m_20x_baseline/weights/best.pt` |
 | **U-Net ResNet-34 Best Weights** | `runs/unet/unet_20x_resnet34/weights/best.pt` |
-| **Interactive HTML Master Report** | `runs/final_report/final_pipeline_report.html` |
-| **Publication Composite Figure** | `runs/final_report/pipeline_summary_figure.pdf` |
 | **Clustering Morphological Table** | `runs/clustering/unsupervised_grading_3classes/cluster_assignments.csv` |
 | **ASAP Reviewer Annotations** | `runs/wsi_inference/*_predicted.xml` |
+| **WSI Overview Visualizations** | `runs/wsi_inference/*_overview.png` |
 
 ---
 
