@@ -85,11 +85,12 @@ This repository provides a modular, reproducible, end-to-end deep learning pipel
                                               ▼
 ┌───────────────────────────────────────────────────────────────────────────────────────────┐
 │ STAGE 4: Full WSI Stitching & Inference (run_wsi_inference.py)                            │
-│  - Tiled GPU inference over tissue areas                                                  │
-│  - Projection back to native Level 0 coordinates                                          │
-│  - Global NMS across patch boundaries                                                     │
-│  - Slide-level clinical evaluation against ground-truth XML                               │
-│  - Export to ASAP-compliant XML annotations & high-resolution overview maps               │
+│  - Mode 1: Fast whole-slide screening via YOLOv8m                                         │
+│  - Mode 2 (Cascade): YOLO Proposals + U-Net Gated Segmentation (suppresses false alarms)   │
+│  - Projection back to native Level 0 coordinates & Global NMS across patch boundaries     │
+│  - Slide-level evaluation against ground truth XML (Detection F1 + Polygon Dice/IoU)      │
+│  - Visual outputs: High-res overview map & 4-panel comparison grid (RGB vs GT vs Pred)    │
+│  - Clinical export: ASAP-compliant XML annotations with smooth Polygon boundaries         │
 └───────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -308,25 +309,36 @@ python scripts/run_clustering.py --config configs/clustering_config.yaml --n_clu
 ---
 
 ### Step 5: Full Whole Slide Image (WSI) Inference & ASAP Export
-Runs tiled inference across an entire multi-gigapixel slide, resolves patch boundary overlaps via global NMS, and exports pathologist annotations:
+Runs tiled inference across entire multi-gigapixel biopsies, resolves tile boundaries via global NMS, and exports pathologist annotations.
+Supports both **Fast Screening (YOLO only)** and the **Integrated Cascade (YOLO Screening + U-Net Gated Segmentation)**:
 
 ```bash
-# Evaluate a single slide:
+# 1. Integrated Cascade Mode (YOLO Proposals + U-Net Segmentation - Recommended):
+python scripts/run_wsi_inference.py \
+    --slide glomeruli_grading/RECHERCHE-015.svs \
+    --weights runs/yolo/yolov8m_20x_baseline/weights/best.pt \
+    --unet_weights runs/unet/unet_20x_resnet34/weights/best.pt \
+    --output_dir runs/wsi_inference
+
+# 2. Process all held-out test cohort slides in Cascade Mode:
+python scripts/run_wsi_inference.py \
+    --all_test_slides \
+    --weights runs/yolo/yolov8m_20x_baseline/weights/best.pt \
+    --unet_weights runs/unet/unet_20x_resnet34/weights/best.pt \
+    --output_dir runs/wsi_inference
+
+# 3. Fast Screening Only (YOLO without U-Net):
 python scripts/run_wsi_inference.py \
     --slide glomeruli_grading/RECHERCHE-015.svs \
     --weights runs/yolo/yolov8m_20x_baseline/weights/best.pt \
     --output_dir runs/wsi_inference
-
-# Process all slides in the test cohort:
-python scripts/run_wsi_inference.py \
-    --all_test_slides \
-    --weights runs/yolo/yolov8m_20x_baseline/weights/best.pt \
-    --output_dir runs/wsi_inference
 ```
-*Outputs*:
-* `<slide_id>_predicted.xml`: Fully compliant with **ASAP** (Automated Slide Analysis Platform).
-* `<slide_id>_overview.png`: Full-slide thumbnail showing predicted boxes (green) vs ground truth (yellow).
-* `<slide_id>_metrics.json`: Slide-level True Positives, False Positives, False Negatives, Precision, Recall, and F1.
+
+*Generated Deliverables per Slide*:
+* `<slide_id>_predicted.xml`: Fully compliant with **ASAP** (Automated Slide Analysis Platform), containing precise glomerular contours (`Type="Polygon"` in Cascade mode, `Rectangle` in screening mode).
+* `<slide_id>_overview.png`: High-resolution biopsy thumbnail showing predicted boundaries (green) vs ground truth annotations (yellow).
+* `<slide_id>_comparison_grid.png`: Publication-grade 4-panel visual comparison grid (Raw Histology, Pathologist Ground Truth, Model Prediction, Direct Overlap/Error Map with local Dice and IoU).
+* `<slide_id>_metrics.json`: Slide-level performance summary (TP, FP, FN, Precision, Recall, F1, and mean Dice/IoU).
 
 ---
 
@@ -339,8 +351,9 @@ Pre-trained weights and generated artifacts are organized as follows:
 | **YOLOv8m Best Weights** | `runs/yolo/yolov8m_20x_baseline/weights/best.pt` |
 | **U-Net ResNet-34 Best Weights** | `runs/unet/unet_20x_resnet34/weights/best.pt` |
 | **Clustering Morphological Table** | `runs/clustering/unsupervised_grading_3classes/cluster_assignments.csv` |
-| **ASAP Reviewer Annotations** | `runs/wsi_inference/*_predicted.xml` |
+| **ASAP Reviewer Annotations (Polygons)** | `runs/wsi_inference/*_predicted.xml` |
 | **WSI Overview Visualizations** | `runs/wsi_inference/*_overview.png` |
+| **Qualitative Inspection Comparison Grids** | `runs/wsi_inference/*_comparison_grid.png` |
 
 ---
 

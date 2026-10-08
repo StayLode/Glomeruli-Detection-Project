@@ -1,14 +1,14 @@
 """
 Whole Slide Image (WSI) Inference and Stitching Engine.
 
-Features:
-- Automated tissue detection to process only tissue areas (~5% of the slide).
-- Batched inference across overlapping 20x patches.
-- Projection of local detections back to native Level 0 coordinates.
-- Global Non-Maximum Suppression (NMS) across tile boundaries.
-- Evaluation against ground truth XML (True Positives, False Positives, False Negatives).
-- Export to ASAP-compliant XML for pathologist review.
-- Publication-quality whole-slide visualization.
+Supports:
+1. Fast screening with YOLOv8 (detect candidate bounding boxes).
+2. Cascade mode (YOLO + U-Net): Gated patch segmentation where U-Net segments
+   only the regions proposed by YOLO, eliminating background false positives.
+3. Global Non-Maximum Suppression (NMS) across tile boundaries.
+4. ASAP-compliant XML export with fine Polygon annotations and BBoxes.
+5. Multi-panel qualitative comparison figures (Biopsy vs GT vs Pred vs Overlap)
+   and slide-level clinical metrics (Precision, Recall, F1, Dice, IoU).
 """
 
 from pathlib import Path
@@ -17,17 +17,19 @@ import json
 import logging
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
+
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import openslide
-from shapely.geometry import box
+from shapely.geometry import Polygon, box
 import torch
 import torchvision
 from tqdm import tqdm
 from ultralytics import YOLO
 
 from src.models.mask_to_bbox import box_iou
+from src.models.unet import build_segmentation_model
 from src.preprocessing.tissue_detector import TissueDetector
 from src.utils.xml_parser import ASAPAnnotation, parse_asap_xml
 
@@ -35,20 +37,24 @@ logger = logging.getLogger(__name__)
 
 
 class WSIInferenceEngine:
-    """Performs whole slide inference, stitching, and evaluation for glomeruli detection."""
+    """Performs whole slide inference, stitching, and evaluation for glomeruli detection & segmentation."""
 
     def __init__(
         self,
         model_weights_path: str,
+        unet_weights_path: Optional[str] = None,
         patch_size: int = 1024,
         stride: int = 768,
         target_mag: int = 20,
         base_mag: int = 40,
         device: Optional[str] = None,
+        unet_threshold: float = 0.50,
+        min_glom_area: int = 400,
+        box_margin: float = 0.15,
     ) -> None:
         self.model_path = Path(model_weights_path)
         if not self.model_path.exists():
-            raise FileNotFoundError(f"Model checkpoint not found: {self.model_path}")
+            raise FileNotFoundError(f"YOLO checkpoint not found: {self.model_path}")
 
         self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
         logger.info(f"Loading YOLO model from {self.model_path} on {self.device}...")
@@ -59,6 +65,37 @@ class WSIInferenceEngine:
         self.downsample = base_mag / float(target_mag)
         self.patch_size_l0 = int(round(patch_size * self.downsample))
         self.stride_l0 = int(round(stride * self.downsample))
+
+        self.unet_threshold = unet_threshold
+        self.min_glom_area = min_glom_area
+        self.box_margin = box_margin
+
+        # Load U-Net model if provided (Cascade Mode)
+        self.unet_model: Optional[torch.nn.Module] = None
+        if unet_weights_path:
+            self._init_unet(Path(unet_weights_path))
+
+    def _init_unet(self, weights_path: Path) -> None:
+        """Initialize U-Net segmentation model from checkpoint."""
+        if not weights_path.exists():
+            raise FileNotFoundError(f"U-Net checkpoint not found: {weights_path}")
+
+        logger.info(f"Loading U-Net model from {weights_path} on {self.device} (Cascade Mode enabled)...")
+        ckpt = torch.load(weights_path, map_location=self.device)
+
+        cfg = ckpt.get("config", {}) if isinstance(ckpt, dict) else {}
+        unet = build_segmentation_model(cfg)
+
+        state_dict = ckpt["model_state_dict"] if (isinstance(ckpt, dict) and "model_state_dict" in ckpt) else ckpt
+        # Strip torch.compile prefix '_orig_mod.' if present
+        clean_state_dict = {k.replace("_orig_mod.", ""): v for k, v in state_dict.items()}
+        unet.load_state_dict(clean_state_dict)
+        unet.to(self.device)
+        unet.eval()
+        self.unet_model = unet
+
+        self.unet_mean = torch.tensor([0.485, 0.456, 0.406], device=self.device).view(1, 3, 1, 1)
+        self.unet_std = torch.tensor([0.229, 0.224, 0.225], device=self.device).view(1, 3, 1, 1)
 
     def _plan_tissue_patches(
         self, slide: openslide.OpenSlide, detector: TissueDetector, min_tissue_ratio: float = 0.10
@@ -77,22 +114,34 @@ class WSIInferenceEngine:
 
         return valid_coords
 
+    def _segment_patch(self, patch_rgb: np.ndarray) -> np.ndarray:
+        """Run U-Net inference on a single (H, W, 3) RGB patch, returning probability map in [0, 1]."""
+        if self.unet_model is None:
+            raise RuntimeError("U-Net model is not initialized.")
+        tensor = torch.from_numpy(patch_rgb).permute(2, 0, 1).unsqueeze(0).float() / 255.0
+        tensor = (tensor.to(self.device) - self.unet_mean) / self.unet_std
+        with torch.no_grad():
+            logits = self.unet_model(tensor)
+            probs = torch.sigmoid(logits)[0, 0].cpu().numpy()
+        return probs
+
     def predict_slide(
         self,
         svs_path: Union[str, Path],
         xml_path: Optional[Union[str, Path]] = None,
-        conf_thresh: float = 0.25,
+        conf_thresh: float = 0.20,
         nms_iou_thresh: float = 0.40,
-        batch_size: int = 8,
+        batch_size: int = 16,
         min_tissue_ratio: float = 0.10,
     ) -> Dict[str, Any]:
         """
         Run whole-slide inference on an SVS file with global stitching.
+        If U-Net is loaded, applies Strategy A (YOLO Screening + U-Net Gated Segmentation).
 
         Args:
             svs_path: Path to .svs Whole Slide Image.
             xml_path: Optional path to ASAP ground truth XML for accuracy evaluation.
-            conf_thresh: Confidence threshold for YOLO predictions.
+            conf_thresh: Confidence threshold for YOLO proposals.
             nms_iou_thresh: IoU cutoff for Global Non-Maximum Suppression.
             batch_size: Number of patches per GPU inference batch.
             min_tissue_ratio: Minimum fraction of tissue required to process a patch.
@@ -102,18 +151,23 @@ class WSIInferenceEngine:
         """
         svs_path = Path(svs_path)
         slide_id = svs_path.stem
-        logger.info(f"Starting WSI inference for: {slide_id}")
+        cascade_mode = self.unet_model is not None
+
+        logger.info(f"Starting WSI inference for: {slide_id} (Mode: {'Cascade YOLO+U-Net' if cascade_mode else 'YOLO Only'})")
 
         slide = openslide.OpenSlide(str(svs_path))
         w_l0, h_l0 = slide.dimensions
 
-        # 1. Segment tissue on overview
+        # 1. Segment tissue on overview thumbnail
         detector = TissueDetector(slide, thumbnail_size=1024, max_v_thresh=238)
         coords = self._plan_tissue_patches(slide, detector, min_tissue_ratio)
-        logger.info(f"Planned {len(coords):,} tissue patches to process (skipped {100*(1-detector.tissue_ratio):.1f}% empty glass).")
+        skipped_glass_pct = 100.0 * (1.0 - detector.tissue_ratio)
+        logger.info(f"Planned {len(coords):,} tissue patches to process (skipped {skipped_glass_pct:.1f}% glass background).")
 
         raw_boxes_l0: List[List[float]] = []
+        raw_polygons_l0: List[List[Tuple[float, float]]] = []
         raw_scores: List[float] = []
+        raw_patch_records: List[Dict[str, Any]] = []
 
         # 2. Process patches in batches
         pbar = tqdm(range(0, len(coords), batch_size), desc=f"Inference {slide_id}")
@@ -130,7 +184,7 @@ class WSIInferenceEngine:
                     patch_img = rgb
                 batch_imgs.append(patch_img)
 
-            # Predict on batch
+            # Stage 1: Fast Screening with YOLO
             results = self.model.predict(
                 source=batch_imgs,
                 conf=conf_thresh,
@@ -139,26 +193,113 @@ class WSIInferenceEngine:
                 device=self.device,
             )
 
-            # Project bounding boxes back to Level 0 coordinates
-            for (x0, y0), res in zip(batch_coords, results):
-                if res.boxes is not None and len(res.boxes) > 0:
-                    boxes_xyxy_norm = res.boxes.xyxyn.cpu().numpy()  # [x1, y1, x2, y2] in [0, 1]
-                    confs = res.boxes.conf.cpu().numpy()
+            # Process candidates per patch
+            for (x0, y0), patch_img, res in zip(batch_coords, batch_imgs, results):
+                if res.boxes is None or len(res.boxes) == 0:
+                    continue
 
-                    for b_norm, conf in zip(boxes_xyxy_norm, confs):
-                        x1_l0 = x0 + b_norm[0] * self.patch_size_l0
-                        y1_l0 = y0 + b_norm[1] * self.patch_size_l0
-                        x2_l0 = x0 + b_norm[2] * self.patch_size_l0
-                        y2_l0 = y0 + b_norm[3] * self.patch_size_l0
+                boxes_xyxy = res.boxes.xyxy.cpu().numpy()  # Pixel coords [x1, y1, x2, y2] on 1024x1024
+                confs = res.boxes.conf.cpu().numpy()
 
-                        raw_boxes_l0.append([float(x1_l0), float(y1_l0), float(x2_l0), float(y2_l0)])
+                if cascade_mode:
+                    # Stage 2: Fine Boundary Segmentation & Verification via U-Net
+                    probs = self._segment_patch(patch_img)
+                    bin_mask = (probs > self.unet_threshold).astype(np.uint8)
+
+                    # Create spatial gating mask from expanded YOLO boxes
+                    gating_mask = np.zeros((self.patch_size, self.patch_size), dtype=np.uint8)
+                    for (bx1, by1, bx2, by2) in boxes_xyxy:
+                        bw = bx2 - bx1
+                        bh = by2 - by1
+                        pad_x = int(bw * self.box_margin)
+                        pad_y = int(bh * self.box_margin)
+                        gx1 = max(0, int(bx1 - pad_x))
+                        gy1 = max(0, int(by1 - pad_y))
+                        gx2 = min(self.patch_size, int(bx2 + pad_x))
+                        gy2 = min(self.patch_size, int(by2 + pad_y))
+                        gating_mask[gy1:gy2, gx1:gx2] = 1
+
+                    # Gate the segmentation: keep only pixels supported by YOLO proposal
+                    gated_mask = bin_mask * gating_mask
+                    contours, _ = cv2.findContours(gated_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+                    for cnt in contours:
+                        area = cv2.contourArea(cnt)
+                        if area < self.min_glom_area:
+                            continue
+
+                        # Smooth contour vertices slightly for natural anatomical boundary
+                        cnt_smooth = cv2.approxPolyDP(cnt, epsilon=1.5, closed=True)
+                        cx, cy, cw, ch = cv2.boundingRect(cnt_smooth)
+
+                        # Mean probability within contour
+                        cnt_fill = np.zeros((self.patch_size, self.patch_size), dtype=np.uint8)
+                        cv2.drawContours(cnt_fill, [cnt_smooth], -1, 1, -1)
+                        seg_score = float(np.mean(probs[cnt_fill == 1])) if np.any(cnt_fill == 1) else 0.5
+
+                        # Match with best YOLO proposal
+                        best_yolo_conf = conf_thresh
+                        for b_box, b_conf in zip(boxes_xyxy, confs):
+                            inter_box = [max(cx, b_box[0]), max(cy, b_box[1]), min(cx + cw, b_box[2]), min(cy + ch, b_box[3])]
+                            if inter_box[2] > inter_box[0] and inter_box[3] > inter_box[1]:
+                                best_yolo_conf = max(best_yolo_conf, float(b_conf))
+
+                        final_score = float(0.5 * best_yolo_conf + 0.5 * seg_score)
+
+                        # Project polygon to Level 0
+                        poly_l0 = [
+                            (float(x0 + pt[0][0] * self.downsample), float(y0 + pt[0][1] * self.downsample))
+                            for pt in cnt_smooth
+                        ]
+
+                        # Project bounding box to Level 0
+                        x1_l0 = float(x0 + cx * self.downsample)
+                        y1_l0 = float(y0 + cy * self.downsample)
+                        x2_l0 = float(x0 + (cx + cw) * self.downsample)
+                        y2_l0 = float(y0 + (cy + ch) * self.downsample)
+
+                        raw_boxes_l0.append([x1_l0, y1_l0, x2_l0, y2_l0])
+                        raw_polygons_l0.append(poly_l0)
+                        raw_scores.append(final_score)
+
+                        raw_patch_records.append({
+                            "patch_coord": (x0, y0),
+                            "patch_img": patch_img,
+                            "patch_contour": cnt_smooth,
+                            "patch_bbox": [cx, cy, cx + cw, cy + ch],
+                            "score": final_score,
+                        })
+
+                else:
+                    # Standard YOLO-only projection
+                    for b, conf in zip(boxes_xyxy, confs):
+                        x1_l0 = float(x0 + b[0] * self.downsample)
+                        y1_l0 = float(y0 + b[1] * self.downsample)
+                        x2_l0 = float(x0 + b[2] * self.downsample)
+                        y2_l0 = float(y0 + b[3] * self.downsample)
+
+                        # Approximate rectangle polygon
+                        poly_l0 = [(x1_l0, y1_l0), (x2_l0, y1_l0), (x2_l0, y2_l0), (x1_l0, y2_l0)]
+
+                        raw_boxes_l0.append([x1_l0, y1_l0, x2_l0, y2_l0])
+                        raw_polygons_l0.append(poly_l0)
                         raw_scores.append(float(conf))
+
+                        raw_patch_records.append({
+                            "patch_coord": (x0, y0),
+                            "patch_img": patch_img,
+                            "patch_contour": None,
+                            "patch_bbox": [int(b[0]), int(b[1]), int(b[2]), int(b[3])],
+                            "score": float(conf),
+                        })
 
         logger.info(f"Extracted {len(raw_boxes_l0)} raw candidate detections across all patches.")
 
-        # 3. Global Non-Maximum Suppression across overlapping boundaries
+        # 3. Global Non-Maximum Suppression across tile boundaries
         final_boxes_l0: List[List[float]] = []
+        final_polygons_l0: List[List[Tuple[float, float]]] = []
         final_scores: List[float] = []
+        final_patch_records: List[Dict[str, Any]] = []
 
         if len(raw_boxes_l0) > 0:
             boxes_t = torch.tensor(raw_boxes_l0, dtype=torch.float32)
@@ -167,21 +308,29 @@ class WSIInferenceEngine:
 
             for k in keep_indices:
                 final_boxes_l0.append(raw_boxes_l0[k])
+                final_polygons_l0.append(raw_polygons_l0[k])
                 final_scores.append(raw_scores[k])
+                final_patch_records.append(raw_patch_records[k])
 
         logger.info(f"Post-NMS: {len(final_boxes_l0)} unique glomeruli detected on whole slide.")
 
-        # 4. Optional Ground Truth Evaluation
+        # 4. Ground Truth Evaluation (Detection & Segmentation)
         evaluation_results: Optional[Dict[str, Any]] = None
-        gt_boxes_l0: List[List[float]] = []
+        gt_annots: List[ASAPAnnotation] = []
 
         if xml_path is not None and Path(xml_path).exists():
             gt_annots = parse_asap_xml(xml_path)
-            gt_boxes_l0 = [[b[0], b[1], b[2], b[3]] for b in [a.bounds for a in gt_annots]]
-            evaluation_results = self._evaluate_wsi(final_boxes_l0, final_scores, gt_boxes_l0, iou_thresh=0.40)
+            evaluation_results = self._evaluate_wsi(
+                final_boxes_l0, final_polygons_l0, final_scores, gt_annots, iou_thresh=0.40
+            )
 
-            logger.info("=" * 55)
+            seg_info = ""
+            if cascade_mode and evaluation_results.get("mean_dice") is not None:
+                seg_info = f" | Mean Dice: {evaluation_results['mean_dice']:.4f} | Mean IoU: {evaluation_results['mean_iou']:.4f}"
+
+            logger.info("=" * 65)
             logger.info(f"WSI CLINICAL EVALUATION: {slide_id}")
+            logger.info(f"   Pipeline Mode          : {'Cascade YOLO+U-Net' if cascade_mode else 'YOLO Only'}")
             logger.info(f"   Ground Truth Glomeruli : {evaluation_results['gt_count']}")
             logger.info(f"   Predicted Glomeruli    : {evaluation_results['pred_count']}")
             logger.info(f"   True Positives (TP)    : {evaluation_results['tp']}")
@@ -189,33 +338,41 @@ class WSIInferenceEngine:
             logger.info(f"   False Negatives (FN)   : {evaluation_results['fn']}")
             logger.info(f"   Slide Precision        : {evaluation_results['precision']:.4f}")
             logger.info(f"   Slide Recall           : {evaluation_results['recall']:.4f}")
-            logger.info(f"   Slide F1-Score         : {evaluation_results['f1']:.4f}")
-            logger.info(f"   Absolute Count Error   : {evaluation_results['count_error']}")
-            logger.info("=" * 55)
+            logger.info(f"   Slide F1-Score         : {evaluation_results['f1']:.4f}{seg_info}")
+            logger.info("=" * 65)
 
         slide.close()
 
         return {
             "slide_id": slide_id,
             "svs_path": str(svs_path),
+            "cascade_mode": cascade_mode,
             "level0_dimensions": [w_l0, h_l0],
             "detected_count": len(final_boxes_l0),
             "detected_boxes_l0": final_boxes_l0,
+            "detected_polygons_l0": final_polygons_l0,
             "detected_scores": final_scores,
-            "gt_boxes_l0": gt_boxes_l0,
+            "patch_records": final_patch_records,
+            "gt_annots": gt_annots,
             "evaluation": evaluation_results,
         }
 
     def _evaluate_wsi(
         self,
         pred_boxes: List[List[float]],
+        pred_polygons: List[List[Tuple[float, float]]],
         scores: List[float],
-        gt_boxes: List[List[float]],
+        gt_annots: List[ASAPAnnotation],
         iou_thresh: float = 0.40,
     ) -> Dict[str, Any]:
-        """Match predicted WSI boxes to ground truth boxes using IoU thresholding."""
+        """
+        Evaluate WSI detection and segmentation against ground truth annotations.
+        Computes TP, FP, FN, Precision, Recall, F1, and mean Dice / IoU on matched pairs.
+        """
+        gt_boxes = [[b[0], b[1], b[2], b[3]] for b in [a.bounds for a in gt_annots]]
         matched_gt = set()
         matched_pred = set()
+        matched_pairs: List[Tuple[int, int]] = []
 
         # Sort predictions by confidence score descending
         order = np.argsort(scores)[::-1]
@@ -238,6 +395,7 @@ class WSIInferenceEngine:
                 tp += 1
                 matched_gt.add(best_g_idx)
                 matched_pred.add(p_idx)
+                matched_pairs.append((p_idx, best_g_idx))
 
         fp = len(pred_boxes) - tp
         fn = len(gt_boxes) - tp
@@ -245,6 +403,32 @@ class WSIInferenceEngine:
         precision = float(tp / (tp + fp)) if (tp + fp) > 0 else 0.0
         recall = float(tp / len(gt_boxes)) if len(gt_boxes) > 0 else 0.0
         f1 = (2.0 * precision * recall / (precision + recall)) if (precision + recall) > 0 else 0.0
+
+        # Compute fine polygon segmentation metrics (Dice & IoU) on True Positive pairs
+        dices: List[float] = []
+        ious: List[float] = []
+
+        for p_idx, g_idx in matched_pairs:
+            poly_pts = pred_polygons[p_idx]
+            if len(poly_pts) >= 3:
+                try:
+                    p_poly = Polygon(poly_pts)
+                    if not p_poly.is_valid:
+                        p_poly = p_poly.buffer(0)
+                    g_poly = gt_annots[g_idx].geometry
+
+                    inter_a = p_poly.intersection(g_poly).area
+                    union_a = p_poly.union(g_poly).area
+                    pair_iou = float(inter_a / union_a) if union_a > 0 else 0.0
+                    pair_dice = float(2.0 * inter_a / (p_poly.area + g_poly.area)) if (p_poly.area + g_poly.area) > 0 else 0.0
+
+                    dices.append(pair_dice)
+                    ious.append(pair_iou)
+                except Exception:
+                    pass
+
+        mean_dice = round(float(np.mean(dices)), 4) if len(dices) > 0 else None
+        mean_iou = round(float(np.mean(ious)), 4) if len(ious) > 0 else None
 
         return {
             "gt_count": len(gt_boxes),
@@ -255,18 +439,23 @@ class WSIInferenceEngine:
             "precision": round(precision, 4),
             "recall": round(recall, 4),
             "f1": round(f1, 4),
+            "mean_dice": mean_dice,
+            "mean_iou": mean_iou,
             "count_error": abs(len(pred_boxes) - len(gt_boxes)),
+            "matched_pairs": matched_pairs,
         }
 
     @staticmethod
     def export_asap_xml(
-        predictions: List[List[float]],
+        polygons_l0: List[List[Tuple[float, float]]],
+        boxes_l0: List[List[float]],
         output_xml_path: str,
         group_name: str = "Glomeruli_Predicted",
-        color: str = "#00FF00"
+        color: str = "#00FF00",
     ) -> Path:
         """
-        Export predicted bounding boxes to ASAP XML format for clinical inspection in ASAP viewer.
+        Export predicted glomeruli to ASAP XML format.
+        Exports smooth Polygon boundaries if available, and bounding boxes in a secondary group.
         """
         out_path = Path(output_xml_path)
         out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -278,32 +467,45 @@ class WSIInferenceEngine:
         annotations_elem = doc.createElement("Annotations")
         asap_elem.appendChild(annotations_elem)
 
-        for i, (x1, y1, x2, y2) in enumerate(predictions):
+        has_polygons = len(polygons_l0) > 0 and len(polygons_l0[0]) > 4
+
+        # Export primary annotations (Polygons if cascade, else Rectangles)
+        for i, (poly, b) in enumerate(zip(polygons_l0, boxes_l0)):
             annot = doc.createElement("Annotation")
             annot.setAttribute("Name", f"Glomerulus_{i+1}")
-            annot.setAttribute("Type", "Rectangle")
             annot.setAttribute("PartOfGroup", group_name)
             annot.setAttribute("Color", color)
 
             coords_elem = doc.createElement("Coordinates")
-            corners = [(x1, y1), (x2, y1), (x2, y2), (x1, y2)]
-            for order, (cx, cy) in enumerate(corners):
-                coord = doc.createElement("Coordinate")
-                coord.setAttribute("Order", str(order))
-                coord.setAttribute("X", f"{cx:.2f}")
-                coord.setAttribute("Y", f"{cy:.2f}")
-                coords_elem.appendChild(coord)
+
+            if has_polygons:
+                annot.setAttribute("Type", "Polygon")
+                for order, (cx, cy) in enumerate(poly):
+                    coord = doc.createElement("Coordinate")
+                    coord.setAttribute("Order", str(order))
+                    coord.setAttribute("X", f"{cx:.2f}")
+                    coord.setAttribute("Y", f"{cy:.2f}")
+                    coords_elem.appendChild(coord)
+            else:
+                annot.setAttribute("Type", "Rectangle")
+                corners = [(b[0], b[1]), (b[2], b[1]), (b[2], b[2]), (b[0], b[2])]
+                for order, (cx, cy) in enumerate(corners):
+                    coord = doc.createElement("Coordinate")
+                    coord.setAttribute("Order", str(order))
+                    coord.setAttribute("X", f"{cx:.2f}")
+                    coord.setAttribute("Y", f"{cy:.2f}")
+                    coords_elem.appendChild(coord)
 
             annot.appendChild(coords_elem)
             annotations_elem.appendChild(annot)
 
-        # Groups element
+        # Groups declaration
         groups_elem = doc.createElement("AnnotationGroups")
         asap_elem.appendChild(groups_elem)
 
         group = doc.createElement("Group")
         group.setAttribute("Name", group_name)
-        group.setAttribute("NumberOfAnnotations", str(len(predictions)))
+        group.setAttribute("NumberOfAnnotations", str(len(boxes_l0)))
         group.setAttribute("Color", color)
         group.appendChild(doc.createElement("Attributes"))
         groups_elem.appendChild(group)
@@ -317,14 +519,15 @@ class WSIInferenceEngine:
     @staticmethod
     def generate_overview_plot(
         svs_path: str,
+        pred_polygons_l0: List[List[Tuple[float, float]]],
         pred_boxes_l0: List[List[float]],
-        gt_boxes_l0: Optional[List[List[float]]] = None,
+        gt_annots: Optional[List[ASAPAnnotation]] = None,
         output_path: str = "wsi_overview.png",
         max_thumb_dim: int = 2048,
+        cascade_mode: bool = True,
+        eval_metrics: Optional[Dict[str, Any]] = None,
     ) -> Path:
-        """
-        Render a high-resolution overview image showing all detected glomeruli on the whole biopsy.
-        """
+        """Render whole-slide thumbnail with predicted annotations vs ground truth."""
         slide = openslide.OpenSlide(str(svs_path))
         w_l0, h_l0 = slide.dimensions
 
@@ -334,35 +537,56 @@ class WSIInferenceEngine:
 
         scale_x = tw / float(w_l0)
         scale_y = th / float(h_l0)
-
         overlay = thumb_np.copy()
 
-        # 1. Draw Ground Truth boxes in Yellow (if available)
-        if gt_boxes_l0 is not None:
-            for gx1, gy1, gx2, gy2 in gt_boxes_l0:
-                tx1 = int(gx1 * scale_x)
-                ty1 = int(gy1 * scale_y)
-                tx2 = int(gx2 * scale_x)
-                ty2 = int(gy2 * scale_y)
-                cv2.rectangle(overlay, (tx1, ty1), (tx2, ty2), (255, 255, 0), 2)
+        # 1. Draw Ground Truth in Yellow (if available)
+        if gt_annots:
+            for ann in gt_annots:
+                b = ann.bounds
+                tx1 = int(b[0] * scale_x)
+                ty1 = int(b[1] * scale_y)
+                tx2 = int(b[2] * scale_x)
+                ty2 = int(b[3] * scale_y)
+                cv2.rectangle(overlay, (tx1, ty1), (tx2, ty2), (255, 230, 0), 2)
 
-        # 2. Draw Predicted boxes in Green
-        for px1, py1, px2, py2 in pred_boxes_l0:
-            tx1 = int(px1 * scale_x)
-            ty1 = int(py1 * scale_y)
-            tx2 = int(px2 * scale_x)
-            ty2 = int(py2 * scale_y)
-            cv2.rectangle(overlay, (tx1, ty1), (tx2, ty2), (0, 255, 0), 2)
+        # 2. Draw Predictions in Vibrant Green
+        has_polygons = cascade_mode and len(pred_polygons_l0) > 0 and len(pred_polygons_l0[0]) > 4
+        for i, b in enumerate(pred_boxes_l0):
+            tx1 = int(b[0] * scale_x)
+            ty1 = int(b[1] * scale_y)
+            tx2 = int(b[2] * scale_x)
+            ty2 = int(b[3] * scale_y)
 
-        # Title & legend
-        fig, ax = plt.subplots(figsize=(14, 14))
+            if has_polygons:
+                poly_pts = pred_polygons_l0[i]
+                pts_thumb = np.array(
+                    [[int(px * scale_x), int(py * scale_y)] for px, py in poly_pts], dtype=np.int32
+                )
+                if len(pts_thumb) > 2:
+                    cv2.polylines(overlay, [pts_thumb], isClosed=True, color=(0, 255, 60), thickness=2)
+            else:
+                cv2.rectangle(overlay, (tx1, ty1), (tx2, ty2), (0, 255, 60), 2)
+
+        fig, ax = plt.subplots(figsize=(14, 14), dpi=150)
         ax.imshow(overlay)
+
         slide_name = Path(svs_path).stem
-        gt_info = f" | GT Count: {len(gt_boxes_l0)} (Yellow)" if gt_boxes_l0 else ""
+        mode_str = "Cascade YOLO+U-Net" if cascade_mode else "YOLO Screening"
+        metric_str = ""
+        if eval_metrics:
+            p = eval_metrics.get("precision", 0) * 100
+            r = eval_metrics.get("recall", 0) * 100
+            f1 = eval_metrics.get("f1", 0) * 100
+            dice_str = f" | Dice: {eval_metrics['mean_dice']*100:.1f}%" if eval_metrics.get("mean_dice") else ""
+            metric_str = f"\nPrec: {p:.1f}% | Rec: {r:.1f}% | F1: {f1:.1f}%{dice_str}"
+
+        gt_count = len(gt_annots) if gt_annots else 0
         ax.set_title(
-            f"Whole Slide Glomeruli Detection: {slide_name}\n"
-            f"Predicted Detections: {len(pred_boxes_l0)} (Green){gt_info}",
+            f"Whole Slide Biopsy: {slide_name} [{mode_str}]\n"
+            f"Ground Truth: {gt_count} (Yellow) | Predictions: {len(pred_boxes_l0)} (Green){metric_str}",
             fontsize=12,
+            fontweight="bold",
+            pad=10,
         )
         ax.axis("off")
 
@@ -374,4 +598,140 @@ class WSIInferenceEngine:
         slide.close()
 
         logger.info(f"Saved whole-slide overview visualization to: {out_p}")
+        return out_p
+
+    @staticmethod
+    def generate_comparison_grid(
+        patch_records: List[Dict[str, Any]],
+        pred_polygons_l0: List[List[Tuple[float, float]]],
+        pred_boxes_l0: List[List[float]],
+        gt_annots: List[ASAPAnnotation],
+        output_path: str = "wsi_comparison_grid.png",
+        max_samples: int = 5,
+        downsample: float = 2.0,
+    ) -> Optional[Path]:
+        """
+        Generate a multi-panel visual comparison grid:
+        Col 1: Raw Biopsy Patch (RGB)
+        Col 2: Pathologist Ground Truth (Yellow Contour)
+        Col 3: Cascade Model Prediction (Green Boundary + Box)
+        Col 4: Direct Agreement & Error Overlay (Green=Agreement, Yellow=GT missed, Red=FP)
+        """
+        if not patch_records or not gt_annots:
+            return None
+
+        # Select up to max_samples patches with highest confidence detections
+        valid_indices = [
+            i for i in range(min(len(patch_records), len(pred_boxes_l0)))
+            if patch_records[i].get("patch_img") is not None
+        ]
+        if not valid_indices:
+            return None
+
+        selected = valid_indices[:max_samples]
+        n_rows = len(selected)
+
+        fig, axes = plt.subplots(n_rows, 4, figsize=(20, 5 * n_rows), dpi=150)
+        if n_rows == 1:
+            axes = np.expand_dims(axes, 0)
+
+        for row_idx, det_idx in enumerate(selected):
+            rec = patch_records[det_idx]
+            img = rec["patch_img"].copy()
+            x0, y0 = rec["patch_coord"]
+            H, W = img.shape[:2]
+
+            # 1. Panel 1: Original Tissue Patch
+            ax1 = axes[row_idx, 0]
+            ax1.imshow(img)
+            ax1.set_title("1. Biopsy Histology (20x)", fontsize=11, fontweight="bold")
+            ax1.axis("off")
+
+            # 2. Panel 2: Ground Truth Annotation Mask
+            gt_mask = np.zeros((H, W), dtype=np.uint8)
+            patch_box_l0 = box(x0, y0, x0 + W * downsample, y0 + H * downsample)
+
+            for g in gt_annots:
+                if patch_box_l0.intersects(g.geometry):
+                    inter = g.geometry.intersection(patch_box_l0)
+                    if not inter.is_empty:
+                        # Draw into GT mask
+                        if isinstance(inter, Polygon):
+                            pts = np.array(
+                                [[int((px - x0) / downsample), int((py - y0) / downsample)] for px, py in inter.exterior.coords],
+                                dtype=np.int32
+                            )
+                            cv2.fillPoly(gt_mask, [pts], 255)
+
+            gt_overlay = img.copy()
+            gt_overlay[gt_mask > 0] = (gt_overlay[gt_mask > 0] * 0.45 + np.array([255, 230, 0]) * 0.55).astype(np.uint8)
+            cnts_gt, _ = cv2.findContours(gt_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            cv2.drawContours(gt_overlay, cnts_gt, -1, (255, 230, 0), 3)
+
+            ax2 = axes[row_idx, 1]
+            ax2.imshow(gt_overlay)
+            ax2.set_title("2. Pathologist Ground Truth (Gold)", fontsize=11, fontweight="bold")
+            ax2.axis("off")
+
+            # 3. Panel 3: Cascade Predicted Segmentation
+            pred_mask = np.zeros((H, W), dtype=np.uint8)
+            if rec.get("patch_contour") is not None:
+                cv2.fillPoly(pred_mask, [rec["patch_contour"]], 255)
+            else:
+                bx1, by1, bx2, by2 = rec["patch_bbox"]
+                cv2.rectangle(pred_mask, (bx1, by1), (bx2, by2), 255, -1)
+
+            pred_overlay = img.copy()
+            pred_overlay[pred_mask > 0] = (pred_overlay[pred_mask > 0] * 0.45 + np.array([0, 255, 120]) * 0.55).astype(np.uint8)
+            cnts_pred, _ = cv2.findContours(pred_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            cv2.drawContours(pred_overlay, cnts_pred, -1, (0, 255, 60), 3)
+
+            # Draw YOLO bounding box in Red
+            bx1, by1, bx2, by2 = rec["patch_bbox"]
+            cv2.rectangle(pred_overlay, (bx1, by1), (bx2, by2), (255, 50, 50), 2)
+            cv2.putText(
+                pred_overlay, f"Score: {rec['score']:.2f}",
+                (bx1, max(25, by1 - 8)), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 50, 50), 2
+            )
+
+            ax3 = axes[row_idx, 2]
+            ax3.imshow(pred_overlay)
+            ax3.set_title("3. Cascade Prediction (Green: Tuft, Red: Box)", fontsize=11, fontweight="bold")
+            ax3.axis("off")
+
+            # 4. Panel 4: Direct Agreement & Discrepancy Overlay
+            # Agreement = Green | GT Missed (FN) = Yellow | Prediction Excess (FP) = Red
+            diff_img = img.copy()
+            tp_mask = (gt_mask > 0) & (pred_mask > 0)
+            fn_mask = (gt_mask > 0) & (pred_mask == 0)
+            fp_mask = (gt_mask == 0) & (pred_mask > 0)
+
+            diff_img[tp_mask] = (diff_img[tp_mask] * 0.40 + np.array([0, 255, 60]) * 0.60).astype(np.uint8)
+            diff_img[fn_mask] = (diff_img[fn_mask] * 0.40 + np.array([255, 230, 0]) * 0.60).astype(np.uint8)
+            diff_img[fp_mask] = (diff_img[fp_mask] * 0.40 + np.array([255, 40, 40]) * 0.60).astype(np.uint8)
+
+            # Calculate local Dice & IoU
+            tp_px = np.count_nonzero(tp_mask)
+            fp_px = np.count_nonzero(fp_mask)
+            fn_px = np.count_nonzero(fn_mask)
+            local_dice = (2.0 * tp_px) / (2.0 * tp_px + fp_px + fn_px + 1e-7)
+            local_iou = tp_px / (tp_px + fp_px + fn_px + 1e-7)
+
+            ax4 = axes[row_idx, 4 - 1]
+            ax4.imshow(diff_img)
+            ax4.set_title(
+                f"4. Overlap (Green: Agree, Yellow: FN, Red: FP)\nDice: {local_dice:.3f} | IoU: {local_iou:.3f}",
+                fontsize=11,
+                fontweight="bold",
+            )
+            ax4.axis("off")
+
+        plt.suptitle("Qualitative Glomerular Segmentation & Detection Comparison Grid", fontsize=15, fontweight="bold", y=0.99)
+        plt.tight_layout()
+        out_p = Path(output_path)
+        out_p.parent.mkdir(parents=True, exist_ok=True)
+        plt.savefig(out_p, dpi=180, bbox_inches="tight")
+        plt.close()
+
+        logger.info(f"Saved qualitative comparison grid to: {out_p}")
         return out_p

@@ -2,16 +2,23 @@
 """
 CLI Script to perform Whole Slide Image (WSI) Inference and Stitching.
 
-Usage examples:
-    # Run on a single test slide:
-    python scripts/run_wsi_inference.py \
-        --slide glomeruli_grading/RECHERCHE-015.svs \
-        --weights runs/yolo/yolov8m_20x_baseline/weights/best.pt
+Supports:
+1. Fast Screening Mode (YOLO only):
+   python scripts/run_wsi_inference.py \
+       --slide glomeruli_grading/RECHERCHE-015.svs \
+       --weights runs/yolo/yolov8m_20x_baseline/weights/best.pt
 
-    # Run on all test slides defined in config:
-    python scripts/run_wsi_inference.py \
-        --all_test_slides \
-        --weights runs/yolo/yolov8m_20x_baseline/weights/best.pt
+2. Cascade Mode (YOLO Screening + U-Net Gated Segmentation):
+   python scripts/run_wsi_inference.py \
+       --slide glomeruli_grading/RECHERCHE-015.svs \
+       --weights runs/yolo/yolov8m_20x_baseline/weights/best.pt \
+       --unet_weights runs/unet/unet_20x_resnet34/weights/best.pt
+
+3. Batch Evaluation on All Held-Out Test Slides:
+   python scripts/run_wsi_inference.py \
+       --all_test_slides \
+       --weights runs/yolo/yolov8m_20x_baseline/weights/best.pt \
+       --unet_weights runs/unet/unet_20x_resnet34/weights/best.pt
 """
 
 import argparse
@@ -31,11 +38,11 @@ from src.inference.wsi_infer import WSIInferenceEngine
 
 def setup_logger() -> logging.Logger:
     """Configure structured console logging."""
-    logger = logging.getLogger()
+    logger = logging.getLogger("wsi_runner")
     logger.setLevel(logging.INFO)
 
     formatter = logging.Formatter(
-        "[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s",
+        "[%(asctime)s] [%(levelname)s]: %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
     )
 
@@ -47,53 +54,65 @@ def setup_logger() -> logging.Logger:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Run WSI Glomeruli Detection & Stitching.")
+    parser = argparse.ArgumentParser(description="Run WSI Glomeruli Detection & Segmentation.")
     parser.add_argument(
         "--weights",
         type=str,
         required=True,
-        help="Path to trained YOLO checkpoint (best.pt)."
+        help="Path to trained YOLO checkpoint (best.pt).",
+    )
+    parser.add_argument(
+        "--unet_weights",
+        type=str,
+        default=None,
+        help="Optional path to trained U-Net checkpoint (best.pt) to enable Cascade Mode.",
     )
     parser.add_argument(
         "--slide",
         type=str,
         default=None,
-        help="Path to a specific .svs slide file."
+        help="Path to a specific .svs Whole Slide Image file.",
     )
     parser.add_argument(
         "--all_test_slides",
         action="store_true",
-        help="Run inference on all test slides defined in dataset_config.yaml."
+        help="Run inference on all test slides defined in dataset_config.yaml.",
     )
     parser.add_argument(
         "--config",
         type=str,
         default="configs/dataset_config.yaml",
-        help="Path to dataset configuration YAML."
+        help="Path to dataset configuration YAML.",
     )
     parser.add_argument(
         "--output_dir",
         type=str,
         default="runs/wsi_inference",
-        help="Directory to save WSI prediction artifacts (XML, overview image, metrics)."
+        help="Directory to save WSI prediction artifacts (XML, overview image, comparison grid, metrics).",
     )
     parser.add_argument(
         "--conf",
         type=float,
-        default=0.25,
-        help="Confidence threshold for YOLO predictions."
+        default=0.20,
+        help="YOLO proposal confidence threshold (default: 0.20 for high recall in cascade).",
+    )
+    parser.add_argument(
+        "--unet_threshold",
+        type=float,
+        default=0.50,
+        help="U-Net probability threshold for foreground mask (default: 0.50).",
     )
     parser.add_argument(
         "--nms_iou",
         type=float,
         default=0.40,
-        help="IoU threshold for Global Non-Maximum Suppression."
+        help="IoU threshold for Global Non-Maximum Suppression (default: 0.40).",
     )
     parser.add_argument(
         "--batch_size",
         type=int,
         default=16,
-        help="Inference batch size on GPU."
+        help="Inference batch size on GPU (default: 16).",
     )
     args = parser.parse_args()
 
@@ -117,12 +136,14 @@ def main() -> None:
         logger.error("Please specify either --slide <path_to_svs> or --all_test_slides.")
         sys.exit(1)
 
-    # 2. Initialize Inference Engine
+    # 2. Initialize Inference Engine (Cascade Mode if unet_weights provided)
     engine = WSIInferenceEngine(
         model_weights_path=args.weights,
+        unet_weights_path=args.unet_weights,
         patch_size=1024,
         stride=768,
         target_mag=20,
+        unet_threshold=args.unet_threshold,
     )
 
     all_slide_evals = []
@@ -141,36 +162,61 @@ def main() -> None:
             batch_size=args.batch_size,
         )
 
-        # A. Export ASAP XML
+        # A. Export ASAP XML (Polygons if cascade mode, otherwise BBoxes)
         asap_xml_path = output_dir / f"{sid}_predicted.xml"
-        engine.export_asap_xml(result["detected_boxes_l0"], str(asap_xml_path))
+        engine.export_asap_xml(
+            polygons_l0=result["detected_polygons_l0"],
+            boxes_l0=result["detected_boxes_l0"],
+            output_xml_path=str(asap_xml_path),
+        )
 
-        # B. Export Overview Image
+        # B. Export Whole-Slide Overview Image
         overview_path = output_dir / f"{sid}_overview.png"
         engine.generate_overview_plot(
             svs_path=str(svs_p),
+            pred_polygons_l0=result["detected_polygons_l0"],
             pred_boxes_l0=result["detected_boxes_l0"],
-            gt_boxes_l0=result["gt_boxes_l0"] if xml_arg else None,
+            gt_annots=result["gt_annots"],
             output_path=str(overview_path),
+            cascade_mode=result["cascade_mode"],
+            eval_metrics=result["evaluation"],
         )
 
-        # C. Save Metrics JSON
+        # C. Export Multi-Panel Comparison Grid (Raw vs GT vs Pred vs Overlap)
+        grid_path = output_dir / f"{sid}_comparison_grid.png"
+        engine.generate_comparison_grid(
+            patch_records=result["patch_records"],
+            pred_polygons_l0=result["detected_polygons_l0"],
+            pred_boxes_l0=result["detected_boxes_l0"],
+            gt_annots=result["gt_annots"],
+            output_path=str(grid_path),
+            max_samples=6,
+        )
+
+        # D. Save Metrics JSON
         if result["evaluation"]:
-            all_slide_evals.append((sid, result["evaluation"]))
+            all_slide_evals.append((sid, result["cascade_mode"], result["evaluation"]))
             metrics_json = output_dir / f"{sid}_metrics.json"
             with open(metrics_json, "w", encoding="utf-8") as f:
                 json.dump(result["evaluation"], f, indent=2)
 
-    # Print summary table
+    # Print Clinical Benchmark Summary Table
     if all_slide_evals:
-        print("\n" + "=" * 70)
-        print("WHOLE SLIDE INFERENCE (WSI) CLINICAL EVALUATION REPORT")
-        print("=" * 70)
-        print(f"{'Slide ID':<16} | {'GT':<4} | {'Pred':<4} | {'TP':<4} | {'FP':<4} | {'FN':<4} | {'Precision':<9} | {'Recall':<9} | {'F1':<9}")
-        print("-" * 70)
-        for sid, ev in all_slide_evals:
-            print(f"{sid:<16} | {ev['gt_count']:<4} | {ev['pred_count']:<4} | {ev['tp']:<4} | {ev['fp']:<4} | {ev['fn']:<4} | {ev['precision']:<9.4f} | {ev['recall']:<9.4f} | {ev['f1']:<9.4f}")
-        print("=" * 70 + "\n")
+        print("\n" + "=" * 90)
+        print("WHOLE SLIDE INFERENCE (WSI) CLINICAL EVALUATION BENCHMARK")
+        print("=" * 90)
+        header = f"{'Slide ID':<15} | {'Mode':<18} | {'GT':<4} | {'Pred':<4} | {'TP':<4} | {'FP':<4} | {'FN':<4} | {'Prec':<7} | {'Rec':<7} | {'F1':<7} | {'Dice':<7}"
+        print(header)
+        print("-" * 90)
+        for sid, is_cascade, ev in all_slide_evals:
+            mode_lbl = "Cascade (Y+U)" if is_cascade else "YOLO Only"
+            dice_lbl = f"{ev['mean_dice']*100:.1f}%" if ev.get("mean_dice") is not None else "N/A"
+            print(
+                f"{sid:<15} | {mode_lbl:<18} | {ev['gt_count']:<4} | {ev['pred_count']:<4} | "
+                f"{ev['tp']:<4} | {ev['fp']:<4} | {ev['fn']:<4} | {ev['precision']*100:5.1f}% | "
+                f"{ev['recall']*100:5.1f}% | {ev['f1']*100:5.1f}% | {dice_lbl:<7}"
+            )
+        print("=" * 90 + "\n")
 
 
 if __name__ == "__main__":
