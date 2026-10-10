@@ -93,20 +93,26 @@ def main() -> None:
     parser.add_argument(
         "--conf",
         type=float,
-        default=0.20,
-        help="YOLO proposal confidence threshold (default: 0.20 for high recall in cascade).",
+        default=0.15,
+        help="YOLO proposal confidence threshold (default: 0.15 for high screening recall).",
     )
     parser.add_argument(
         "--unet_threshold",
         type=float,
-        default=0.50,
-        help="U-Net probability threshold for foreground mask (default: 0.50).",
+        default=0.45,
+        help="U-Net probability threshold for foreground mask (default: 0.45).",
+    )
+    parser.add_argument(
+        "--min_glom_area",
+        type=int,
+        default=100,
+        help="Minimum pixel area for valid glomerular tuft segmentation (default: 100).",
     )
     parser.add_argument(
         "--nms_iou",
         type=float,
-        default=0.40,
-        help="IoU threshold for Global Non-Maximum Suppression (default: 0.40).",
+        default=0.35,
+        help="IoU threshold for Global Non-Maximum Suppression (default: 0.35).",
     )
     parser.add_argument(
         "--batch_size",
@@ -144,6 +150,7 @@ def main() -> None:
         stride=768,
         target_mag=20,
         unet_threshold=args.unet_threshold,
+        min_glom_area=args.min_glom_area,
     )
 
     all_slide_evals = []
@@ -197,8 +204,16 @@ def main() -> None:
         if result["evaluation"]:
             all_slide_evals.append((sid, result["cascade_mode"], result["evaluation"]))
             metrics_json = output_dir / f"{sid}_metrics.json"
+
+            def _to_json_compat(obj):
+                if hasattr(obj, "item"):
+                    return obj.item()
+                if isinstance(obj, (tuple, set)):
+                    return list(obj)
+                return str(obj)
+
             with open(metrics_json, "w", encoding="utf-8") as f:
-                json.dump(result["evaluation"], f, indent=2)
+                json.dump(result["evaluation"], f, indent=2, default=_to_json_compat)
 
     # Print Clinical Benchmark Summary Table
     if all_slide_evals:

@@ -87,7 +87,7 @@ This repository provides a modular, reproducible, end-to-end deep learning pipel
 │ STAGE 4: Full WSI Stitching & Inference (run_wsi_inference.py)                            │
 │  - Mode 1: Fast whole-slide screening via YOLOv8m                                         │
 │  - Mode 2 (Cascade): YOLO Proposals + U-Net Gated Segmentation (suppresses false alarms)   │
-│  - Projection back to native Level 0 coordinates & Global NMS across patch boundaries     │
+│  - Native Level 0 projection & Global NMS (IoU + IoS) across patch boundaries             │
 │  - Slide-level evaluation against ground truth XML (Detection F1 + Polygon Dice/IoU)      │
 │  - Visual outputs: High-res overview map & 4-panel comparison grid (RGB vs GT vs Pred)    │
 │  - Clinical export: ASAP-compliant XML annotations with smooth Polygon boundaries         │
@@ -122,7 +122,7 @@ Splits are strictly established at the **patient / slide level** rather than ran
 * **Target Magnification**: 20x (downsampled from native 40x, $\approx 0.5038\ \mu\text{m/px}$).
 * **Patch Size**: $1024 \times 1024$ pixels ($\approx 516 \times 516\ \mu\text{m}$ tissue field of view).
 * **Stride**: $768$ pixels (25% boundary overlap to prevent truncating glomeruli).
-* **Tissue Filter**: Discards patches with less than 15% tissue content.
+* **Tissue Filter**: Discards patches with less than 15% tissue content during dataset preparation (10% during whole-slide inference to preserve marginal subcapsular cortex).
 * **Negative Ratio**: Subsampled to 1.0 (equal number of negative and positive patches per slide).
 
 ---
@@ -164,6 +164,17 @@ All models were evaluated on the held-out test cohort (`RECHERCHE-015` and `RECH
 
 *(Alternative 6-class grading configuration is also available in `configs/clustering_config.yaml` matching classes A through F of the reference literature).*
 
+### 4. Stage (iv) — Whole Slide Biopsy Evaluation Benchmark (Cascade Mode)
+Direct whole-slide inference evaluation on the held-out test patient cohort (`RECHERCHE-015` and `RECHERCHE-017`):
+
+| Slide ID | Mode | Ground Truth | Predicted | True Positives | False Positives | False Negatives | Precision | Recall | F1-Score | Tuft Dice |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| `RECHERCHE-015` | Cascade (YOLO + U-Net) | 27 | 41 | 27 | 14 | 0 | 65.85% | 100.00% | 79.41% | 86.39% |
+| `RECHERCHE-017` | Cascade (YOLO + U-Net) | 46 | 68 | 38 | 30 | 8 | 55.88% | 82.61% | 66.67% | 84.16% |
+| **Cohort Combined** | **Cascade** | **73** | **109** | **65** | **44** | **8** | **59.63%** | **89.04%** | **71.43%** | **85.28%** |
+
+*Note: High whole-slide recall (~89%) guarantees minimal glomeruli missed across entire gigapixel biopsies, while U-Net segmentation delivers high boundary fidelity (85.3% Mean Tuft Dice on True Positives).*
+
 ---
 
 ## Repository Structure
@@ -185,16 +196,16 @@ Glomeruli-Detection-Project/
 ├── glomeruli_grading/            # Raw clinical WSIs (.svs) and annotations (.xml)
 ├── requirements.txt              # Complete Python dependency list
 ├── runs/                         # Model checkpoints, evaluation logs, and visual outputs
-│   ├── detect/runs/yolo/         # Trained YOLO weights (best.pt) and predictions
+│   ├── yolo/                     # Trained YOLO checkpoints (best.pt) and test predictions
 │   ├── unet/                     # Trained U-Net checkpoints (best.pt) and test grids
 │   ├── clustering/               # Manifold scatter plots, elbow curves, galleries
 │   └── wsi_inference/            # Full-slide predicted XMLs, metrics, and overview maps
 ├── scripts/                      # Independent CLI execution entrypoints
 │   ├── prepare_dataset.py        # Step 1: Preprocessing & dual dataset generation
-│   ├── train_yolo.py             # Step 2A: YOLO training & native evaluation
-│   ├── train_unet.py             # Step 2B: U-Net training & native evaluation
-│   ├── run_clustering.py         # Step 3: Unsupervised feature extraction & clustering
-│   └── run_wsi_inference.py      # Step 4: Full slide inference and ASAP XML export
+│   ├── train_yolo.py             # Step 2: YOLO training & native evaluation
+│   ├── train_unet.py             # Step 3: U-Net training & native evaluation
+│   ├── run_clustering.py         # Step 4: Unsupervised feature extraction & clustering
+│   └── run_wsi_inference.py      # Step 5: Full slide inference and ASAP XML export
 └── src/                          # Reusable core modules
     ├── utils/                    # XML parser for ASAP annotations
     ├── preprocessing/            # TissueDetector and PatchExtractor
@@ -309,7 +320,7 @@ python scripts/run_clustering.py --config configs/clustering_config.yaml --n_clu
 ---
 
 ### Step 5: Full Whole Slide Image (WSI) Inference & ASAP Export
-Runs tiled inference across entire multi-gigapixel biopsies, resolves tile boundaries via global NMS, and exports pathologist annotations.
+Runs tiled inference across entire multi-gigapixel biopsies, resolves tile boundary seams via Global NMS (IoU threshold 0.35 + IoS containment $\ge 0.45$), and exports pathologist annotations.
 Supports both **Fast Screening (YOLO only)** and the **Integrated Cascade (YOLO Screening + U-Net Gated Segmentation)**:
 
 ```bash

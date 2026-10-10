@@ -48,8 +48,8 @@ class WSIInferenceEngine:
         target_mag: int = 20,
         base_mag: int = 40,
         device: Optional[str] = None,
-        unet_threshold: float = 0.50,
-        min_glom_area: int = 400,
+        unet_threshold: float = 0.45,
+        min_glom_area: int = 100,
         box_margin: float = 0.15,
     ) -> None:
         self.model_path = Path(model_weights_path)
@@ -185,8 +185,12 @@ class WSIInferenceEngine:
                 batch_imgs.append(patch_img)
 
             # Stage 1: Fast Screening with YOLO
+            # Ultralytics expects numpy arrays to be in BGR format (like cv2.imread)
+            # because its preprocessor executes im.flip(1) (BGR -> RGB).
+            # Passing BGR arrays guarantees YOLO receives authentic RGB histological color channels.
+            batch_imgs_bgr = [cv2.cvtColor(img, cv2.COLOR_RGB2BGR) for img in batch_imgs]
             results = self.model.predict(
-                source=batch_imgs,
+                source=batch_imgs_bgr,
                 conf=conf_thresh,
                 imgsz=self.patch_size,
                 verbose=False,
@@ -206,57 +210,60 @@ class WSIInferenceEngine:
                     probs = self._segment_patch(patch_img)
                     bin_mask = (probs > self.unet_threshold).astype(np.uint8)
 
-                    # Create spatial gating mask from expanded YOLO boxes
-                    gating_mask = np.zeros((self.patch_size, self.patch_size), dtype=np.uint8)
-                    for (bx1, by1, bx2, by2) in boxes_xyxy:
+                    for b, conf in zip(boxes_xyxy, confs):
+                        bx1, by1, bx2, by2 = int(round(b[0])), int(round(b[1])), int(round(b[2])), int(round(b[3]))
                         bw = bx2 - bx1
                         bh = by2 - by1
+
+                        # Expand box with margin to inspect surrounding context / Bowman capsule
                         pad_x = int(bw * self.box_margin)
                         pad_y = int(bh * self.box_margin)
-                        gx1 = max(0, int(bx1 - pad_x))
-                        gy1 = max(0, int(by1 - pad_y))
-                        gx2 = min(self.patch_size, int(bx2 + pad_x))
-                        gy2 = min(self.patch_size, int(by2 + pad_y))
-                        gating_mask[gy1:gy2, gx1:gx2] = 1
+                        gx1 = max(0, bx1 - pad_x)
+                        gy1 = max(0, by1 - pad_y)
+                        gx2 = min(self.patch_size, bx2 + pad_x)
+                        gy2 = min(self.patch_size, by2 + pad_y)
 
-                    # Gate the segmentation: keep only pixels supported by YOLO proposal
-                    gated_mask = bin_mask * gating_mask
-                    contours, _ = cv2.findContours(gated_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                        roi_mask = bin_mask[gy1:gy2, gx1:gx2]
+                        roi_probs = probs[gy1:gy2, gx1:gx2]
+                        seg_pixels = int(np.count_nonzero(roi_mask))
+                        mean_prob = float(np.mean(roi_probs[roi_mask == 1])) if seg_pixels > 0 else float(np.mean(roi_probs))
 
-                    for cnt in contours:
-                        area = cv2.contourArea(cnt)
-                        if area < self.min_glom_area:
+                        # Verification criteria:
+                        # Reject obvious false alarms where U-Net sees no glomerular tissue whatsoever,
+                        # but preserve sclerotic/atrophic glomeruli where YOLO has reasonable confidence.
+                        is_background = (seg_pixels < self.min_glom_area and mean_prob < 0.25 and float(conf) < 0.40)
+                        if is_background:
                             continue
 
-                        # Smooth contour vertices slightly for natural anatomical boundary
-                        cnt_smooth = cv2.approxPolyDP(cnt, epsilon=1.5, closed=True)
-                        cx, cy, cw, ch = cv2.boundingRect(cnt_smooth)
+                        # Extract contour inside ROI
+                        roi_contours, _ = cv2.findContours(roi_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                        if roi_contours:
+                            largest_cnt = max(roi_contours, key=cv2.contourArea)
+                            cnt_smooth = cv2.approxPolyDP(largest_cnt, epsilon=1.5, closed=True)
+                            cnt_patch = cnt_smooth.copy()
+                            cnt_patch[:, 0, 0] += gx1
+                            cnt_patch[:, 0, 1] += gy1
 
-                        # Mean probability within contour
-                        cnt_fill = np.zeros((self.patch_size, self.patch_size), dtype=np.uint8)
-                        cv2.drawContours(cnt_fill, [cnt_smooth], -1, 1, -1)
-                        seg_score = float(np.mean(probs[cnt_fill == 1])) if np.any(cnt_fill == 1) else 0.5
+                            poly_l0 = [
+                                (float(x0 + pt[0][0] * self.downsample), float(y0 + pt[0][1] * self.downsample))
+                                for pt in cnt_patch
+                            ]
+                        else:
+                            poly_l0 = [
+                                (float(x0 + bx1 * self.downsample), float(y0 + by1 * self.downsample)),
+                                (float(x0 + bx2 * self.downsample), float(y0 + by1 * self.downsample)),
+                                (float(x0 + bx2 * self.downsample), float(y0 + by2 * self.downsample)),
+                                (float(x0 + bx1 * self.downsample), float(y0 + by2 * self.downsample)),
+                            ]
+                            cnt_patch = None
 
-                        # Match with best YOLO proposal
-                        best_yolo_conf = conf_thresh
-                        for b_box, b_conf in zip(boxes_xyxy, confs):
-                            inter_box = [max(cx, b_box[0]), max(cy, b_box[1]), min(cx + cw, b_box[2]), min(cy + ch, b_box[3])]
-                            if inter_box[2] > inter_box[0] and inter_box[3] > inter_box[1]:
-                                best_yolo_conf = max(best_yolo_conf, float(b_conf))
+                        final_score = float(0.6 * float(conf) + 0.4 * mean_prob)
 
-                        final_score = float(0.5 * best_yolo_conf + 0.5 * seg_score)
-
-                        # Project polygon to Level 0
-                        poly_l0 = [
-                            (float(x0 + pt[0][0] * self.downsample), float(y0 + pt[0][1] * self.downsample))
-                            for pt in cnt_smooth
-                        ]
-
-                        # Project bounding box to Level 0
-                        x1_l0 = float(x0 + cx * self.downsample)
-                        y1_l0 = float(y0 + cy * self.downsample)
-                        x2_l0 = float(x0 + (cx + cw) * self.downsample)
-                        y2_l0 = float(y0 + (cy + ch) * self.downsample)
+                        # Primary Bounding Box is YOLO's full capsule box projected to Level 0
+                        x1_l0 = float(x0 + bx1 * self.downsample)
+                        y1_l0 = float(y0 + by1 * self.downsample)
+                        x2_l0 = float(x0 + bx2 * self.downsample)
+                        y2_l0 = float(y0 + by2 * self.downsample)
 
                         raw_boxes_l0.append([x1_l0, y1_l0, x2_l0, y2_l0])
                         raw_polygons_l0.append(poly_l0)
@@ -265,20 +272,20 @@ class WSIInferenceEngine:
                         raw_patch_records.append({
                             "patch_coord": (x0, y0),
                             "patch_img": patch_img,
-                            "patch_contour": cnt_smooth,
-                            "patch_bbox": [cx, cy, cx + cw, cy + ch],
+                            "patch_contour": cnt_patch,
+                            "patch_bbox": [bx1, by1, bx2, by2],
                             "score": final_score,
                         })
 
                 else:
                     # Standard YOLO-only projection
                     for b, conf in zip(boxes_xyxy, confs):
-                        x1_l0 = float(x0 + b[0] * self.downsample)
-                        y1_l0 = float(y0 + b[1] * self.downsample)
-                        x2_l0 = float(x0 + b[2] * self.downsample)
-                        y2_l0 = float(y0 + b[3] * self.downsample)
+                        bx1, by1, bx2, by2 = int(round(b[0])), int(round(b[1])), int(round(b[2])), int(round(b[3]))
+                        x1_l0 = float(x0 + bx1 * self.downsample)
+                        y1_l0 = float(y0 + by1 * self.downsample)
+                        x2_l0 = float(x0 + bx2 * self.downsample)
+                        y2_l0 = float(y0 + by2 * self.downsample)
 
-                        # Approximate rectangle polygon
                         poly_l0 = [(x1_l0, y1_l0), (x2_l0, y1_l0), (x2_l0, y2_l0), (x1_l0, y2_l0)]
 
                         raw_boxes_l0.append([x1_l0, y1_l0, x2_l0, y2_l0])
@@ -289,22 +296,47 @@ class WSIInferenceEngine:
                             "patch_coord": (x0, y0),
                             "patch_img": patch_img,
                             "patch_contour": None,
-                            "patch_bbox": [int(b[0]), int(b[1]), int(b[2]), int(b[3])],
+                            "patch_bbox": [bx1, by1, bx2, by2],
                             "score": float(conf),
                         })
 
         logger.info(f"Extracted {len(raw_boxes_l0)} raw candidate detections across all patches.")
 
-        # 3. Global Non-Maximum Suppression across tile boundaries
+        # 3. Global Non-Maximum Suppression with IoU and IoS (boundary containment)
         final_boxes_l0: List[List[float]] = []
         final_polygons_l0: List[List[Tuple[float, float]]] = []
         final_scores: List[float] = []
         final_patch_records: List[Dict[str, Any]] = []
 
         if len(raw_boxes_l0) > 0:
-            boxes_t = torch.tensor(raw_boxes_l0, dtype=torch.float32)
-            scores_t = torch.tensor(raw_scores, dtype=torch.float32)
-            keep_indices = torchvision.ops.nms(boxes_t, scores_t, nms_iou_thresh).tolist()
+            order = np.argsort(raw_scores)[::-1]
+            keep_indices: List[int] = []
+
+            for idx in order:
+                b_cand = raw_boxes_l0[idx]
+                is_duplicate = False
+
+                for k in keep_indices:
+                    b_kept = raw_boxes_l0[k]
+
+                    # Standard IoU
+                    iou = box_iou(b_cand, b_kept)
+
+                    # Intersection over Smaller Area (IoS / partial boundary containment)
+                    inter_w = max(0.0, min(b_cand[2], b_kept[2]) - max(b_cand[0], b_kept[0]))
+                    inter_h = max(0.0, min(b_cand[3], b_kept[3]) - max(b_cand[1], b_kept[1]))
+                    inter_area = inter_w * inter_h
+                    area_cand = (b_cand[2] - b_cand[0]) * (b_cand[3] - b_cand[1])
+                    area_kept = (b_kept[2] - b_kept[0]) * (b_kept[3] - b_kept[1])
+                    min_area = min(area_cand, area_kept)
+                    ios = (inter_area / min_area) if min_area > 0 else 0.0
+
+                    if iou >= nms_iou_thresh or ios >= 0.45:
+                        is_duplicate = True
+                        break
+
+                if not is_duplicate:
+                    keep_indices.append(int(idx))
 
             for k in keep_indices:
                 final_boxes_l0.append(raw_boxes_l0[k])
@@ -394,8 +426,8 @@ class WSIInferenceEngine:
             if best_iou >= iou_thresh and best_g_idx >= 0:
                 tp += 1
                 matched_gt.add(best_g_idx)
-                matched_pred.add(p_idx)
-                matched_pairs.append((p_idx, best_g_idx))
+                matched_pred.add(int(p_idx))
+                matched_pairs.append((int(p_idx), int(best_g_idx)))
 
         fp = len(pred_boxes) - tp
         fn = len(gt_boxes) - tp
@@ -431,18 +463,18 @@ class WSIInferenceEngine:
         mean_iou = round(float(np.mean(ious)), 4) if len(ious) > 0 else None
 
         return {
-            "gt_count": len(gt_boxes),
-            "pred_count": len(pred_boxes),
-            "tp": tp,
-            "fp": fp,
-            "fn": fn,
-            "precision": round(precision, 4),
-            "recall": round(recall, 4),
-            "f1": round(f1, 4),
-            "mean_dice": mean_dice,
-            "mean_iou": mean_iou,
-            "count_error": abs(len(pred_boxes) - len(gt_boxes)),
-            "matched_pairs": matched_pairs,
+            "gt_count": int(len(gt_boxes)),
+            "pred_count": int(len(pred_boxes)),
+            "tp": int(tp),
+            "fp": int(fp),
+            "fn": int(fn),
+            "precision": float(round(precision, 4)),
+            "recall": float(round(recall, 4)),
+            "f1": float(round(f1, 4)),
+            "mean_dice": float(round(mean_dice, 4)) if mean_dice is not None else None,
+            "mean_iou": float(round(mean_iou, 4)) if mean_iou is not None else None,
+            "count_error": int(abs(len(pred_boxes) - len(gt_boxes))),
+            "matched_pairs": [[int(p), int(g)] for p, g in matched_pairs],
         }
 
     @staticmethod
