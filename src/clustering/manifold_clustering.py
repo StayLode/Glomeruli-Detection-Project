@@ -17,7 +17,7 @@ from sklearn.manifold import TSNE
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 from sklearn.mixture import GaussianMixture
-from sklearn.metrics import silhouette_score, davies_bouldin_score, calinski_harabasz_score
+from sklearn.metrics import silhouette_score
 
 try:
     import umap
@@ -123,10 +123,8 @@ class GlomeruliClusterer:
         else:
             labels = raw_labels
 
-        # 6. Cluster Quality Validation Metrics
+        # 6. Cluster Quality Validation Metric
         sil_score = float(silhouette_score(pca_feats, labels)) if self.n_clusters > 1 else 0.0
-        db_score = float(davies_bouldin_score(pca_feats, labels)) if self.n_clusters > 1 else 0.0
-        ch_score = float(calinski_harabasz_score(pca_feats, labels)) if self.n_clusters > 1 else 0.0
 
         logger.info(f"Clustering Quality Metrics:")
         logger.info(f"   Silhouette Score : {sil_score:.4f} (higher is better)")
@@ -143,8 +141,6 @@ class GlomeruliClusterer:
             "embedding_2d": self.manifold_embedding,
             "pca_features": self.pca_features,
             "silhouette_score": round(sil_score, 4),
-            "davies_bouldin_score": round(db_score, 4),
-            "calinski_harabasz_score": round(ch_score, 2),
             "distribution": dist_dict,
             "n_components_pca": int(n_pcs),
             "variance_explained": round(var_explained, 4),

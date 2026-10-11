@@ -291,8 +291,6 @@ def main() -> None:
         "n_clusters": int(n_clusters),
         "feature_type": feat_type,
         "silhouette_score": clustering_results["silhouette_score"],
-        "davies_bouldin_score": clustering_results["davies_bouldin_score"],
-        "calinski_harabasz_score": clustering_results["calinski_harabasz_score"],
         "class_distribution": clustering_results["distribution"],
         "pca_components": clustering_results["n_components_pca"],
         "total_runtime_sec": round(time.time() - start_time, 2),
@@ -313,10 +311,8 @@ def main() -> None:
     print(f"PCA Reduced Dimensions   : {clustering_results['n_components_pca']} (Var: {clustering_results['variance_explained']:.2%})")
     print(f"Manifold 2D Method       : {cfg['manifold'].get('method', 'tsne').upper()}")
     print("-" * 68)
-    print("CLUSTERING QUALITY METRICS:")
+    print("CLUSTERING QUALITY METRIC:")
     print(f"   Silhouette Score      : {clustering_results['silhouette_score']:.4f}")
-    print(f"   Davies-Bouldin Index  : {clustering_results['davies_bouldin_score']:.4f}")
-    print(f"   Calinski-Harabasz     : {clustering_results['calinski_harabasz_score']:.2f}")
     print("-" * 68)
     print("DISCOVERED SUBTYPES BREAKDOWN (Progression Ordered):")
     for k_name, count in clustering_results["distribution"].items():
