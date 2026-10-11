@@ -27,23 +27,7 @@ from src.clustering.manifold_clustering import GlomeruliClusterer
 from src.clustering.cluster_visualizer import ClusterVisualizer, CLINICAL_NAMES
 from src.models.mask_to_bbox import extract_bboxes_from_mask
 from src.models.unet_dataset import extract_glomerulus_crop
-
-
-def setup_logger() -> logging.Logger:
-    """Configure structured console logging."""
-    logger = logging.getLogger("clustering")
-    logger.setLevel(logging.INFO)
-
-    formatter = logging.Formatter(
-        "[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
-
-    console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setFormatter(formatter)
-    logger.addHandler(console_handler)
-
-    return logger
+from src.utils.logger import get_console_logger
 
 
 def load_and_extract_glomeruli_crops(
@@ -150,7 +134,7 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    logger = setup_logger()
+    logger = get_console_logger("clustering")
     logger.info("Initializing Unsupervised Glomerular Clustering Pipeline...")
 
     with open(args.config, "r", encoding="utf-8") as f:

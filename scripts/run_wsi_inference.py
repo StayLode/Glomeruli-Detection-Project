@@ -34,24 +34,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.inference.wsi_infer import WSIInferenceEngine
-
-
-def setup_logger() -> logging.Logger:
-    """Configure structured console logging."""
-    logger = logging.getLogger("wsi_runner")
-    logger.setLevel(logging.INFO)
-
-    formatter = logging.Formatter(
-        "[%(asctime)s] [%(levelname)s]: %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
-
-    console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setFormatter(formatter)
-    logger.addHandler(console_handler)
-
-    return logger
-
+from src.utils.logger import get_console_logger
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run WSI Glomeruli Detection & Segmentation.")
@@ -122,7 +105,7 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    logger = setup_logger()
+    logger = get_console_logger("wsi_inference")
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 

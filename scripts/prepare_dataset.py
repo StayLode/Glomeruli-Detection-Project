@@ -17,24 +17,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.preprocessing.dataset_builder import DatasetBuilder
 from src.visualization.inspect_dataset import create_inspection_grid
-
-
-def setup_logger() -> logging.Logger:
-    """Configure structured console logging."""
-    logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
-
-    formatter = logging.Formatter(
-        "[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
-
-    console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setFormatter(formatter)
-    logger.addHandler(console_handler)
-
-    return logger
-
+from src.utils.logger import get_console_logger
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Extract patches from kidney biopsy WSIs.")
@@ -52,7 +35,8 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    logger = setup_logger()
+    
+    logger = get_console_logger("dataset")
     logger.info("Initializing WSI Dataset Builder...")
 
     builder = DatasetBuilder(config_path=args.config)

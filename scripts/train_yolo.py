@@ -24,17 +24,7 @@ from ultralytics import YOLO
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-
-def setup_logger() -> logging.Logger:
-    """Configure structured console logging."""
-    logger = logging.getLogger("yolo_runner")
-    logger.setLevel(logging.INFO)
-    formatter = logging.Formatter("[%(asctime)s] [%(levelname)s] : %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
-    console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setFormatter(formatter)
-    logger.addHandler(console_handler)
-    return logger
-
+from src.utils.logger import get_console_logger
 
 def ensure_data_yaml_paths(data_yaml_path: str) -> str:
     """
@@ -64,7 +54,7 @@ def main() -> None:
     parser.add_argument("--weights", type=str, default=None, help="Path to pre-trained weights for eval_only mode (e.g., best.pt).")
     args = parser.parse_args()
 
-    logger = setup_logger()
+    logger = get_console_logger("yolo_trainer")
     
     # 1. Load configuration
     with open(args.config, "r", encoding="utf-8") as f:
