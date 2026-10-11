@@ -43,7 +43,7 @@ class ClusterVisualizer:
         """
         Plot 2D manifold scatter with cluster coloring and density contours.
         """
-        fig, ax = plt.subplots(figsize=(10, 8), dpi=150)
+        _, ax = plt.subplots(figsize=(10, 8), dpi=150)
         unique_labels = np.unique(labels)
         total_samples = len(labels)
 
@@ -153,9 +153,7 @@ class ClusterVisualizer:
             present_features = feature_names[:4]
 
         n_feats = len(present_features)
-        fig, axes = plt.subplots(1, n_feats, figsize=(4.5 * n_feats, 5), dpi=150)
-        if n_feats == 1:
-            axes = [axes]
+        _, axes = plt.subplots(1, n_feats, figsize=(4.5 * n_feats, 5), dpi=150)
 
         unique_labels = np.unique(labels)
         k = len(unique_labels)
@@ -202,17 +200,13 @@ class ClusterVisualizer:
         unique_labels = np.unique(labels)
         n_clusters = len(unique_labels)
 
-        fig, axes = plt.subplots(
+        _, axes = plt.subplots(
             n_clusters,
             samples_per_cluster,
             figsize=(3.0 * samples_per_cluster, 3.2 * n_clusters),
             dpi=150,
+            squeeze=False
         )
-
-        if n_clusters == 1:
-            axes = np.expand_dims(axes, 0)
-        if samples_per_cluster == 1:
-            axes = np.expand_dims(axes, 1)
 
         for row, cid in enumerate(unique_labels):
             cluster_indices = np.where(labels == cid)[0]
