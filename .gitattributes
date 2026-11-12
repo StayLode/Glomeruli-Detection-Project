@@ -1,1 +1,8 @@
+# The three complete final pipelines and exported result figures use Git LFS.
+runs/clustering/clustering_k*/pipeline.joblib filter=lfs diff=lfs merge=lfs -text
+runs/clustering/clustering_k*/features.npz filter=lfs diff=lfs merge=lfs -text
+runs/clustering/clustering_k*/**/*.png filter=lfs diff=lfs merge=lfs -text
+runs/clustering/clustering_k*/*.png filter=lfs diff=lfs merge=lfs -text
+runs/clustering_predictions/**/*.png filter=lfs diff=lfs merge=lfs -text
+runs/wsi_inference/*.png filter=lfs diff=lfs merge=lfs -text
 runs/unet/unet_20x_resnet34/weights/best.pt filter=lfs diff=lfs merge=lfs -text

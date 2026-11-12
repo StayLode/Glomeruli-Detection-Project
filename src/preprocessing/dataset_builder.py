@@ -214,7 +214,7 @@ class DatasetBuilder:
         # 6. Create YOLO data.yaml
         yolo_yaml_path = paths["yolo_root"] / "data.yaml"
         yolo_data = {
-            "path": str(paths["yolo_root"].resolve()),
+            # "path": str(paths["yolo_root"].resolve()),
             "train": "images/train",
             "val": "images/val",
             "test": "images/test",

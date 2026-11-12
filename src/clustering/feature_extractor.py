@@ -9,18 +9,24 @@ Extracts:
 """
 
 from typing import Dict, Any, List, Optional, Tuple
+import hashlib
 import logging
 import cv2
 import numpy as np
 import torch
 import torch.nn as nn
 import torchvision.models as tv_models
-import torchvision.transforms.functional as TF
+from sklearn.preprocessing import StandardScaler
 
 logger = logging.getLogger(__name__)
 
 
-def extract_single_morphological_features(crop_rgb: np.ndarray, mask_binary: np.ndarray) -> Dict[str, float]:
+def extract_single_morphological_features(
+    crop_rgb: np.ndarray,
+    mask_binary: np.ndarray,
+    morph_units: str = "legacy_resized",
+    pixel_size_um: float = 1.0,
+) -> Dict[str, float]:
     """
     Extract histopathological morphological and photometric features for a single glomerulus.
 
@@ -31,16 +37,23 @@ def extract_single_morphological_features(crop_rgb: np.ndarray, mask_binary: np.
     Returns:
         Dictionary of numerical morphological features.
     """
-    if mask_binary.dtype != np.uint8:
-        mask_binary = (mask_binary > 0).astype(np.uint8) * 255
+    if morph_units not in {"legacy_resized", "native"}:
+        raise ValueError(f"Unsupported morph_units: {morph_units}")
+    if not np.isfinite(pixel_size_um) or pixel_size_um <= 0:
+        raise ValueError("pixel_size_um must be positive")
+    if crop_rgb.ndim != 3 or crop_rgb.shape[2] != 3 or mask_binary.shape != crop_rgb.shape[:2]:
+        raise ValueError("crop_rgb must be HxWx3 and align with the HxW mask")
+    mask_binary = (mask_binary > 0).astype(np.uint8) * 255
 
     contours, _ = cv2.findContours(mask_binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     if not contours:
         # Default fallback for empty mask
+        area_name = "glom_area_um2" if morph_units == "native" else "glom_area"
+        perimeter_name = "glom_perimeter_um" if morph_units == "native" else "glom_perimeter"
         return {
-            "glom_area": 0.0,
-            "glom_perimeter": 0.0,
+            area_name: 0.0,
+            perimeter_name: 0.0,
             "circularity": 0.0,
             "solidity": 0.0,
             "extent": 0.0,
@@ -53,8 +66,13 @@ def extract_single_morphological_features(crop_rgb: np.ndarray, mask_binary: np.
 
     # Use largest connected contour
     cnt = max(contours, key=cv2.contourArea)
-    area = float(cv2.contourArea(cnt))
-    perimeter = float(cv2.arcLength(cnt, True))
+    area_px = float(cv2.contourArea(cnt))
+    perimeter_px = float(cv2.arcLength(cnt, True))
+    area = area_px
+    perimeter = perimeter_px
+    if morph_units == "native":
+        area *= pixel_size_um ** 2
+        perimeter *= pixel_size_um
 
     # Circularity: 4 * pi * Area / (Perimeter^2)
     circularity = float(4.0 * np.pi * area / (perimeter ** 2)) if perimeter > 0 else 0.0
@@ -63,12 +81,12 @@ def extract_single_morphological_features(crop_rgb: np.ndarray, mask_binary: np.
     # Convex hull & Solidity
     hull = cv2.convexHull(cnt)
     hull_area = float(cv2.contourArea(hull))
-    solidity = float(area / hull_area) if hull_area > 0 else 0.0
+    solidity = float(area_px / hull_area) if hull_area > 0 else 0.0
 
     # Bounding rectangle & Aspect ratio
-    bx, by, bw, bh = cv2.boundingRect(cnt)
+    _, _, bw, bh = cv2.boundingRect(cnt)
     aspect_ratio = float(bw) / float(bh) if bh > 0 else 1.0
-    extent = float(area) / float(bw * bh) if (bw * bh) > 0 else 0.0
+    extent = float(area_px) / float(bw * bh) if (bw * bh) > 0 else 0.0
 
     # Photometric / Stain features inside the glomerular mask
     glom_pixels = crop_rgb[mask_binary == 255]
@@ -90,9 +108,11 @@ def extract_single_morphological_features(crop_rgb: np.ndarray, mask_binary: np.
         mean_od = 0.5
         rg_ratio = 1.0
 
+    area_name = "glom_area_um2" if morph_units == "native" else "glom_area"
+    perimeter_name = "glom_perimeter_um" if morph_units == "native" else "glom_perimeter"
     return {
-        "glom_area": round(area, 2),
-        "glom_perimeter": round(perimeter, 2),
+        area_name: round(area, 4 if morph_units == "native" else 2),
+        perimeter_name: round(perimeter, 4 if morph_units == "native" else 2),
         "circularity": round(circularity, 4),
         "solidity": round(solidity, 4),
         "extent": round(extent, 4),
@@ -102,6 +122,31 @@ def extract_single_morphological_features(crop_rgb: np.ndarray, mask_binary: np.
         "stain_heterogeneity": round(stain_heterogeneity, 2),
         "red_green_ratio": round(rg_ratio, 4),
     }
+
+
+def extract_morphological_dataset(
+    crops_rgb: List[np.ndarray],
+    masks_binary: List[np.ndarray],
+    morph_units: str = "legacy_resized",
+    pixel_sizes_um: Optional[List[float]] = None,
+) -> Tuple[np.ndarray, List[str]]:
+    """Extract aligned morphology without constructing a deep backbone."""
+    if len(crops_rgb) != len(masks_binary):
+        raise ValueError("crops_rgb and masks_binary must have equal lengths")
+    if pixel_sizes_um is None:
+        pixel_sizes_um = [1.0] * len(crops_rgb)
+    if len(pixel_sizes_um) != len(crops_rgb):
+        raise ValueError("pixel_sizes_um must have one value per crop")
+    records = [
+        extract_single_morphological_features(crop, mask, morph_units, pixel_size)
+        for crop, mask, pixel_size in zip(crops_rgb, masks_binary, pixel_sizes_um)
+    ]
+    if not records:
+        return np.empty((0, 0), dtype=np.float32), []
+    feature_names = list(records[0])
+    matrix = np.asarray([[record[name] for name in feature_names] for record in records],
+                        dtype=np.float32)
+    return matrix, feature_names
 
 
 class GlomeruliFeatureExtractor:
@@ -159,6 +204,14 @@ class GlomeruliFeatureExtractor:
         self.mean = torch.tensor([0.485, 0.456, 0.406], device=self.device).view(1, 3, 1, 1)
         self.std = torch.tensor([0.229, 0.224, 0.225], device=self.device).view(1, 3, 1, 1)
 
+    def weights_sha256(self) -> str:
+        """Hash the exact encoder parameters used to generate deep embeddings."""
+        digest = hashlib.sha256()
+        for name, tensor in sorted(self.encoder.state_dict().items()):
+            digest.update(name.encode("utf-8"))
+            digest.update(tensor.detach().cpu().contiguous().numpy().tobytes())
+        return digest.hexdigest()
+
     @torch.no_grad()
     def extract_deep_embeddings(self, crops_rgb: List[np.ndarray]) -> np.ndarray:
         """
@@ -205,7 +258,11 @@ class GlomeruliFeatureExtractor:
         return np.vstack(all_embeddings).astype(np.float32)
 
     def extract_morphological_dataset(
-        self, crops_rgb: List[np.ndarray], masks_binary: List[np.ndarray]
+        self,
+        crops_rgb: List[np.ndarray],
+        masks_binary: List[np.ndarray],
+        morph_units: str = "legacy_resized",
+        pixel_sizes_um: Optional[List[float]] = None,
     ) -> Tuple[np.ndarray, List[str]]:
         """
         Extract tabular morphological features for all crops and masks.
@@ -214,16 +271,69 @@ class GlomeruliFeatureExtractor:
             features_matrix: (N, n_features) float32 array.
             feature_names: List of column names.
         """
-        records = []
-        for crop, mask in zip(crops_rgb, masks_binary):
-            feat_dict = extract_single_morphological_features(crop, mask)
-            records.append(feat_dict)
-
-        if not records:
-            return np.empty((0, 0), dtype=np.float32), []
-
-        feature_names = list(records[0].keys())
-        features_matrix = np.array(
-            [[r[col] for col in feature_names] for r in records], dtype=np.float32
+        return extract_morphological_dataset(
+            crops_rgb, masks_binary, morph_units, pixel_sizes_um
         )
-        return features_matrix, feature_names
+
+
+class FeatureBlockTransformer:
+    """Train-fitted scaling and optional equal-variance weighting for hybrid blocks."""
+
+    def __init__(self, weighting: str = "none") -> None:
+        if weighting not in {"none", "equal"}:
+            raise ValueError("weighting must be 'none' or 'equal'")
+        self.weighting = weighting
+        self.deep_scaler: Optional[StandardScaler] = None
+        self.morph_scaler: Optional[StandardScaler] = None
+        self.deep_width = 0
+        self.morph_width = 0
+        self.deep_active_width = 0
+        self.morph_active_width = 0
+        self.block_variance: Dict[str, float] = {}
+        self.block_variance_fraction: Dict[str, float] = {}
+
+    def fit_transform(
+        self, deep: np.ndarray, morph: np.ndarray
+    ) -> np.ndarray:
+        deep, morph = self._validate(deep, morph)
+        self.deep_width, self.morph_width = deep.shape[1], morph.shape[1]
+        self.deep_scaler = StandardScaler().fit(deep)
+        self.morph_scaler = StandardScaler().fit(morph)
+        self.deep_active_width = int(np.count_nonzero(self.deep_scaler.var_ > 1e-12))
+        self.morph_active_width = int(np.count_nonzero(self.morph_scaler.var_ > 1e-12))
+        return self.transform(deep, morph)
+
+    def transform(self, deep: np.ndarray, morph: np.ndarray) -> np.ndarray:
+        if self.deep_scaler is None or self.morph_scaler is None:
+            raise RuntimeError("FeatureBlockTransformer must be fitted first")
+        deep, morph = self._validate(deep, morph)
+        if deep.shape[1] != self.deep_width or morph.shape[1] != self.morph_width:
+            raise ValueError("Feature block widths differ from the fitted blocks")
+        if self.weighting == "equal":
+            deep_block = self.deep_scaler.transform(deep) / np.sqrt(max(self.deep_active_width, 1))
+            morph_block = self.morph_scaler.transform(morph) / np.sqrt(max(self.morph_active_width, 1))
+        else:
+            deep_block = deep
+            morph_block = self.morph_scaler.transform(morph)
+        self.block_variance = {
+            "deep": float(np.var(deep_block, axis=0, ddof=0).sum()),
+            "morphological": float(np.var(morph_block, axis=0, ddof=0).sum()),
+        }
+        total_variance = sum(self.block_variance.values())
+        self.block_variance_fraction = {
+            name: value / total_variance if total_variance else 0.0
+            for name, value in self.block_variance.items()
+        }
+        return np.hstack([deep_block, morph_block]).astype(np.float32)
+
+    @staticmethod
+    def _validate(deep: np.ndarray, morph: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+        deep = np.asarray(deep, dtype=np.float64)
+        morph = np.asarray(morph, dtype=np.float64)
+        if deep.ndim != 2 or morph.ndim != 2 or len(deep) != len(morph):
+            raise ValueError("Feature blocks must be 2D and have matching row counts")
+        if not np.isfinite(deep).all() or not np.isfinite(morph).all():
+            raise ValueError("Feature blocks contain NaN or infinite values")
+        if deep.shape[1] == 0 or morph.shape[1] == 0:
+            raise ValueError("Feature blocks cannot be empty")
+        return deep, morph

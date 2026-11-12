@@ -1,0 +1,47 @@
+clustering:
+  algorithm: kmeans
+  assign_splits:
+  - val
+  fit_splits:
+  - train
+  input_scaling: none
+  k_values:
+  - 6
+  seed: 42
+  n_clusters: 6
+data:
+  cohort_path: runs/clustering/cohort_train_val/cohort.csv
+  crop_mode: square_padded
+  crop_size: 512
+  dataset_config: configs/dataset_config.yaml
+  manifest_csv: dataset/manifest.csv
+  margin_ratio: 0.25
+  mask_mode: single_component
+  min_completeness: 0.95
+  min_component_area: 400
+  overlap_threshold: 0.5
+  padding_mode: reflect
+  xml_dir: glomeruli_grading
+features:
+  batch_size: 32
+  block_weighting: equal
+  common_space_cache: runs/clustering/cache/train_val/common_spaces
+  deep_backbone: resnet34
+  embedding_cache_dir: runs/clustering/cache/train_val/embeddings
+  feature_type: hybrid
+  morph_units: native
+  normalize_embeddings: true
+  pretrained: true
+labels:
+  max_saturation: 0.2
+  meaning: experimental_morphology_not_clinical_necrosis
+  method: train_median_peripheral_clear_fraction_descending
+  min_value: 0.8
+  relative_band_width: 0.15
+manifold:
+  method: pca
+  pca_variance: 20
+output:
+  resampling: runs/clustering/resampling_train_val.json
+  run_root: runs/clustering
+  save_gallery: true

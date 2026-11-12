@@ -1,17 +1,39 @@
-glomeruli_grading/
-venv/
-.venv/
-dataset_glomeruli_all/
-
-.vscode/
-.DS_Store
-fine_tuned_resnet50_renal_pathology.h5
-
+# Raw data and local environments
+/glomeruli_grading/
+/dataset_glomeruli_all/
+/.venv/
+/venv/
+/weights/
 *.pt
-
-# Python cache
+*.pth
+*.h5
+# Prepared images/masks remain local; publish their reproducibility manifest.
+/dataset/*
+!/dataset/manifest.csv
+!/dataset/dataset_summary.json
+!/dataset/yolo/
+/dataset/yolo/*
+!/dataset/yolo/data.yaml
+# Keep all final clustering models and results, including binary artifacts via LFS.
+/runs/*
+!/runs/clustering/
+!/runs/clustering/**
+!/runs/clustering_predictions/
+!/runs/clustering_predictions/**
+!/runs/wsi_inference/
+!/runs/wsi_inference/**
+/runs/clustering/cache/
+/runs/clustering/logs/
+# User-requested recoverable archive; never publish.
+/to_cleanup/
+# Interpreter, editor and local agent state
 __pycache__/
 *.py[cod]
-
-# YOLO cache
 *.cache
+.pytest_cache/
+/.vscode/
+/.agents/
+/.codex/
+/.aws/
+/.tools/
+.DS_Store

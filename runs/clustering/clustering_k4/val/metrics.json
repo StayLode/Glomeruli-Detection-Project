@@ -1,0 +1,236 @@
+{
+  "by_slide": {
+    "RECHERCHE-016": {
+      "counts": {
+        "A": 2,
+        "B": 0,
+        "C": 0,
+        "D": 55
+      },
+      "internal_common": {
+        "calinski_harabasz": 4.581195826262215,
+        "davies_bouldin": 0.7938343991147778,
+        "reason": null,
+        "silhouette": 0.20304482980244243,
+        "status": "evaluated"
+      },
+      "n": 57
+    }
+  },
+  "counts": {
+    "A": 2,
+    "B": 0,
+    "C": 0,
+    "D": 55
+  },
+  "cramers_v": {
+    "reason": "un solo slide: l'associazione cluster-slide non \u00e8 stimabile",
+    "status": "not_evaluable",
+    "value": null
+  },
+  "distance_median": 1.2780882650028047,
+  "distance_q95": 2.382975046023651,
+  "internal_common": {
+    "calinski_harabasz": 4.581195826262215,
+    "davies_bouldin": 0.7938343991147778,
+    "reason": null,
+    "silhouette": 0.20304482980244243,
+    "status": "evaluated"
+  },
+  "label_limitation": "Experimental ordering only: A has the highest train-cluster median peripheral clear fraction and the final letter has the lowest. The letters are shown as a low-to-high necrosis-compatibility proxy for visualization; this is not a measurement of Bowman's space or a validated clinical grade.",
+  "n_samples": 57,
+  "n_slides": 1,
+  "native_profiles": {
+    "C0": {
+      "aspect_ratio": {
+        "mean": 1.0276218181818184,
+        "median": 0.978,
+        "median_delta_vs_train": -0.026899999999999924,
+        "n": 55,
+        "q25": 0.8948499999999999,
+        "q75": 1.0892499999999998,
+        "train_median": 1.0049
+      },
+      "circularity": {
+        "mean": 0.8178672727272727,
+        "median": 0.8288,
+        "median_delta_vs_train": 0.02169999999999994,
+        "n": 55,
+        "q25": 0.78515,
+        "q75": 0.8451,
+        "train_median": 0.8071
+      },
+      "extent": {
+        "mean": 0.7516727272727272,
+        "median": 0.7565,
+        "median_delta_vs_train": -0.007800000000000029,
+        "n": 55,
+        "q25": 0.73725,
+        "q75": 0.7737,
+        "train_median": 0.7643
+      },
+      "glom_area_um2": {
+        "mean": 28466.577774545454,
+        "median": 29446.5172,
+        "median_delta_vs_train": 5468.090799999998,
+        "n": 55,
+        "q25": 21675.54695,
+        "q75": 34138.244300000006,
+        "train_median": 23978.4264
+      },
+      "glom_perimeter_um": {
+        "mean": 653.6205672727274,
+        "median": 666.6377,
+        "median_delta_vs_train": 53.42280000000005,
+        "n": 55,
+        "q25": 584.0752,
+        "q75": 719.05605,
+        "train_median": 613.2149
+      },
+      "mean_intensity": {
+        "mean": 159.9796363636364,
+        "median": 160.81,
+        "median_delta_vs_train": -20.02000000000001,
+        "n": 55,
+        "q25": 150.91,
+        "q75": 168.3,
+        "train_median": 180.83
+      },
+      "mean_optical_density": {
+        "mean": 0.22516545454545459,
+        "median": 0.2177,
+        "median_delta_vs_train": 0.0537,
+        "n": 55,
+        "q25": 0.1956,
+        "q75": 0.24830000000000002,
+        "train_median": 0.164
+      },
+      "red_green_ratio": {
+        "mean": 1.3247436363636367,
+        "median": 1.2985,
+        "median_delta_vs_train": 0.08650000000000002,
+        "n": 55,
+        "q25": 1.2429999999999999,
+        "q75": 1.38415,
+        "train_median": 1.212
+      },
+      "solidity": {
+        "mean": 0.9910236363636364,
+        "median": 0.9925,
+        "median_delta_vs_train": 0.0009000000000000119,
+        "n": 55,
+        "q25": 0.99095,
+        "q75": 0.9936,
+        "train_median": 0.9916
+      },
+      "stain_heterogeneity": {
+        "mean": 38.964181818181814,
+        "median": 38.89,
+        "median_delta_vs_train": 0.8599999999999994,
+        "n": 55,
+        "q25": 33.585,
+        "q75": 43.575,
+        "train_median": 38.03
+      }
+    },
+    "C1": {
+      "aspect_ratio": {
+        "mean": 1.0857,
+        "median": 1.0857,
+        "median_delta_vs_train": -0.0020499999999998852,
+        "n": 2,
+        "q25": 1.0148,
+        "q75": 1.1566,
+        "train_median": 1.08775
+      },
+      "circularity": {
+        "mean": 0.8173,
+        "median": 0.8173,
+        "median_delta_vs_train": 0.045599999999999974,
+        "n": 2,
+        "q25": 0.80835,
+        "q75": 0.82625,
+        "train_median": 0.7717
+      },
+      "extent": {
+        "mean": 0.7618,
+        "median": 0.7618,
+        "median_delta_vs_train": 0.0013000000000000789,
+        "n": 2,
+        "q25": 0.7573000000000001,
+        "q75": 0.7663,
+        "train_median": 0.7605
+      },
+      "glom_area_um2": {
+        "mean": 24146.3489,
+        "median": 24146.3489,
+        "median_delta_vs_train": 7292.900600000001,
+        "n": 2,
+        "q25": 22080.569450000003,
+        "q75": 26212.12835,
+        "train_median": 16853.4483
+      },
+      "glom_perimeter_um": {
+        "mean": 606.5959,
+        "median": 606.5959,
+        "median_delta_vs_train": 81.71030000000007,
+        "n": 2,
+        "q25": 583.7617,
+        "q75": 629.4301,
+        "train_median": 524.8856
+      },
+      "mean_intensity": {
+        "mean": 191.04,
+        "median": 191.04,
+        "median_delta_vs_train": -3.055000000000007,
+        "n": 2,
+        "q25": 191.01,
+        "q75": 191.07,
+        "train_median": 194.095
+      },
+      "mean_optical_density": {
+        "mean": 0.13595000000000002,
+        "median": 0.13595000000000002,
+        "median_delta_vs_train": 0.009250000000000008,
+        "n": 2,
+        "q25": 0.135025,
+        "q75": 0.136875,
+        "train_median": 0.1267
+      },
+      "red_green_ratio": {
+        "mean": 1.17555,
+        "median": 1.17555,
+        "median_delta_vs_train": 0.03175000000000017,
+        "n": 2,
+        "q25": 1.172975,
+        "q75": 1.178125,
+        "train_median": 1.1438
+      },
+      "solidity": {
+        "mean": 0.99325,
+        "median": 0.99325,
+        "median_delta_vs_train": 0.002850000000000019,
+        "n": 2,
+        "q25": 0.992775,
+        "q75": 0.993725,
+        "train_median": 0.9904
+      },
+      "stain_heterogeneity": {
+        "mean": 34.875,
+        "median": 34.875,
+        "median_delta_vs_train": 2.8850000000000016,
+        "n": 2,
+        "q25": 33.417500000000004,
+        "q75": 36.332499999999996,
+        "train_median": 31.99
+      }
+    }
+  },
+  "occupied_clusters": 2,
+  "technical_eta2": {
+    "background_mean_intensity": 0.08428301767254028,
+    "border_distance_px": 0.006955338975040795,
+    "completeness": 0.010804696849083258,
+    "tissue_ratio": 0.032309371885514776
+  }
+}

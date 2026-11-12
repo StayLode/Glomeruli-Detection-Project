@@ -1,4 +1,4 @@
-path: /home/riccardo/Documents/UNIto/MLapp/glomeruli_detection/dataset/yolo
+# path: /home/riccardo/Documents/UNIto/MLapp/glomeruli_detection/dataset/yolo
 train: images/train
 val: images/val
 test: images/test

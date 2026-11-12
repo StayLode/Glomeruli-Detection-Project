@@ -1,0 +1,21 @@
+{
+  "cluster_to_letter": {
+    "0": "D",
+    "1": "A",
+    "2": "C",
+    "3": "B"
+  },
+  "limitation": "Experimental ordering only: A has the highest train-cluster median peripheral clear fraction and the final letter has the lowest. The letters are shown as a low-to-high necrosis-compatibility proxy for visualization; this is not a measurement of Bowman's space or a validated clinical grade.",
+  "method": "train_median_peripheral_clear_fraction_descending",
+  "parameters": {
+    "max_saturation": 0.2,
+    "min_value": 0.8,
+    "relative_band_width": 0.15
+  },
+  "train_cluster_medians": {
+    "0": 0.4928387907942929,
+    "1": 0.612582306550048,
+    "2": 0.5291924887004333,
+    "3": 0.5611416257128591
+  }
+}

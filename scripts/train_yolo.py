@@ -28,22 +28,11 @@ from src.utils.logger import get_console_logger
 
 def ensure_data_yaml_paths(data_yaml_path: str) -> str:
     """
-    Dynamically updates the 'path' attribute in data.yaml to match the current filesystem location.
-    This guarantees seamless execution both locally and on remote SLURM clusters.
+    Ensures that the provided data.yaml path exists and is a file.
     """
     p = Path(data_yaml_path).resolve()
-    if not p.exists():
-        raise FileNotFoundError(f"Dataset configuration file (data.yaml) not found at: {p}")
-
-    with open(p, "r", encoding="utf-8") as f:
-        data = yaml.safe_load(f)
-
-    # Overwrite the root dataset path with the absolute path of the current directory
-    data["path"] = str(p.parent.resolve())
-
-    with open(p, "w", encoding="utf-8") as f:
-        yaml.dump(data, f, default_flow_style=False, sort_keys=False)
-
+    if not p.is_file():
+        raise FileNotFoundError(f"File non trovato: {p}")
     return str(p)
 
 

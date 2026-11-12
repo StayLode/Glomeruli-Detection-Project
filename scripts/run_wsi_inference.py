@@ -34,6 +34,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.inference.wsi_infer import WSIInferenceEngine
+from src.inference.prediction_io import export_predictions
 from src.utils.logger import get_console_logger
 
 def main() -> None:
@@ -151,6 +152,7 @@ def main() -> None:
             nms_iou_thresh=args.nms_iou,
             batch_size=args.batch_size,
         )
+        export_predictions(result, output_dir / f"{sid}_predictions.json", args.weights, args.unet_weights)
 
         # A. Export ASAP XML (Polygons if cascade mode, otherwise BBoxes)
         asap_xml_path = output_dir / f"{sid}_predicted.xml"
@@ -158,6 +160,8 @@ def main() -> None:
             polygons_l0=result["detected_polygons_l0"],
             boxes_l0=result["detected_boxes_l0"],
             output_xml_path=str(asap_xml_path),
+            mask_sources=["unet" if result["cascade_mode"] and record.get("patch_contour") is not None else "bbox"
+                          for record in result["patch_records"]],
         )
 
         # B. Export Whole-Slide Overview Image

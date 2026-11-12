@@ -1,0 +1,13 @@
+prediction_id,reason
+RECHERCHE-017#33,invalid_polygon
+RECHERCHE-017#56,requires_unet_mask
+RECHERCHE-017#57,requires_unet_mask
+RECHERCHE-017#58,requires_unet_mask
+RECHERCHE-017#60,invalid_polygon
+RECHERCHE-017#61,requires_unet_mask
+RECHERCHE-017#62,requires_unet_mask
+RECHERCHE-017#63,requires_unet_mask
+RECHERCHE-017#64,requires_unet_mask
+RECHERCHE-017#65,requires_unet_mask
+RECHERCHE-017#66,requires_unet_mask
+RECHERCHE-017#67,requires_unet_mask

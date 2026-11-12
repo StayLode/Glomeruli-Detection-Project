@@ -373,12 +373,17 @@ class WSIInferenceEngine:
             logger.info(f"   Slide F1-Score         : {evaluation_results['f1']:.4f}{seg_info}")
             logger.info("=" * 65)
 
+        pixel_size_l0_um = {
+            "x": slide.properties.get(openslide.PROPERTY_NAME_MPP_X),
+            "y": slide.properties.get(openslide.PROPERTY_NAME_MPP_Y),
+        }
         slide.close()
 
         return {
             "slide_id": slide_id,
             "svs_path": str(svs_path),
             "cascade_mode": cascade_mode,
+            "pixel_size_l0_um": pixel_size_l0_um,
             "level0_dimensions": [w_l0, h_l0],
             "detected_count": len(final_boxes_l0),
             "detected_boxes_l0": final_boxes_l0,
@@ -484,6 +489,7 @@ class WSIInferenceEngine:
         output_xml_path: str,
         group_name: str = "Glomeruli_Predicted",
         color: str = "#00FF00",
+        mask_sources: Optional[List[str]] = None,
     ) -> Path:
         """
         Export predicted glomeruli to ASAP XML format.
@@ -499,8 +505,6 @@ class WSIInferenceEngine:
         annotations_elem = doc.createElement("Annotations")
         asap_elem.appendChild(annotations_elem)
 
-        has_polygons = len(polygons_l0) > 0 and len(polygons_l0[0]) > 4
-
         # Export primary annotations (Polygons if cascade, else Rectangles)
         for i, (poly, b) in enumerate(zip(polygons_l0, boxes_l0)):
             annot = doc.createElement("Annotation")
@@ -510,7 +514,8 @@ class WSIInferenceEngine:
 
             coords_elem = doc.createElement("Coordinates")
 
-            if has_polygons:
+            has_polygon = (mask_sources[i] == "unet" if mask_sources is not None else len(poly) > 4)
+            if has_polygon:
                 annot.setAttribute("Type", "Polygon")
                 for order, (cx, cy) in enumerate(poly):
                     coord = doc.createElement("Coordinate")

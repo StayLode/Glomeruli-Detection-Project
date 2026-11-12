@@ -1,0 +1,35 @@
+{
+  "class_label_mapping": {
+    "0": "F",
+    "1": "C",
+    "2": "B",
+    "3": "D",
+    "4": "E",
+    "5": "A"
+  },
+  "clinical_accuracy": null,
+  "clinical_accuracy_reason": "No clinical class labels exist in the position/contour XML",
+  "counts": {
+    "A": 1,
+    "B": 0,
+    "C": 7,
+    "D": 8,
+    "E": 2,
+    "F": 18
+  },
+  "distance_median": 1.0651445655614067,
+  "distance_q95": 3.224274024422936,
+  "internal_common": {
+    "calinski_harabasz": 10.179515155011819,
+    "davies_bouldin": 0.9670860367676373,
+    "reason": null,
+    "silhouette": 0.09169004577051026,
+    "status": "evaluated"
+  },
+  "label_limitation": "Experimental ordering only: A has the highest train-cluster median peripheral clear fraction and the final letter has the lowest. The letters are shown as a low-to-high necrosis-compatibility proxy for visualization; this is not a measurement of Bowman's space or a validated clinical grade.",
+  "n_assigned": 36,
+  "n_detected": 41,
+  "n_excluded": 5,
+  "slide_id": "RECHERCHE-015",
+  "split": "test"
+}
