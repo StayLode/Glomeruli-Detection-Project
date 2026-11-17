@@ -14,7 +14,7 @@ OUT_DIR = Path("runs/clustering_loso_k2_k4_k6")
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 K_VALUES = [2, 4, 6]
-STAIN_INV_FEATURES = [
+MORPH_STAIN_FEATURES = [
     "glom_area_um2",
     "glom_perimeter_um",
     "circularity",
@@ -24,23 +24,49 @@ STAIN_INV_FEATURES = [
     "stain_heterogeneity",
 ]
 
-# 1. Carica i dati completi (468 glomeruli di sviluppo + i 2 vetrini di test)
+# 1. Load the complete data (468 development glomeruli + 2 test slides)
 dev_df = pd.read_csv("runs/clustering/clustering_k6/assignments.csv")
 test15_df = pd.read_csv("runs/clustering_predictions/RECHERCHE-015/clustering_k6/assignments.csv")
 test17_df = pd.read_csv("runs/clustering_predictions/RECHERCHE-017/clustering_k6/assignments.csv")
 
-npz = np.load("runs/clustering/clustering_k6/features.npz", allow_pickle=True)
-X_hybrid_all = npz["features"]
-# Verifica allineamento righe
-assert len(dev_df) == len(X_hybrid_all), "Mismatch righe tra assignments.csv e features.npz"
+with np.load("runs/clustering/clustering_k6/features.npz", allow_pickle=False) as archive:
+    required = {"annotation_id", "slide_id", "split", "model_features"}
+    missing = required.difference(archive.files)
+    if missing:
+        raise ValueError(f"features.npz is missing required keys: {sorted(missing)}")
 
-X_shape_all = dev_df[STAIN_INV_FEATURES].to_numpy(dtype=np.float64)
+    feature_ids = archive["annotation_id"].astype(str)
+    if len(feature_ids) != len(set(feature_ids)):
+        raise ValueError("Duplicate annotation_id values detected in features.npz")
+
+    dev_ids = dev_df["annotation_id"].astype(str).to_numpy()
+    if len(dev_ids) != len(set(dev_ids)) or set(dev_ids) != set(feature_ids):
+        raise ValueError("Feature arrays and assignments have different annotation_id sets")
+
+    feature_index = {annotation_id: i for i, annotation_id in enumerate(feature_ids)}
+    feature_order = np.asarray([feature_index[annotation_id] for annotation_id in dev_ids], dtype=np.intp)
+    X_hybrid_all = archive["model_features"][feature_order]
+
+    feature_splits = archive["split"].astype(str)[feature_order]
+    feature_slides = archive["slide_id"].astype(str)[feature_order]
+    if not np.array_equal(feature_splits, dev_df["split"].astype(str).to_numpy()):
+        raise ValueError("Split metadata in features.npz does not match assignments.csv")
+    if not np.array_equal(feature_slides, dev_df["slide_id"].astype(str).to_numpy()):
+        raise ValueError("Slide metadata in features.npz does not match assignments.csv")
+    if not set(feature_splits).issubset({"train", "val"}):
+        raise ValueError("Test samples detected in features.npz; aborting to prevent data leakage.")
+    if set(feature_slides) & {"RECHERCHE-015", "RECHERCHE-017"}:
+        raise ValueError("Test slides detected in features.npz; aborting to prevent data leakage.")
+
+assert len(dev_df) == len(X_hybrid_all), "Row count mismatch between assignments.csv and features.npz"
+
+X_shape_all = dev_df[MORPH_STAIN_FEATURES].to_numpy(dtype=np.float64)
 slides = dev_df["slide_id"].to_numpy()
 unique_slides = sorted(dev_df["slide_id"].unique())
 
 
 def assign_letters_by_pcf(raw_labels, pcf_values, k):
-    """Ordina i cluster da A a F in base alla mediana decrescente di peripheral_clear_fraction."""
+    """Orders clusters from A to F by descending median peripheral_clear_fraction."""
     order = sorted(
         range(k),
         key=lambda c: float(np.median(pcf_values[raw_labels == c])) if np.any(raw_labels == c) else -1.0,
@@ -50,10 +76,10 @@ def assign_letters_by_pcf(raw_labels, pcf_values, k):
 
 
 def evaluate_5_criteria(X, labels, slides_arr, k, seed=42):
-    """Calcola i 5 criteri di validazione del progetto su tutto il dataset di sviluppo (N=468)."""
+    """Calculates the five project validation criteria across the full development dataset (N=468)."""
     sil = float(silhouette_score(X, labels))
 
-    # 1 & 2: Stabilità con subsampling all'80% (30 ripetizioni)
+    # 1 & 2: Stability using 80% subsamples (30 repetitions)
     rng = np.random.default_rng(seed)
     n = len(X)
     sub_n = int(0.8 * n)
@@ -67,7 +93,7 @@ def evaluate_5_criteria(X, labels, slides_arr, k, seed=42):
         ref_labels = labels[idx]
         aris.append(adjusted_rand_score(ref_labels, sub_labels))
 
-        # Matching ottimale tra cluster di riferimento e cluster del subsample
+        # Optimal matching between reference clusters and subsample clusters
         cost = np.zeros((k, k))
         for i in range(k):
             for j in range(k):
@@ -81,7 +107,7 @@ def evaluate_5_criteria(X, labels, slides_arr, k, seed=42):
     ari_mean = float(np.mean(aris))
     jaccard_min = float(min(np.mean(j) for j in jaccards))
 
-    # 3: Significatività geometrica rispetto a dati casuali (z-score)
+    # 3: Geometric significance compared with random data (z-score)
     cov = np.cov(X, rowvar=False)
     null_sils = []
     for rep in range(20):
@@ -91,13 +117,13 @@ def evaluate_5_criteria(X, labels, slides_arr, k, seed=42):
             null_sils.append(silhouette_score(X_null, null_lbl))
     sil_z = float((sil - np.mean(null_sils)) / (np.std(null_sils) + 1e-8))
 
-    # 4: Indipendenza dal vetrino (Cramér's V)
+    # 4: Independence from slide (Cramér V)
     ct = pd.crosstab(labels, slides_arr)
     chi2 = chi2_contingency(ct)[0]
     min_dim = min(ct.shape[0] - 1, ct.shape[1] - 1)
     cramers_v = float(np.sqrt(chi2 / (n * min_dim))) if min_dim > 0 else 0.0
 
-    # 5: Nessun cluster dominato da un solo vetrino (>80%)
+    # 5: No cluster dominated by a single slide (>80%)
     max_dom_slide = float((ct.div(ct.sum(axis=1), axis=0)).max().max())
 
     passed = sum([
@@ -122,8 +148,8 @@ summary_rows = []
 per_slide_rows = []
 
 for k in K_VALUES:
-    for model_name in ["baseline_hybrid_pca20", "stain_invariant_shape"]:
-        # --- A. Validazione Leave-One-Slide-Out (7 pazienti uno alla volta) ---
+    for model_name in ["baseline_hybrid_pca20", "morphology_plus_stain_heterogeneity"]:
+        # --- A. Leave-one-slide-out validation (one slide held out at a time) ---
         occ_list, max_share_list, val_sil_list = [], [], []
         collapsed_count = 0
 
@@ -175,7 +201,7 @@ for k in K_VALUES:
                 "val_counts": json.dumps(counts),
             })
 
-        # --- B. Criteri ufficiali su tutta la coorte di sviluppo (N=468) ---
+        # --- B. Validation criteria across the full development cohort (N=468) ---
         scaler_full = StandardScaler()
         if model_name == "baseline_hybrid_pca20":
             X_full = PCA(n_components=20, random_state=42).fit_transform(scaler_full.fit_transform(X_hybrid_all))
@@ -200,18 +226,18 @@ per_slide_df = pd.DataFrame(per_slide_rows)
 summary_df.to_csv(OUT_DIR / "loso_summary_k2_k4_k6.csv", index=False)
 per_slide_df.to_csv(OUT_DIR / "loso_per_slide_k2_k4_k6.csv", index=False)
 
-print("=== 1. CONFRONTO GENERALE: VECCHIO MODELLO (COLORE+FORMA) vs NUOVO MODELLO (SOLO FORMA) ===")
+print("=== 1. COMPARISON: RESNET BASELINE + MORPHOLOGY/COLOR MEASUREMENTS VS MORPHOLOGY + STAIN HETEROGENEITY ===")
 print(summary_df.to_string(index=False))
 
-# === 2. DETTAGLIO SPECIFICO SUL MODELLO K=6 DI FP03 (STADI A-F) ===
+# === 2. K=6 EXPLORATORY GROUP PROFILES (A-F) ===
 train_mask = dev_df["split"] == "train"
 val_mask = dev_df["split"] == "val"
 
 scaler_k6 = StandardScaler()
-X_tr6 = scaler_k6.fit_transform(dev_df.loc[train_mask, STAIN_INV_FEATURES].to_numpy())
-X_va6 = scaler_k6.transform(dev_df.loc[val_mask, STAIN_INV_FEATURES].to_numpy())
-X_t15_6 = scaler_k6.transform(test15_df[STAIN_INV_FEATURES].to_numpy())
-X_t17_6 = scaler_k6.transform(test17_df[STAIN_INV_FEATURES].to_numpy())
+X_tr6 = scaler_k6.fit_transform(dev_df.loc[train_mask, MORPH_STAIN_FEATURES].to_numpy())
+X_va6 = scaler_k6.transform(dev_df.loc[val_mask, MORPH_STAIN_FEATURES].to_numpy())
+X_t15_6 = scaler_k6.transform(test15_df[MORPH_STAIN_FEATURES].to_numpy())
+X_t17_6 = scaler_k6.transform(test17_df[MORPH_STAIN_FEATURES].to_numpy())
 
 km6 = KMeans(n_clusters=6, random_state=42, n_init=20)
 tr6_raw = km6.fit_predict(X_tr6)
@@ -227,41 +253,41 @@ test15_df["shape_k6_label"] = [lmap6[c] for c in t15_raw]
 test17_df["shape_k6_label"] = [lmap6[c] for c in t17_raw]
 
 letters_6 = ["A", "B", "C", "D", "E", "F"]
-print("\n=== 2. DISTRIBUZIONE NEI 6 GRUPPI (A-F DI FP03) SU TRAIN, VAL E TEST ===")
+print("\n=== 2. DISTRIBUTION OF EXPLORATORY GROUPS A-F, ORDERED BY A PROXY, ACROSS TRAIN, VALIDATION, AND TEST ===")
 dist_rows = []
 for name, sub in [
-    ("Train (6 vetrini, N=411)", dev_df[train_mask]),
+    ("Train (6 slides, N=411)", dev_df[train_mask]),
     ("Validation WSI-016 (N=57)", dev_df[val_mask]),
     ("Test 1 WSI-015 (N=36)", test15_df),
     ("Test 2 WSI-017 (N=56)", test17_df),
 ]:
     counts = {lt: int((sub["shape_k6_label"] == lt).sum()) for lt in letters_6}
     max_sh = max(counts.values()) / len(sub)
-    print(f"{name:28s} | conteggi={counts} | max_gruppo={max_sh*100:.1f}%")
+    print(f"{name:28s} | counts={counts} | largest_group={max_sh*100:.1f}%")
     dist_rows.append({"split": name, "n": len(sub), **counts, "max_share_pct": round(max_sh * 100, 1)})
 pd.DataFrame(dist_rows).to_csv(OUT_DIR / "k6_split_distributions.csv", index=False)
 
-print("\n=== 3. IDENTIKIT FISICO DEI 6 GRUPPI (A-F) SUI 468 GLOMERULI DI SVILUPPO ===")
+print("\n=== 3. PROFILES OF GROUPS A-F ACROSS 468 DEVELOPMENT GLOMERULI ===")
 prof_rows = []
 for lt in letters_6:
     sub = dev_df[dev_df["shape_k6_label"] == lt]
     prof_rows.append({
-        "Gruppo": lt,
+        "Group": lt,
         "N_glomeruli": len(sub),
-        "Quota_%": round(100.0 * len(sub) / len(dev_df), 1),
-        "Spazio_Perif_med": round(float(sub["peripheral_clear_fraction"].median()), 3),
-        "Area_um2_med": round(float(sub["glom_area_um2"].median()), 1),
-        "Rotondita_med": round(float(sub["circularity"].median()), 3),
-        "Regolarita_Bordo_med": round(float(sub["solidity"].median()), 3),
-        "Allungamento_med": round(float(sub["aspect_ratio"].median()), 3),
-        "Eterogeneita_med": round(float(sub["stain_heterogeneity"].median()), 2),
+        "Share_pct": round(100.0 * len(sub) / len(dev_df), 1),
+        "Peripheral_clear_fraction_median": round(float(sub["peripheral_clear_fraction"].median()), 3),
+        "Glomerular_area_um2_median": round(float(sub["glom_area_um2"].median()), 1),
+        "Circularity_median": round(float(sub["circularity"].median()), 3),
+        "Solidity_median": round(float(sub["solidity"].median()), 3),
+        "Aspect_ratio_median": round(float(sub["aspect_ratio"].median()), 3),
+        "Stain_heterogeneity_median": round(float(sub["stain_heterogeneity"].median()), 2),
     })
 prof_df = pd.DataFrame(prof_rows)
 prof_df.to_csv(OUT_DIR / "k6_morphological_profiles.csv", index=False)
 print(prof_df.to_string(index=False))
 
-# === 4. GENERAZIONE DEI 3 GRAFICI PER RELAZIONE E SLIDE ===
-# Grafico 1: Confronto Collasso LOSO su K=2, 4, 6
+# === 4. GENERATE THREE FIGURES FOR THE REPORT AND PRESENTATION ===
+# Figure 1: LOSO comparison for K=2, 4, 6
 fig, axes = plt.subplots(1, 3, figsize=(15, 4.3), sharey=True)
 slide_short = [s.replace("RECHERCHE-", "WSI-") for s in unique_slides]
 x = np.arange(len(slide_short))
@@ -269,70 +295,70 @@ w = 0.36
 
 for ax, k in zip(axes, K_VALUES):
     sub_base = per_slide_df[(per_slide_df["k"] == k) & (per_slide_df["model"] == "baseline_hybrid_pca20")].sort_values("held_out_slide")
-    sub_new = per_slide_df[(per_slide_df["k"] == k) & (per_slide_df["model"] == "stain_invariant_shape")].sort_values("held_out_slide")
+    sub_new = per_slide_df[(per_slide_df["k"] == k) & (per_slide_df["model"] == "morphology_plus_stain_heterogeneity")].sort_values("held_out_slide")
 
-    ax.bar(x - w/2, sub_base["val_max_share"] * 100, width=w, label="Vecchio Modello (Colore + Forma)", color="#7f8c8d")
-    ax.bar(x + w/2, sub_new["val_max_share"] * 100, width=w, label="Nuovo Modello (Solo Forma)", color="#e67e22")
-    ax.axhline(80, color="#c0392b", linestyle="--", linewidth=1.4, label="Soglia Collasso (80%)")
-    ax.set_title(f"K = {k}" + (" (Scala FP03 A-F)" if k == 6 else ""), fontsize=11.5, fontweight="bold")
+    ax.bar(x - w/2, sub_base["val_max_share"] * 100, width=w, label="Baseline ResNet + morphology/color measurements", color="#7f8c8d")
+    ax.bar(x + w/2, sub_new["val_max_share"] * 100, width=w, label="Morphology + stain heterogeneity", color="#e67e22")
+    ax.axhline(80, color="#c0392b", linestyle="--", linewidth=1.4, label="Concentration threshold (80%)")
+    ax.set_title(f"K = {k}" + (" (6 exploratory groups)" if k == 6 else ""), fontsize=11.5, fontweight="bold")
     ax.set_xticks(x)
     ax.set_xticklabels(slide_short, rotation=35, ha="right", fontsize=9)
     ax.set_ylim(0, 108)
     ax.grid(axis="y", linestyle=":", alpha=0.6)
     if k == 2:
-        ax.set_ylabel("% Glomeruli nel Gruppo Principale (Held-Out)", fontsize=10)
+        ax.set_ylabel("Largest-group share on held-out slide (%)", fontsize=10)
     if k == 6:
         ax.legend(loc="upper right", fontsize=8.5)
 
-plt.suptitle("Test su Pazienti Nuovi (LOSO): Il Nuovo Modello Elimina il Collasso da Colore (K=2, 4, 6)",
+plt.suptitle("LOSO: largest-group share per slide (K=2, 4, 6)",
              fontsize=12.5, fontweight="bold", y=1.02)
 plt.tight_layout()
 plt.savefig(OUT_DIR / "fig1_loso_collapse_k2_k4_k6.png", dpi=300, bbox_inches="tight")
 plt.close()
 
-# Grafico 2: Identikit morfologico dei 6 gruppi A-F
+# Figure 2: Morphological profiles of exploratory groups A-F
 fig, axes = plt.subplots(1, 4, figsize=(15, 4.2))
 plot_specs = [
-    ("circularity", "Rotondità (Circularity)"),
-    ("solidity", "Regolarità Bordo (Solidity)"),
-    ("glom_area_um2", "Area Glomerulare (μm²)"),
-    ("peripheral_clear_fraction", "Spazio Chiaro Periferico"),
+    ("circularity", "Circularity"),
+    ("solidity", "Boundary solidity"),
+    ("glom_area_um2", "Glomerular area (μm²)"),
+    ("peripheral_clear_fraction", "Peripheral clear space"),
 ]
 palette_6 = ["#27ae60", "#2ecc71", "#3498db", "#f1c40f", "#e67e22", "#e74c3c"]
 for ax, (col, title) in zip(axes, plot_specs):
     data = [dev_df.loc[dev_df["shape_k6_label"] == lt, col].to_numpy() for lt in letters_6]
-    bp = ax.boxplot(data, labels=letters_6, patch_artist=True)
+    bp = ax.boxplot(data, tick_labels=letters_6, patch_artist=True)
     for patch, c in zip(bp["boxes"], palette_6):
         patch.set_facecolor(c)
         patch.set_alpha(0.8)
     ax.set_title(title, fontsize=10.5, fontweight="bold")
-    ax.set_xlabel("Gruppo FP03 (A → F)")
+    ax.set_xlabel("Group A-F (proxy order defined on the training set)")
     ax.grid(axis="y", linestyle=":", alpha=0.6)
 
-plt.suptitle("Caratteristiche Fisiche dei 6 Gruppi (A–F di FP03) nel Modello Basato sulla Forma (N=468)",
+plt.suptitle("Exploratory profiles of groups A-F (K=6, N=468)",
              fontsize=12, fontweight="bold", y=1.02)
 plt.tight_layout()
 plt.savefig(OUT_DIR / "fig2_k6_morphological_profiles.png", dpi=300, bbox_inches="tight")
 plt.close()
 
-# Grafico 3: Distribuzione A-F tra Train, Validation e Test
+# Figure 3: Distribution of groups A-F across train, validation, and test
 fig, ax = plt.subplots(figsize=(9.5, 4.6))
-split_names = ["Train\n(6 vetrini, N=411)", "Validation\n(WSI-016, N=57)", "Test 1\n(WSI-015, N=36)", "Test 2\n(WSI-017, N=56)"]
+split_names = ["Train\n(6 slides, N=411)", "Validation\n(WSI-016, N=57)", "Test 1\n(WSI-015, N=36)", "Test 2\n(WSI-017, N=56)"]
 sub_dfs = [dev_df[train_mask], dev_df[val_mask], test15_df, test17_df]
 bottom = np.zeros(len(sub_dfs))
 
 for lt, c in zip(letters_6, palette_6):
     vals = np.array([100.0 * (s["shape_k6_label"] == lt).sum() / len(s) for s in sub_dfs])
-    bars = ax.bar(split_names, vals, bottom=bottom, label=f"Gruppo {lt}", color=c, edgecolor="white", width=0.52)
+    bars = ax.bar(split_names, vals, bottom=bottom, label=f"Group {lt}", color=c, edgecolor="white", width=0.52)
     for bar, v in zip(bars, vals):
         if v >= 6.5:
             ax.text(bar.get_x() + bar.get_width() / 2, bar.get_y() + v / 2, f"{v:.1f}%",
                     ha="center", va="center", color="white", fontweight="bold", fontsize=8.5)
     bottom += vals
 
-ax.set_ylabel("Percentuale di Glomeruli (%)", fontsize=10.5)
+ax.set_ylabel("Percentage of glomeruli (%)", fontsize=10.5)
 ax.set_ylim(0, 105)
-ax.set_title("Distribuzione dei 6 Stadi (A–F) su Train, Validation e Vetrini di Test (Modello Solo Forma)",
+ax.set_title("Distribution of groups A-F across train, validation, and test sets (K=6)",
              fontsize=11.5, fontweight="bold")
 ax.legend(loc="upper right", ncol=2, fontsize=9)
 ax.grid(axis="y", linestyle=":", alpha=0.6)
@@ -340,4 +366,4 @@ plt.tight_layout()
 plt.savefig(OUT_DIR / "fig3_k6_split_distributions.png", dpi=300, bbox_inches="tight")
 plt.close()
 
-print("\nSalvati CSV e grafici in:", OUT_DIR)
+print("\nSaved CSV files and figures to:", OUT_DIR)
