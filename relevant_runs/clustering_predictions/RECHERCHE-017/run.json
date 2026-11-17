@@ -1,0 +1,220 @@
+{
+  "detection_segmentation_metrics": {
+    "count_error": 22,
+    "f1": 0.6667,
+    "fn": 8,
+    "fp": 30,
+    "gt_count": 46,
+    "matched_pairs": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        16
+      ],
+      [
+        2,
+        4
+      ],
+      [
+        3,
+        34
+      ],
+      [
+        4,
+        19
+      ],
+      [
+        5,
+        35
+      ],
+      [
+        6,
+        26
+      ],
+      [
+        7,
+        15
+      ],
+      [
+        8,
+        42
+      ],
+      [
+        9,
+        0
+      ],
+      [
+        10,
+        32
+      ],
+      [
+        11,
+        33
+      ],
+      [
+        12,
+        36
+      ],
+      [
+        13,
+        5
+      ],
+      [
+        14,
+        3
+      ],
+      [
+        15,
+        2
+      ],
+      [
+        16,
+        20
+      ],
+      [
+        17,
+        17
+      ],
+      [
+        18,
+        31
+      ],
+      [
+        19,
+        21
+      ],
+      [
+        20,
+        43
+      ],
+      [
+        22,
+        18
+      ],
+      [
+        23,
+        11
+      ],
+      [
+        27,
+        23
+      ],
+      [
+        28,
+        41
+      ],
+      [
+        29,
+        44
+      ],
+      [
+        30,
+        37
+      ],
+      [
+        31,
+        8
+      ],
+      [
+        32,
+        25
+      ],
+      [
+        33,
+        12
+      ],
+      [
+        34,
+        40
+      ],
+      [
+        35,
+        27
+      ],
+      [
+        36,
+        39
+      ],
+      [
+        40,
+        10
+      ],
+      [
+        43,
+        28
+      ],
+      [
+        46,
+        22
+      ],
+      [
+        53,
+        9
+      ],
+      [
+        55,
+        30
+      ]
+    ],
+    "mean_dice": 0.8416,
+    "mean_iou": 0.7476,
+    "precision": 0.5588,
+    "pred_count": 68,
+    "recall": 0.8261,
+    "tp": 38
+  },
+  "fit_on_predictions": false,
+  "legacy_provenance": null,
+  "models": {
+    "clustering_k2": {
+      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/runs/clustering/clustering_k2/pipeline.joblib",
+      "sha256": "9ab5c33b54dd3c69bd2f095625d884f585d4738529ee53b20acd3f191b5965c5",
+      "size_bytes": 85412047
+    },
+    "clustering_k4": {
+      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/runs/clustering/clustering_k4/pipeline.joblib",
+      "sha256": "0719a3146483da6315b2d02d854d9939190a434e1df3de15cc2855b45866bd83",
+      "size_bytes": 85412399
+    },
+    "clustering_k6": {
+      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/runs/clustering/clustering_k6/pipeline.joblib",
+      "sha256": "5583c389969699e24f2183f6bb6072b48abfd4af9ddeca00cd9761f183872688",
+      "size_bytes": 85412751
+    }
+  },
+  "outputs": {
+    "clustering_k2/assignments.csv": "1f78d471a252755781dd7aa79c72567aabf22e1171879625af3a4e48929e9bdc",
+    "clustering_k2/clusters.xml": "010c142bd4dca175c89bb5b635743b01b6cf28f7e4302eb369bd82e262f77e9d",
+    "clustering_k2/gallery.png": "00f105d58da2d1e5fcdf28692ab2007814807543a5ddec9b797c8ab5f599f952",
+    "clustering_k2/metrics.json": "43d3262227f5d1bf7f89a63f7ab9a98c37ced5ae96dc07ddadbb07cd788e19d0",
+    "clustering_k4/assignments.csv": "5f4706b549ec3e2b478fb53864f1c94ca818abeed1a2512f8937b2d6d89afc89",
+    "clustering_k4/clusters.xml": "109570e87de9ab2bf07c9990f9d63bbf0b5dc0d43b9911348095bd4ad5b04992",
+    "clustering_k4/gallery.png": "a442cfed41d2dd8e298d6d7550a549ad27c2e383652f76defa08624a17810d68",
+    "clustering_k4/metrics.json": "552252a35639c5459b63ef4297c9bc320988a3d7ec0134089b909aae0907b82d",
+    "clustering_k6/assignments.csv": "e64ce5b9fa1da4ee0cc9e665d97f9aa887c7f1f05f75f00f1f44da259fefbaff",
+    "clustering_k6/clusters.xml": "0310da7f49bc9f310ce48efdc85a2f58bb3054ee3a757f106719b7bbe237f7b8",
+    "clustering_k6/gallery.png": "9f0b4d84d740b193193c6762a02b686bdae36331884834f1c6c3c0fce23636b2",
+    "clustering_k6/metrics.json": "b076562fe5093de1e0b6defaef490575969329940a13f859a7de6b1090f42e44",
+    "excluded_predictions.csv": "9be41a3e6bbe4309b21f6cb62a3ba8e45f330a5e477c4efccb1d24f0b9f2b620",
+    "report.md": "3efe7cccdf67be2b626796c9a1bb984a99a190d9bf5f3f8323a8094573c18232",
+    "summary.csv": "9a0e71efba0fae9542cd6dd11eaab01cbd287fea7ef417d2316ad33a320be3f2",
+    "summary.json": "473a3ccee3712d2e2f8a67d9b420b9e31d87fba361f2f05c2706aa05b1e538f2"
+  },
+  "slide_id": "RECHERCHE-017",
+  "source_predictions": {
+    "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/runs/wsi_inference/RECHERCHE-017_predictions.json",
+    "sha256": "dac8c18b32ed1b5c44de1775d2d6c2a7f2b8a22c71ba6f1b5a0139d6896000dc",
+    "size_bytes": 126857
+  },
+  "source_slide": {
+    "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/glomeruli_grading/RECHERCHE-017.svs",
+    "sha256": "42a51f7c004c65dc59052a5db8fa7ed5baf806adcb3b69dc14e85eeb9df05eb9",
+    "size_bytes": 814496711
+  },
+  "split": "test",
+  "stage": "clustering_prediction",
+  "status": "completed"
+}

@@ -1,0 +1,30 @@
+[
+  {
+    "ari_subsampling": 0.8894161253356868,
+    "counts": {
+      "A": 381,
+      "B": 30
+    },
+    "criteria_passed": "4/5",
+    "distance_median": 1.0118922848202887,
+    "jaccard_min": 0.07482993197278912,
+    "model": "clustering_k2",
+    "n_samples": 411,
+    "silhouette": 0.4677879148710075,
+    "split": "train"
+  },
+  {
+    "ari_subsampling": null,
+    "counts": {
+      "A": 57,
+      "B": 0
+    },
+    "criteria_passed": null,
+    "distance_median": 1.7432580663265227,
+    "jaccard_min": null,
+    "model": "clustering_k2",
+    "n_samples": 57,
+    "silhouette": null,
+    "split": "val"
+  }
+]

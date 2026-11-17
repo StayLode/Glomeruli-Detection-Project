@@ -1,0 +1,9 @@
+k,model,loso_mean_occupied,loso_mean_max_share,loso_worst_max_share,loso_collapsed_slides_count,loso_mean_val_sil,full_sil,ari_sub80,jaccard_min,sil_z,cramers_v_slide,max_dom_slide,criteria
+3,baseline_hybrid_pca20_kmeans,2.71,0.851,0.9818,6,0.1491,0.22,0.9368,0.3049,18.25,0.5237,0.5253,3/5
+3,stain_inv_kmeans,2.71,0.6111,0.6829,0,0.3266,0.3004,0.9543,0.8889,16.6,0.229,0.3871,5/5
+3,stain_inv_gmm_full,3.0,0.4908,0.5789,0,0.1701,0.2277,0.8002,0.6129,4.02,0.2072,0.3333,5/5
+3,stain_inv_gmm_tied,2.43,0.8439,1.0,6,0.3505,0.3405,0.9193,0.0,7.07,0.232,0.4,4/5
+4,baseline_hybrid_pca20_kmeans,3.14,0.6152,0.9649,1,0.1937,0.1837,0.9316,0.8814,18.17,0.4488,0.5833,4/5
+4,stain_inv_kmeans,3.71,0.4819,0.5965,0,0.2301,0.2471,0.9335,0.7808,8.64,0.2472,0.3871,5/5
+4,stain_inv_gmm_full,4.0,0.4467,0.7193,0,0.0839,0.1643,0.7734,0.5906,3.32,0.2433,0.36,4/5
+4,stain_inv_gmm_tied,3.0,0.7369,1.0,3,0.2471,0.3274,0.8146,0.0,6.69,0.1884,0.5714,4/5

@@ -1,0 +1,4397 @@
+{
+  "cluster_profiles": {
+    "C0": {
+      "descriptive_profile": "glom_area_um2 lower than cohort median; mean_optical_density higher than cohort median",
+      "features": {
+        "aspect_ratio": {
+          "median": 1.0049,
+          "q1": 0.9331,
+          "q3": 1.0979999999999999
+        },
+        "circularity": {
+          "median": 0.8071,
+          "q1": 0.768,
+          "q3": 0.84045
+        },
+        "extent": {
+          "median": 0.7643,
+          "q1": 0.734,
+          "q3": 0.79125
+        },
+        "glom_area_um2": {
+          "median": 23978.4264,
+          "q1": 17881.948750000003,
+          "q3": 32320.3761
+        },
+        "glom_perimeter_um": {
+          "median": 613.2149,
+          "q1": 538.1595,
+          "q3": 700.2765999999999
+        },
+        "mean_intensity": {
+          "median": 180.83,
+          "q1": 171.615,
+          "q3": 184.095
+        },
+        "mean_optical_density": {
+          "median": 0.164,
+          "q1": 0.15475,
+          "q3": 0.18985000000000002
+        },
+        "red_green_ratio": {
+          "median": 1.212,
+          "q1": 1.1955,
+          "q3": 1.2572
+        },
+        "solidity": {
+          "median": 0.9916,
+          "q1": 0.9897,
+          "q3": 0.99335
+        },
+        "stain_heterogeneity": {
+          "median": 38.03,
+          "q1": 35.39,
+          "q3": 41.175
+        }
+      },
+      "n_glomeruli": 131,
+      "n_slides": 6,
+      "random_examples": [
+        "RECHERCHE-009#38",
+        "RECHERCHE-010#101",
+        "RECHERCHE-010#120",
+        "RECHERCHE-010#117",
+        "RECHERCHE-011#33",
+        "RECHERCHE-011#38",
+        "RECHERCHE-010#15",
+        "RECHERCHE-010#32"
+      ]
+    },
+    "C1": {
+      "descriptive_profile": "glom_area_um2 lower than cohort median; mean_optical_density lower than cohort median",
+      "features": {
+        "aspect_ratio": {
+          "median": 1.08775,
+          "q1": 0.9494750000000001,
+          "q3": 1.226375
+        },
+        "circularity": {
+          "median": 0.7717,
+          "q1": 0.73995,
+          "q3": 0.8073250000000001
+        },
+        "extent": {
+          "median": 0.7605,
+          "q1": 0.7326250000000001,
+          "q3": 0.7922499999999999
+        },
+        "glom_area_um2": {
+          "median": 16853.4483,
+          "q1": 13278.45665,
+          "q3": 22025.53535
+        },
+        "glom_perimeter_um": {
+          "median": 524.8856,
+          "q1": 471.63835,
+          "q3": 584.200225
+        },
+        "mean_intensity": {
+          "median": 194.095,
+          "q1": 190.125,
+          "q3": 199.25
+        },
+        "mean_optical_density": {
+          "median": 0.1267,
+          "q1": 0.113325,
+          "q3": 0.138125
+        },
+        "red_green_ratio": {
+          "median": 1.1438,
+          "q1": 1.1217,
+          "q3": 1.17015
+        },
+        "solidity": {
+          "median": 0.9904,
+          "q1": 0.9880249999999999,
+          "q3": 0.992175
+        },
+        "stain_heterogeneity": {
+          "median": 31.99,
+          "q1": 28.5375,
+          "q3": 34.9925
+        }
+      },
+      "n_glomeruli": 118,
+      "n_slides": 6,
+      "random_examples": [
+        "RECHERCHE-009#97",
+        "RECHERCHE-010#135",
+        "RECHERCHE-011#2",
+        "RECHERCHE-009#94",
+        "RECHERCHE-009#76",
+        "RECHERCHE-005#29",
+        "RECHERCHE-011#10",
+        "RECHERCHE-009#88"
+      ]
+    },
+    "C2": {
+      "descriptive_profile": "glom_area_um2 higher than cohort median; mean_optical_density lower than cohort median",
+      "features": {
+        "aspect_ratio": {
+          "median": 1.1517,
+          "q1": 0.8634,
+          "q3": 1.4885000000000002
+        },
+        "circularity": {
+          "median": 0.4569,
+          "q1": 0.40125,
+          "q3": 0.5122500000000001
+        },
+        "extent": {
+          "median": 0.6153,
+          "q1": 0.55765,
+          "q3": 0.6570499999999999
+        },
+        "glom_area_um2": {
+          "median": 34337.2974,
+          "q1": 27533.19155,
+          "q3": 39818.7721
+        },
+        "glom_perimeter_um": {
+          "median": 977.2244,
+          "q1": 825.5274,
+          "q3": 1073.7220499999999
+        },
+        "mean_intensity": {
+          "median": 191.9,
+          "q1": 186.625,
+          "q3": 196.55
+        },
+        "mean_optical_density": {
+          "median": 0.1318,
+          "q1": 0.12075,
+          "q3": 0.14805000000000001
+        },
+        "red_green_ratio": {
+          "median": 1.1479,
+          "q1": 1.13435,
+          "q3": 1.1763
+        },
+        "solidity": {
+          "median": 0.899,
+          "q1": 0.8757999999999999,
+          "q3": 0.915
+        },
+        "stain_heterogeneity": {
+          "median": 35.17,
+          "q1": 30.810000000000002,
+          "q3": 38.555
+        }
+      },
+      "n_glomeruli": 31,
+      "n_slides": 5,
+      "random_examples": [
+        "RECHERCHE-011#72",
+        "RECHERCHE-010#79",
+        "RECHERCHE-010#40",
+        "RECHERCHE-010#86",
+        "RECHERCHE-003#31",
+        "RECHERCHE-011#30",
+        "RECHERCHE-009#72",
+        "RECHERCHE-011#68"
+      ]
+    },
+    "C3": {
+      "descriptive_profile": "glom_area_um2 higher than cohort median; mean_optical_density lower than cohort median",
+      "features": {
+        "aspect_ratio": {
+          "median": 1.0,
+          "q1": 0.90605,
+          "q3": 1.0891000000000002
+        },
+        "circularity": {
+          "median": 0.8373,
+          "q1": 0.8168,
+          "q3": 0.8507
+        },
+        "extent": {
+          "median": 0.7759,
+          "q1": 0.7493,
+          "q3": 0.8110999999999999
+        },
+        "glom_area_um2": {
+          "median": 46196.0558,
+          "q1": 35371.8661,
+          "q3": 60266.1824
+        },
+        "glom_perimeter_um": {
+          "median": 826.3011,
+          "q1": 733.51625,
+          "q3": 948.5587499999999
+        },
+        "mean_intensity": {
+          "median": 192.98,
+          "q1": 188.83,
+          "q3": 197.89499999999998
+        },
+        "mean_optical_density": {
+          "median": 0.1327,
+          "q1": 0.12040000000000001,
+          "q3": 0.1451
+        },
+        "red_green_ratio": {
+          "median": 1.129,
+          "q1": 1.1077,
+          "q3": 1.1403500000000002
+        },
+        "solidity": {
+          "median": 0.9936,
+          "q1": 0.992,
+          "q3": 0.9944500000000001
+        },
+        "stain_heterogeneity": {
+          "median": 39.93,
+          "q1": 37.72,
+          "q3": 43.005
+        }
+      },
+      "n_glomeruli": 131,
+      "n_slides": 6,
+      "random_examples": [
+        "RECHERCHE-004#53",
+        "RECHERCHE-003#52",
+        "RECHERCHE-010#45",
+        "RECHERCHE-005#42",
+        "RECHERCHE-005#43",
+        "RECHERCHE-005#34",
+        "RECHERCHE-009#59",
+        "RECHERCHE-005#66"
+      ]
+    }
+  },
+  "cluster_profiles_scope": "train",
+  "cohort_hash": "afde6a117285c8d5a0c2acd4760ff4069134d7db3e43da0a6fdd61fcb56e4dd5",
+  "common_evaluation_space_hash": "45747d594781a0a531816a32348fcff362456e861a4d11e160384021d9b81e29",
+  "common_space_internal_metrics": {
+    "train": {
+      "calinski_harabasz": 137.54670103742419,
+      "davies_bouldin": 1.2289746035407925,
+      "reason": null,
+      "silhouette": 0.23224247067707257,
+      "status": "evaluated"
+    },
+    "val": {
+      "calinski_harabasz": 4.581195826262215,
+      "davies_bouldin": 0.7938343991147778,
+      "reason": null,
+      "silhouette": 0.20304482980244243,
+      "status": "evaluated"
+    }
+  },
+  "evaluation_schema_version": 3,
+  "model_diagnostics": {
+    "all_fits_valid": true,
+    "fits": [
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          131,
+          118,
+          31,
+          131
+        ],
+        "n_iter": 11,
+        "occupied_clusters": 4,
+        "replicate_id": "saved_run",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          131,
+          118,
+          31,
+          131
+        ],
+        "n_iter": 11,
+        "occupied_clusters": 4,
+        "replicate_id": "seed-00",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          131,
+          121,
+          31,
+          128
+        ],
+        "n_iter": 8,
+        "occupied_clusters": 4,
+        "replicate_id": "seed-01",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          131,
+          132,
+          31,
+          117
+        ],
+        "n_iter": 18,
+        "occupied_clusters": 4,
+        "replicate_id": "seed-02",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          132,
+          31,
+          131,
+          117
+        ],
+        "n_iter": 14,
+        "occupied_clusters": 4,
+        "replicate_id": "seed-03",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          122,
+          33,
+          131,
+          125
+        ],
+        "n_iter": 12,
+        "occupied_clusters": 4,
+        "replicate_id": "seed-04",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          33,
+          122,
+          122,
+          134
+        ],
+        "n_iter": 16,
+        "occupied_clusters": 4,
+        "replicate_id": "seed-05",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          122,
+          131,
+          31,
+          127
+        ],
+        "n_iter": 13,
+        "occupied_clusters": 4,
+        "replicate_id": "seed-06",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          31,
+          132,
+          117,
+          131
+        ],
+        "n_iter": 12,
+        "occupied_clusters": 4,
+        "replicate_id": "seed-07",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          132,
+          131,
+          31,
+          117
+        ],
+        "n_iter": 12,
+        "occupied_clusters": 4,
+        "replicate_id": "seed-08",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          127,
+          122,
+          131,
+          31
+        ],
+        "n_iter": 16,
+        "occupied_clusters": 4,
+        "replicate_id": "seed-09",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          139,
+          53,
+          110,
+          27
+        ],
+        "n_iter": 16,
+        "occupied_clusters": 4,
+        "replicate_id": "subsample-000",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          28,
+          126,
+          111,
+          64
+        ],
+        "n_iter": 6,
+        "occupied_clusters": 4,
+        "replicate_id": "subsample-001",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          27,
+          99,
+          97,
+          106
+        ],
+        "n_iter": 11,
+        "occupied_clusters": 4,
+        "replicate_id": "subsample-002",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          111,
+          100,
+          22,
+          96
+        ],
+        "n_iter": 14,
+        "occupied_clusters": 4,
+        "replicate_id": "subsample-003",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          29,
+          105,
+          99,
+          96
+        ],
+        "n_iter": 12,
+        "occupied_clusters": 4,
+        "replicate_id": "subsample-004",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          135,
+          109,
+          59,
+          26
+        ],
+        "n_iter": 9,
+        "occupied_clusters": 4,
+        "replicate_id": "subsample-005",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          91,
+          111,
+          26,
+          101
+        ],
+        "n_iter": 10,
+        "occupied_clusters": 4,
+        "replicate_id": "subsample-006",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          105,
+          102,
+          27,
+          95
+        ],
+        "n_iter": 15,
+        "occupied_clusters": 4,
+        "replicate_id": "subsample-007",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          127,
+          77,
+          101,
+          24
+        ],
+        "n_iter": 13,
+        "occupied_clusters": 4,
+        "replicate_id": "subsample-008",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          85,
+          105,
+          118,
+          21
+        ],
+        "n_iter": 17,
+        "occupied_clusters": 4,
+        "replicate_id": "subsample-009",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          22,
+          131,
+          117,
+          59
+        ],
+        "n_iter": 10,
+        "occupied_clusters": 4,
+        "replicate_id": "subsample-010",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          113,
+          90,
+          24,
+          102
+        ],
+        "n_iter": 12,
+        "occupied_clusters": 4,
+        "replicate_id": "subsample-011",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          110,
+          26,
+          61,
+          132
+        ],
+        "n_iter": 26,
+        "occupied_clusters": 4,
+        "replicate_id": "subsample-012",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          134,
+          26,
+          113,
+          56
+        ],
+        "n_iter": 11,
+        "occupied_clusters": 4,
+        "replicate_id": "subsample-013",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          93,
+          107,
+          101,
+          28
+        ],
+        "n_iter": 7,
+        "occupied_clusters": 4,
+        "replicate_id": "subsample-014",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          54,
+          139,
+          111,
+          25
+        ],
+        "n_iter": 10,
+        "occupied_clusters": 4,
+        "replicate_id": "subsample-015",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          141,
+          21,
+          108,
+          59
+        ],
+        "n_iter": 22,
+        "occupied_clusters": 4,
+        "replicate_id": "subsample-016",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          93,
+          101,
+          32,
+          103
+        ],
+        "n_iter": 11,
+        "occupied_clusters": 4,
+        "replicate_id": "subsample-017",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          111,
+          103,
+          25,
+          90
+        ],
+        "n_iter": 12,
+        "occupied_clusters": 4,
+        "replicate_id": "subsample-018",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          102,
+          97,
+          104,
+          26
+        ],
+        "n_iter": 9,
+        "occupied_clusters": 4,
+        "replicate_id": "subsample-019",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          155,
+          29,
+          124,
+          66
+        ],
+        "n_iter": 8,
+        "occupied_clusters": 4,
+        "replicate_id": "leave-slide-RECHERCHE-003",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          72,
+          105,
+          140,
+          29
+        ],
+        "n_iter": 9,
+        "occupied_clusters": 4,
+        "replicate_id": "leave-slide-RECHERCHE-004",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          148,
+          107,
+          31,
+          70
+        ],
+        "n_iter": 17,
+        "occupied_clusters": 4,
+        "replicate_id": "leave-slide-RECHERCHE-005",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          107,
+          114,
+          83,
+          25
+        ],
+        "n_iter": 11,
+        "occupied_clusters": 4,
+        "replicate_id": "leave-slide-RECHERCHE-009",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          78,
+          109,
+          101,
+          19
+        ],
+        "n_iter": 17,
+        "occupied_clusters": 4,
+        "replicate_id": "leave-slide-RECHERCHE-010",
+        "requested_clusters": 4,
+        "valid": true
+      },
+      {
+        "algorithm": "kmeans",
+        "counts": [
+          23,
+          58,
+          120,
+          142
+        ],
+        "n_iter": 17,
+        "occupied_clusters": 4,
+        "replicate_id": "leave-slide-RECHERCHE-011",
+        "requested_clusters": 4,
+        "valid": true
+      }
+    ],
+    "invalid_fit_ids": [],
+    "n_fits": 37
+  },
+  "own_space_train_metrics": {
+    "calinski_harabasz": 83.50568950606309,
+    "davies_bouldin": 1.6146062946432833,
+    "silhouette": 0.16665692626224077
+  },
+  "paired_interval_label": "empirical 2.5th-97.5th percentile range of matched replicate differences; not a confidence interval for the mean",
+  "paired_metric_records": {
+    "background_mean_intensity_eta2": [
+      {
+        "replicate_id": "subsample-000",
+        "value": 0.11129982902310663
+      },
+      {
+        "replicate_id": "subsample-001",
+        "value": 0.14742752384003788
+      },
+      {
+        "replicate_id": "subsample-002",
+        "value": 0.20224428461751565
+      },
+      {
+        "replicate_id": "subsample-003",
+        "value": 0.1723841080819164
+      },
+      {
+        "replicate_id": "subsample-004",
+        "value": 0.18731304731947784
+      },
+      {
+        "replicate_id": "subsample-005",
+        "value": 0.1470640128252466
+      },
+      {
+        "replicate_id": "subsample-006",
+        "value": 0.16425660222284677
+      },
+      {
+        "replicate_id": "subsample-007",
+        "value": 0.1824520717686929
+      },
+      {
+        "replicate_id": "subsample-008",
+        "value": 0.14723256781193753
+      },
+      {
+        "replicate_id": "subsample-009",
+        "value": 0.18625294514868607
+      },
+      {
+        "replicate_id": "subsample-010",
+        "value": 0.1746846141837426
+      },
+      {
+        "replicate_id": "subsample-011",
+        "value": 0.21130627702142374
+      },
+      {
+        "replicate_id": "subsample-012",
+        "value": 0.1391897839739726
+      },
+      {
+        "replicate_id": "subsample-013",
+        "value": 0.14644110445135272
+      },
+      {
+        "replicate_id": "subsample-014",
+        "value": 0.18201687962443797
+      },
+      {
+        "replicate_id": "subsample-015",
+        "value": 0.12253022834010736
+      },
+      {
+        "replicate_id": "subsample-016",
+        "value": 0.12836774543559412
+      },
+      {
+        "replicate_id": "subsample-017",
+        "value": 0.18247360848253
+      },
+      {
+        "replicate_id": "subsample-018",
+        "value": 0.18093083472458288
+      },
+      {
+        "replicate_id": "subsample-019",
+        "value": 0.18123055439199967
+      }
+    ],
+    "border_distance_px_eta2": [
+      {
+        "replicate_id": "subsample-000",
+        "value": 0.05165992288847281
+      },
+      {
+        "replicate_id": "subsample-001",
+        "value": 0.051753040429197934
+      },
+      {
+        "replicate_id": "subsample-002",
+        "value": 0.05303317894898282
+      },
+      {
+        "replicate_id": "subsample-003",
+        "value": 0.07522340055801757
+      },
+      {
+        "replicate_id": "subsample-004",
+        "value": 0.044963821196727545
+      },
+      {
+        "replicate_id": "subsample-005",
+        "value": 0.043339226766593325
+      },
+      {
+        "replicate_id": "subsample-006",
+        "value": 0.044782113728787085
+      },
+      {
+        "replicate_id": "subsample-007",
+        "value": 0.03483625622549081
+      },
+      {
+        "replicate_id": "subsample-008",
+        "value": 0.07624842844331493
+      },
+      {
+        "replicate_id": "subsample-009",
+        "value": 0.06731437952368546
+      },
+      {
+        "replicate_id": "subsample-010",
+        "value": 0.051908552472557885
+      },
+      {
+        "replicate_id": "subsample-011",
+        "value": 0.07999813017772099
+      },
+      {
+        "replicate_id": "subsample-012",
+        "value": 0.05987704768580977
+      },
+      {
+        "replicate_id": "subsample-013",
+        "value": 0.06659807032502958
+      },
+      {
+        "replicate_id": "subsample-014",
+        "value": 0.04108472559642879
+      },
+      {
+        "replicate_id": "subsample-015",
+        "value": 0.04101288248488743
+      },
+      {
+        "replicate_id": "subsample-016",
+        "value": 0.07161978805142631
+      },
+      {
+        "replicate_id": "subsample-017",
+        "value": 0.05810066495757867
+      },
+      {
+        "replicate_id": "subsample-018",
+        "value": 0.0525240370245197
+      },
+      {
+        "replicate_id": "subsample-019",
+        "value": 0.06041202551868217
+      }
+    ],
+    "completeness_eta2": [
+      {
+        "replicate_id": "subsample-000",
+        "value": 0.05504574415233
+      },
+      {
+        "replicate_id": "subsample-001",
+        "value": 0.0370699219433908
+      },
+      {
+        "replicate_id": "subsample-002",
+        "value": 0.06222669228878876
+      },
+      {
+        "replicate_id": "subsample-003",
+        "value": 0.03305078186143693
+      },
+      {
+        "replicate_id": "subsample-004",
+        "value": 0.031245179902290043
+      },
+      {
+        "replicate_id": "subsample-005",
+        "value": 0.03442999372750004
+      },
+      {
+        "replicate_id": "subsample-006",
+        "value": 0.044762618289561656
+      },
+      {
+        "replicate_id": "subsample-007",
+        "value": 0.047066177146743896
+      },
+      {
+        "replicate_id": "subsample-008",
+        "value": 0.06581066589199573
+      },
+      {
+        "replicate_id": "subsample-009",
+        "value": 0.047358858163968814
+      },
+      {
+        "replicate_id": "subsample-010",
+        "value": 0.04977298489731894
+      },
+      {
+        "replicate_id": "subsample-011",
+        "value": 0.045925993381970565
+      },
+      {
+        "replicate_id": "subsample-012",
+        "value": 0.05287558521417462
+      },
+      {
+        "replicate_id": "subsample-013",
+        "value": 0.03269727063725156
+      },
+      {
+        "replicate_id": "subsample-014",
+        "value": 0.05834663458775983
+      },
+      {
+        "replicate_id": "subsample-015",
+        "value": 0.04653000126303815
+      },
+      {
+        "replicate_id": "subsample-016",
+        "value": 0.03579592773692427
+      },
+      {
+        "replicate_id": "subsample-017",
+        "value": 0.03891373152200684
+      },
+      {
+        "replicate_id": "subsample-018",
+        "value": 0.032123476962102375
+      },
+      {
+        "replicate_id": "subsample-019",
+        "value": 0.03965010467532827
+      }
+    ],
+    "tissue_ratio_eta2": [
+      {
+        "replicate_id": "subsample-000",
+        "value": 0.019035899698549626
+      },
+      {
+        "replicate_id": "subsample-001",
+        "value": 0.009121391543984001
+      },
+      {
+        "replicate_id": "subsample-002",
+        "value": 0.05589149382008709
+      },
+      {
+        "replicate_id": "subsample-003",
+        "value": 0.043755792565732865
+      },
+      {
+        "replicate_id": "subsample-004",
+        "value": 0.07327080775714227
+      },
+      {
+        "replicate_id": "subsample-005",
+        "value": 0.01862882954350122
+      },
+      {
+        "replicate_id": "subsample-006",
+        "value": 0.05648469190628063
+      },
+      {
+        "replicate_id": "subsample-007",
+        "value": 0.045072920746944516
+      },
+      {
+        "replicate_id": "subsample-008",
+        "value": 0.02191487145732213
+      },
+      {
+        "replicate_id": "subsample-009",
+        "value": 0.04564456809751875
+      },
+      {
+        "replicate_id": "subsample-010",
+        "value": 0.024169417049138386
+      },
+      {
+        "replicate_id": "subsample-011",
+        "value": 0.048704379199792966
+      },
+      {
+        "replicate_id": "subsample-012",
+        "value": 0.005610723951798381
+      },
+      {
+        "replicate_id": "subsample-013",
+        "value": 0.013651933722266175
+      },
+      {
+        "replicate_id": "subsample-014",
+        "value": 0.06235021849260752
+      },
+      {
+        "replicate_id": "subsample-015",
+        "value": 0.013221832486069604
+      },
+      {
+        "replicate_id": "subsample-016",
+        "value": 0.019210143196724046
+      },
+      {
+        "replicate_id": "subsample-017",
+        "value": 0.03993887632410899
+      },
+      {
+        "replicate_id": "subsample-018",
+        "value": 0.042898122514108177
+      },
+      {
+        "replicate_id": "subsample-019",
+        "value": 0.046520386603522666
+      }
+    ],
+    "train_calinski_harabasz": [
+      {
+        "replicate_id": "subsample-000",
+        "value": 107.44521649562944
+      },
+      {
+        "replicate_id": "subsample-001",
+        "value": 120.05992057901612
+      },
+      {
+        "replicate_id": "subsample-002",
+        "value": 111.54891149126894
+      },
+      {
+        "replicate_id": "subsample-003",
+        "value": 109.88295850106576
+      },
+      {
+        "replicate_id": "subsample-004",
+        "value": 107.60638585239057
+      },
+      {
+        "replicate_id": "subsample-005",
+        "value": 116.54087515357749
+      },
+      {
+        "replicate_id": "subsample-006",
+        "value": 109.82876299664282
+      },
+      {
+        "replicate_id": "subsample-007",
+        "value": 106.19748031672556
+      },
+      {
+        "replicate_id": "subsample-008",
+        "value": 110.01640056837242
+      },
+      {
+        "replicate_id": "subsample-009",
+        "value": 109.98451117237006
+      },
+      {
+        "replicate_id": "subsample-010",
+        "value": 107.03567565522934
+      },
+      {
+        "replicate_id": "subsample-011",
+        "value": 112.35429161095202
+      },
+      {
+        "replicate_id": "subsample-012",
+        "value": 110.77132566725162
+      },
+      {
+        "replicate_id": "subsample-013",
+        "value": 112.25457880126079
+      },
+      {
+        "replicate_id": "subsample-014",
+        "value": 113.81461267711654
+      },
+      {
+        "replicate_id": "subsample-015",
+        "value": 111.201797949321
+      },
+      {
+        "replicate_id": "subsample-016",
+        "value": 114.16745574916003
+      },
+      {
+        "replicate_id": "subsample-017",
+        "value": 112.08301259794914
+      },
+      {
+        "replicate_id": "subsample-018",
+        "value": 109.48797103318394
+      },
+      {
+        "replicate_id": "subsample-019",
+        "value": 116.51738305697951
+      }
+    ],
+    "train_cramers_v_slide": [
+      {
+        "replicate_id": "subsample-000",
+        "value": 0.28554699643201475
+      },
+      {
+        "replicate_id": "subsample-001",
+        "value": 0.2850540491144443
+      },
+      {
+        "replicate_id": "subsample-002",
+        "value": 0.24833361911435525
+      },
+      {
+        "replicate_id": "subsample-003",
+        "value": 0.23570938688988516
+      },
+      {
+        "replicate_id": "subsample-004",
+        "value": 0.22936820021263185
+      },
+      {
+        "replicate_id": "subsample-005",
+        "value": 0.29244284437160917
+      },
+      {
+        "replicate_id": "subsample-006",
+        "value": 0.24951919558178506
+      },
+      {
+        "replicate_id": "subsample-007",
+        "value": 0.25279818736795473
+      },
+      {
+        "replicate_id": "subsample-008",
+        "value": 0.2820601428399741
+      },
+      {
+        "replicate_id": "subsample-009",
+        "value": 0.2657173556682618
+      },
+      {
+        "replicate_id": "subsample-010",
+        "value": 0.29848626285863866
+      },
+      {
+        "replicate_id": "subsample-011",
+        "value": 0.22457840051707958
+      },
+      {
+        "replicate_id": "subsample-012",
+        "value": 0.2970852590961391
+      },
+      {
+        "replicate_id": "subsample-013",
+        "value": 0.28225914850894207
+      },
+      {
+        "replicate_id": "subsample-014",
+        "value": 0.23819962408118453
+      },
+      {
+        "replicate_id": "subsample-015",
+        "value": 0.2902394761918553
+      },
+      {
+        "replicate_id": "subsample-016",
+        "value": 0.31157659842784075
+      },
+      {
+        "replicate_id": "subsample-017",
+        "value": 0.24039437800387364
+      },
+      {
+        "replicate_id": "subsample-018",
+        "value": 0.2528683930071999
+      },
+      {
+        "replicate_id": "subsample-019",
+        "value": 0.23110494249724736
+      }
+    ],
+    "train_davies_bouldin": [
+      {
+        "replicate_id": "subsample-000",
+        "value": 1.2705773695161153
+      },
+      {
+        "replicate_id": "subsample-001",
+        "value": 1.2277073349017558
+      },
+      {
+        "replicate_id": "subsample-002",
+        "value": 1.2101105458290626
+      },
+      {
+        "replicate_id": "subsample-003",
+        "value": 1.215746446733559
+      },
+      {
+        "replicate_id": "subsample-004",
+        "value": 1.263777920169479
+      },
+      {
+        "replicate_id": "subsample-005",
+        "value": 1.2456070176706793
+      },
+      {
+        "replicate_id": "subsample-006",
+        "value": 1.2690152483663621
+      },
+      {
+        "replicate_id": "subsample-007",
+        "value": 1.2684567043902322
+      },
+      {
+        "replicate_id": "subsample-008",
+        "value": 1.2341614840381914
+      },
+      {
+        "replicate_id": "subsample-009",
+        "value": 1.235777200384761
+      },
+      {
+        "replicate_id": "subsample-010",
+        "value": 1.259117855048007
+      },
+      {
+        "replicate_id": "subsample-011",
+        "value": 1.1993081498878788
+      },
+      {
+        "replicate_id": "subsample-012",
+        "value": 1.2743799499740058
+      },
+      {
+        "replicate_id": "subsample-013",
+        "value": 1.2723389210998262
+      },
+      {
+        "replicate_id": "subsample-014",
+        "value": 1.2199595546382247
+      },
+      {
+        "replicate_id": "subsample-015",
+        "value": 1.251347712955704
+      },
+      {
+        "replicate_id": "subsample-016",
+        "value": 1.2150412717837167
+      },
+      {
+        "replicate_id": "subsample-017",
+        "value": 1.26478551191379
+      },
+      {
+        "replicate_id": "subsample-018",
+        "value": 1.2440819399827772
+      },
+      {
+        "replicate_id": "subsample-019",
+        "value": 1.204617813796863
+      }
+    ],
+    "train_dominant_slide_fraction": [
+      {
+        "replicate_id": "subsample-000",
+        "value": 0.5660377358490566
+      },
+      {
+        "replicate_id": "subsample-001",
+        "value": 0.515625
+      },
+      {
+        "replicate_id": "subsample-002",
+        "value": 0.4074074074074074
+      },
+      {
+        "replicate_id": "subsample-003",
+        "value": 0.45454545454545453
+      },
+      {
+        "replicate_id": "subsample-004",
+        "value": 0.3958333333333333
+      },
+      {
+        "replicate_id": "subsample-005",
+        "value": 0.6101694915254238
+      },
+      {
+        "replicate_id": "subsample-006",
+        "value": 0.4230769230769231
+      },
+      {
+        "replicate_id": "subsample-007",
+        "value": 0.38095238095238093
+      },
+      {
+        "replicate_id": "subsample-008",
+        "value": 0.5064935064935064
+      },
+      {
+        "replicate_id": "subsample-009",
+        "value": 0.47619047619047616
+      },
+      {
+        "replicate_id": "subsample-010",
+        "value": 0.576271186440678
+      },
+      {
+        "replicate_id": "subsample-011",
+        "value": 0.37168141592920356
+      },
+      {
+        "replicate_id": "subsample-012",
+        "value": 0.5573770491803278
+      },
+      {
+        "replicate_id": "subsample-013",
+        "value": 0.5357142857142857
+      },
+      {
+        "replicate_id": "subsample-014",
+        "value": 0.3564356435643564
+      },
+      {
+        "replicate_id": "subsample-015",
+        "value": 0.5555555555555556
+      },
+      {
+        "replicate_id": "subsample-016",
+        "value": 0.5932203389830508
+      },
+      {
+        "replicate_id": "subsample-017",
+        "value": 0.3883495145631068
+      },
+      {
+        "replicate_id": "subsample-018",
+        "value": 0.43333333333333335
+      },
+      {
+        "replicate_id": "subsample-019",
+        "value": 0.4230769230769231
+      }
+    ],
+    "train_nmi_slide": [
+      {
+        "replicate_id": "subsample-000",
+        "value": 0.08431776881473638
+      },
+      {
+        "replicate_id": "subsample-001",
+        "value": 0.08561174835708353
+      },
+      {
+        "replicate_id": "subsample-002",
+        "value": 0.06469234120767539
+      },
+      {
+        "replicate_id": "subsample-003",
+        "value": 0.06239305509014877
+      },
+      {
+        "replicate_id": "subsample-004",
+        "value": 0.05619794206727492
+      },
+      {
+        "replicate_id": "subsample-005",
+        "value": 0.08846468027533702
+      },
+      {
+        "replicate_id": "subsample-006",
+        "value": 0.06433205763952697
+      },
+      {
+        "replicate_id": "subsample-007",
+        "value": 0.06568854088536706
+      },
+      {
+        "replicate_id": "subsample-008",
+        "value": 0.08581973405860818
+      },
+      {
+        "replicate_id": "subsample-009",
+        "value": 0.07709975199121807
+      },
+      {
+        "replicate_id": "subsample-010",
+        "value": 0.09379371470911908
+      },
+      {
+        "replicate_id": "subsample-011",
+        "value": 0.056261009346962154
+      },
+      {
+        "replicate_id": "subsample-012",
+        "value": 0.09090205650922673
+      },
+      {
+        "replicate_id": "subsample-013",
+        "value": 0.08269651954707295
+      },
+      {
+        "replicate_id": "subsample-014",
+        "value": 0.05998425363915099
+      },
+      {
+        "replicate_id": "subsample-015",
+        "value": 0.09037360555403712
+      },
+      {
+        "replicate_id": "subsample-016",
+        "value": 0.09867879579173484
+      },
+      {
+        "replicate_id": "subsample-017",
+        "value": 0.0645361705860755
+      },
+      {
+        "replicate_id": "subsample-018",
+        "value": 0.06904869131958678
+      },
+      {
+        "replicate_id": "subsample-019",
+        "value": 0.056767633356148366
+      }
+    ],
+    "train_silhouette": [
+      {
+        "replicate_id": "subsample-000",
+        "value": 0.23839645703137094
+      },
+      {
+        "replicate_id": "subsample-001",
+        "value": 0.24790005251236263
+      },
+      {
+        "replicate_id": "subsample-002",
+        "value": 0.2366769449336323
+      },
+      {
+        "replicate_id": "subsample-003",
+        "value": 0.23583438658841738
+      },
+      {
+        "replicate_id": "subsample-004",
+        "value": 0.22265378199293973
+      },
+      {
+        "replicate_id": "subsample-005",
+        "value": 0.2427082969832104
+      },
+      {
+        "replicate_id": "subsample-006",
+        "value": 0.228957184468895
+      },
+      {
+        "replicate_id": "subsample-007",
+        "value": 0.22414466431754482
+      },
+      {
+        "replicate_id": "subsample-008",
+        "value": 0.2405039380807291
+      },
+      {
+        "replicate_id": "subsample-009",
+        "value": 0.23465401146461537
+      },
+      {
+        "replicate_id": "subsample-010",
+        "value": 0.23839093786318055
+      },
+      {
+        "replicate_id": "subsample-011",
+        "value": 0.23785109693690737
+      },
+      {
+        "replicate_id": "subsample-012",
+        "value": 0.23519828186121425
+      },
+      {
+        "replicate_id": "subsample-013",
+        "value": 0.23490988747110264
+      },
+      {
+        "replicate_id": "subsample-014",
+        "value": 0.23410915895148174
+      },
+      {
+        "replicate_id": "subsample-015",
+        "value": 0.24048411404577472
+      },
+      {
+        "replicate_id": "subsample-016",
+        "value": 0.25125334630081747
+      },
+      {
+        "replicate_id": "subsample-017",
+        "value": 0.22363970928752824
+      },
+      {
+        "replicate_id": "subsample-018",
+        "value": 0.23647752072367434
+      },
+      {
+        "replicate_id": "subsample-019",
+        "value": 0.23367555988841796
+      }
+    ]
+  },
+  "paired_metric_samples": {
+    "background_mean_intensity_eta2": [
+      0.11129982902310663,
+      0.14742752384003788,
+      0.20224428461751565,
+      0.1723841080819164,
+      0.18731304731947784,
+      0.1470640128252466,
+      0.16425660222284677,
+      0.1824520717686929,
+      0.14723256781193753,
+      0.18625294514868607,
+      0.1746846141837426,
+      0.21130627702142374,
+      0.1391897839739726,
+      0.14644110445135272,
+      0.18201687962443797,
+      0.12253022834010736,
+      0.12836774543559412,
+      0.18247360848253,
+      0.18093083472458288,
+      0.18123055439199967
+    ],
+    "border_distance_px_eta2": [
+      0.05165992288847281,
+      0.051753040429197934,
+      0.05303317894898282,
+      0.07522340055801757,
+      0.044963821196727545,
+      0.043339226766593325,
+      0.044782113728787085,
+      0.03483625622549081,
+      0.07624842844331493,
+      0.06731437952368546,
+      0.051908552472557885,
+      0.07999813017772099,
+      0.05987704768580977,
+      0.06659807032502958,
+      0.04108472559642879,
+      0.04101288248488743,
+      0.07161978805142631,
+      0.05810066495757867,
+      0.0525240370245197,
+      0.06041202551868217
+    ],
+    "completeness_eta2": [
+      0.05504574415233,
+      0.0370699219433908,
+      0.06222669228878876,
+      0.03305078186143693,
+      0.031245179902290043,
+      0.03442999372750004,
+      0.044762618289561656,
+      0.047066177146743896,
+      0.06581066589199573,
+      0.047358858163968814,
+      0.04977298489731894,
+      0.045925993381970565,
+      0.05287558521417462,
+      0.03269727063725156,
+      0.05834663458775983,
+      0.04653000126303815,
+      0.03579592773692427,
+      0.03891373152200684,
+      0.032123476962102375,
+      0.03965010467532827
+    ],
+    "tissue_ratio_eta2": [
+      0.019035899698549626,
+      0.009121391543984001,
+      0.05589149382008709,
+      0.043755792565732865,
+      0.07327080775714227,
+      0.01862882954350122,
+      0.05648469190628063,
+      0.045072920746944516,
+      0.02191487145732213,
+      0.04564456809751875,
+      0.024169417049138386,
+      0.048704379199792966,
+      0.005610723951798381,
+      0.013651933722266175,
+      0.06235021849260752,
+      0.013221832486069604,
+      0.019210143196724046,
+      0.03993887632410899,
+      0.042898122514108177,
+      0.046520386603522666
+    ],
+    "train_calinski_harabasz": [
+      107.44521649562944,
+      120.05992057901612,
+      111.54891149126894,
+      109.88295850106576,
+      107.60638585239057,
+      116.54087515357749,
+      109.82876299664282,
+      106.19748031672556,
+      110.01640056837242,
+      109.98451117237006,
+      107.03567565522934,
+      112.35429161095202,
+      110.77132566725162,
+      112.25457880126079,
+      113.81461267711654,
+      111.201797949321,
+      114.16745574916003,
+      112.08301259794914,
+      109.48797103318394,
+      116.51738305697951
+    ],
+    "train_cramers_v_slide": [
+      0.28554699643201475,
+      0.2850540491144443,
+      0.24833361911435525,
+      0.23570938688988516,
+      0.22936820021263185,
+      0.29244284437160917,
+      0.24951919558178506,
+      0.25279818736795473,
+      0.2820601428399741,
+      0.2657173556682618,
+      0.29848626285863866,
+      0.22457840051707958,
+      0.2970852590961391,
+      0.28225914850894207,
+      0.23819962408118453,
+      0.2902394761918553,
+      0.31157659842784075,
+      0.24039437800387364,
+      0.2528683930071999,
+      0.23110494249724736
+    ],
+    "train_davies_bouldin": [
+      1.2705773695161153,
+      1.2277073349017558,
+      1.2101105458290626,
+      1.215746446733559,
+      1.263777920169479,
+      1.2456070176706793,
+      1.2690152483663621,
+      1.2684567043902322,
+      1.2341614840381914,
+      1.235777200384761,
+      1.259117855048007,
+      1.1993081498878788,
+      1.2743799499740058,
+      1.2723389210998262,
+      1.2199595546382247,
+      1.251347712955704,
+      1.2150412717837167,
+      1.26478551191379,
+      1.2440819399827772,
+      1.204617813796863
+    ],
+    "train_dominant_slide_fraction": [
+      0.5660377358490566,
+      0.515625,
+      0.4074074074074074,
+      0.45454545454545453,
+      0.3958333333333333,
+      0.6101694915254238,
+      0.4230769230769231,
+      0.38095238095238093,
+      0.5064935064935064,
+      0.47619047619047616,
+      0.576271186440678,
+      0.37168141592920356,
+      0.5573770491803278,
+      0.5357142857142857,
+      0.3564356435643564,
+      0.5555555555555556,
+      0.5932203389830508,
+      0.3883495145631068,
+      0.43333333333333335,
+      0.4230769230769231
+    ],
+    "train_nmi_slide": [
+      0.08431776881473638,
+      0.08561174835708353,
+      0.06469234120767539,
+      0.06239305509014877,
+      0.05619794206727492,
+      0.08846468027533702,
+      0.06433205763952697,
+      0.06568854088536706,
+      0.08581973405860818,
+      0.07709975199121807,
+      0.09379371470911908,
+      0.056261009346962154,
+      0.09090205650922673,
+      0.08269651954707295,
+      0.05998425363915099,
+      0.09037360555403712,
+      0.09867879579173484,
+      0.0645361705860755,
+      0.06904869131958678,
+      0.056767633356148366
+    ],
+    "train_silhouette": [
+      0.23839645703137094,
+      0.24790005251236263,
+      0.2366769449336323,
+      0.23583438658841738,
+      0.22265378199293973,
+      0.2427082969832104,
+      0.228957184468895,
+      0.22414466431754482,
+      0.2405039380807291,
+      0.23465401146461537,
+      0.23839093786318055,
+      0.23785109693690737,
+      0.23519828186121425,
+      0.23490988747110264,
+      0.23410915895148174,
+      0.24048411404577472,
+      0.25125334630081747,
+      0.22363970928752824,
+      0.23647752072367434,
+      0.23367555988841796
+    ]
+  },
+  "random_baseline": {
+    "algorithm": "kmeans",
+    "distance": "euclidean",
+    "empirical_percentile_95": 0.18433948541090628,
+    "empirical_tail": 0.047619047619047616,
+    "estimator_parameters": {
+      "n_init": 10
+    },
+    "excluded_replicates": [],
+    "fit_diagnostics": {
+      "all_fits_valid": true,
+      "invalid_fits": [],
+      "n_fits": 200
+    },
+    "n_clusters": 4,
+    "null_model": "multivariate_gaussian_preserving_train_mean_covariance",
+    "null_seed_stability_values": [
+      0.9815440186962584,
+      0.9976954467314804,
+      0.8430921824418465,
+      0.7131822123412866,
+      0.815040136963558,
+      0.825295669901195,
+      0.8800599403881517,
+      0.8198063166615648,
+      0.949486175839471,
+      0.5430077842815485,
+      0.7351924778013001,
+      0.8990932057845227,
+      0.7548814146603567,
+      0.5250527291571433,
+      0.9849368228197272,
+      0.7660968512632059,
+      0.8886455977199222,
+      0.6650904070218879,
+      0.7537550348664525,
+      0.8921519263374103
+    ],
+    "null_silhouette_values": [
+      0.18402680210071962,
+      0.1822887299688587,
+      0.17015626061805608,
+      0.1822741122282513,
+      0.17367715199123823,
+      0.16034313457673038,
+      0.1694850987487471,
+      0.16718322825192478,
+      0.1902804683044529,
+      0.16606446331636665,
+      0.1681940333391234,
+      0.1644261281606155,
+      0.16405113586949752,
+      0.1616866283869359,
+      0.1811063090243302,
+      0.17158576577298948,
+      0.1570977966737795,
+      0.17261803485551175,
+      0.17794094461339088,
+      0.16727767331884616
+    ],
+    "observed_seed_stability": 0.9711304461168689,
+    "observed_silhouette": 0.23224247067707257,
+    "protocol_z_threshold": 2.0,
+    "replicate_ids": [
+      "null-000",
+      "null-001",
+      "null-002",
+      "null-003",
+      "null-004",
+      "null-005",
+      "null-006",
+      "null-007",
+      "null-008",
+      "null-009",
+      "null-010",
+      "null-011",
+      "null-012",
+      "null-013",
+      "null-014",
+      "null-015",
+      "null-016",
+      "null-017",
+      "null-018",
+      "null-019"
+    ],
+    "replicates_requested": 20,
+    "scope": "geometric reference in common native-morphology space; not a full hybrid-pipeline null",
+    "seed": 42,
+    "seed_stability": {
+      "null_mean": 0.8116553175839144,
+      "null_std": 0.13346980068925843,
+      "observed": 0.9711304461168689,
+      "reason": null,
+      "status": "evaluated",
+      "z_score": 1.19484053852932
+    },
+    "silhouette": {
+      "null_mean": 0.17158819500601835,
+      "null_std": 0.008880027198973565,
+      "observed": 0.23224247067707257,
+      "reason": null,
+      "status": "evaluated",
+      "z_score": 6.830415528239057
+    },
+    "space": "common_train_standardized_morphology",
+    "status": "evaluated"
+  },
+  "resampling_hash": "6dde6004c0f403ad05c021b5145b499ef84d6cdb94dde502533b302dbecbfd59",
+  "resampling_method": "subsampling_without_replacement",
+  "slide_confounding": {
+    "all": {
+      "cramers_v_cluster_slide": 0.33852001088681705,
+      "dominant_slide_fraction_by_cluster": {
+        "C0": 0.2956989247311828,
+        "C1": 0.20833333333333334,
+        "C2": 0.3870967741935484,
+        "C3": 0.2595419847328244
+      },
+      "max_dominant_slide_fraction": 0.3870967741935484,
+      "nmi_cluster_slide": 0.11969609106568439,
+      "status": "evaluated"
+    },
+    "train": {
+      "cramers_v_cluster_slide": 0.2404437680171748,
+      "dominant_slide_fraction_by_cluster": {
+        "C0": 0.37404580152671757,
+        "C1": 0.211864406779661,
+        "C2": 0.3870967741935484,
+        "C3": 0.2595419847328244
+      },
+      "max_dominant_slide_fraction": 0.3870967741935484,
+      "nmi_cluster_slide": 0.061211234268390854,
+      "status": "evaluated"
+    },
+    "val": {
+      "cramers_v_cluster_slide": 0.0,
+      "dominant_slide_fraction_by_cluster": {
+        "C0": 1.0,
+        "C1": 1.0
+      },
+      "max_dominant_slide_fraction": 1.0,
+      "nmi_cluster_slide": 0.0,
+      "status": "evaluated"
+    }
+  },
+  "source_run": "runs/clustering/clustering_k4",
+  "stability": {
+    "cluster_jaccard_mean": 0.8490858799002853,
+    "cluster_jaccard_min": 0.45652173913043476,
+    "cluster_jaccard_samples": [
+      0.9454545454545454,
+      0.8846153846153846,
+      1.0,
+      1.0,
+      0.5901639344262295,
+      0.47126436781609193,
+      0.8809523809523809,
+      1.0,
+      0.6302521008403361,
+      0.5060240963855421,
+      0.9186046511627907,
+      1.0,
+      0.6363636363636364,
+      0.5641025641025641,
+      0.9058823529411765,
+      0.9230769230769231,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      0.5384615384615384,
+      0.5116279069767442,
+      0.8709677419354839,
+      0.9090909090909091,
+      0.5630252100840336,
+      0.5301204819277109,
+      0.8539325842696629,
+      0.9166666666666666,
+      0.9035087719298246,
+      0.7419354838709677,
+      0.9411764705882353,
+      1.0,
+      0.8157894736842105,
+      0.6666666666666666,
+      0.9010989010989011,
+      1.0,
+      0.9732142857142857,
+      0.9361702127659575,
+      0.9787234042553191,
+      1.0,
+      0.5447154471544715,
+      0.45652173913043476,
+      0.9047619047619048,
+      1.0,
+      0.9821428571428571,
+      0.9777777777777777,
+      0.9887640449438202,
+      1.0,
+      0.9819819819819819,
+      0.9761904761904762,
+      0.9888888888888889,
+      1.0,
+      0.5166666666666667,
+      0.4659090909090909,
+      0.8111111111111111,
+      0.92,
+      0.9826086956521739,
+      0.9743589743589743,
+      0.989010989010989,
+      1.0,
+      0.9831932773109243,
+      1.0,
+      0.9770114942528736,
+      1.0,
+      0.5932203389830508,
+      0.5301204819277109,
+      0.8941176470588236,
+      0.9285714285714286,
+      0.6581196581196581,
+      0.6111111111111112,
+      0.8924731182795699,
+      0.9130434782608695,
+      0.568,
+      0.46511627906976744,
+      0.8913043478260869,
+      1.0,
+      1.0,
+      0.6574074074074074,
+      0.8823529411764706,
+      0.5930232558139535,
+      1.0,
+      0.6909090909090909,
+      0.925531914893617,
+      0.6125,
+      0.96,
+      0.6952380952380952,
+      0.9195402298850575,
+      0.6578947368421053,
+      1.0,
+      0.9428571428571428,
+      1.0,
+      0.8888888888888888,
+      0.9565217391304348,
+      0.6138613861386139,
+      0.8709677419354839,
+      0.620253164556962,
+      0.9583333333333334,
+      0.6422018348623854,
+      0.8555555555555555,
+      0.6588235294117647,
+      1.0,
+      0.9595959595959596,
+      0.9294117647058824,
+      0.9032258064516129,
+      1.0,
+      0.8725490196078431,
+      0.9361702127659575,
+      0.8088235294117647,
+      1.0,
+      0.97,
+      0.9894736842105263,
+      0.9615384615384616,
+      1.0,
+      0.6285714285714286,
+      0.9325842696629213,
+      0.6067415730337079,
+      1.0,
+      0.9716981132075472,
+      1.0,
+      0.9433962264150944,
+      1.0,
+      0.9428571428571428,
+      0.9782608695652174,
+      0.9230769230769231,
+      0.9583333333333334,
+      0.5727272727272728,
+      0.8144329896907216,
+      0.5862068965517241,
+      1.0,
+      0.9532710280373832,
+      0.9888888888888889,
+      0.9166666666666666,
+      1.0,
+      0.9464285714285714,
+      0.9882352941176471,
+      0.9090909090909091,
+      0.9642857142857143,
+      0.65,
+      0.9036144578313253,
+      0.6385542168674698,
+      0.9523809523809523,
+      0.7142857142857143,
+      0.9032258064516129,
+      0.7183098591549296,
+      1.0,
+      0.6371681415929203,
+      0.8888888888888888,
+      0.5783132530120482,
+      1.0,
+      0.9615384615384616,
+      0.9642857142857143,
+      0.9534883720930233,
+      0.9230769230769231,
+      0.9629629629629629,
+      0.9125,
+      0.9024390243902439,
+      1.0,
+      0.603448275862069,
+      0.8850574712643678,
+      0.5056179775280899,
+      0.9130434782608695,
+      0.9358974358974359,
+      0.9518072289156626,
+      0.8764044943820225,
+      0.9166666666666666,
+      1.0,
+      0.948051948051948,
+      0.9347826086956522,
+      1.0,
+      0.7,
+      0.9294117647058824,
+      0.6292134831460674,
+      1.0,
+      0.7551020408163265,
+      0.95,
+      0.7471264367816092,
+      1.0,
+      0.6548672566371682,
+      0.9222222222222223,
+      0.5365853658536586,
+      1.0,
+      0.9382716049382716,
+      0.9493670886075949,
+      0.925531914893617,
+      1.0,
+      0.591304347826087,
+      0.8666666666666667,
+      0.5,
+      1.0,
+      0.6186440677966102,
+      0.8928571428571429,
+      0.5172413793103449,
+      0.92,
+      0.927710843373494,
+      0.8674698795180723,
+      0.7978723404255319,
+      1.0,
+      0.6311475409836066,
+      0.8888888888888888,
+      0.4878048780487805,
+      1.0,
+      0.6370967741935484,
+      0.9166666666666666,
+      0.4945054945054945,
+      0.9285714285714286,
+      0.963855421686747,
+      0.9358974358974359,
+      0.9101123595505618,
+      0.9130434782608695,
+      0.9529411764705882,
+      0.9294117647058824,
+      0.8780487804878049,
+      1.0,
+      0.9629629629629629,
+      0.9375,
+      0.9090909090909091,
+      0.9662921348314607,
+      0.9512195121951219,
+      0.9090909090909091,
+      0.9876543209876543,
+      0.9230769230769231,
+      0.5476190476190477,
+      1.0,
+      0.6371681415929203,
+      0.9587628865979382,
+      0.8928571428571429,
+      0.8888888888888888,
+      0.9078947368421053,
+      0.9540229885057471,
+      0.9555555555555556,
+      0.8947368421052632,
+      0.9736842105263158,
+      0.9120879120879121,
+      0.6590909090909091,
+      1.0,
+      0.7037037037037037,
+      0.946236559139785,
+      0.7926829268292683,
+      1.0,
+      0.7916666666666666,
+      0.9381443298969072,
+      0.5625,
+      1.0,
+      0.6818181818181818,
+      1.0,
+      0.9213483146067416,
+      1.0,
+      0.9113924050632911,
+      0.9111111111111111,
+      0.5402298850574713,
+      1.0,
+      0.625,
+      0.9468085106382979,
+      0.5365853658536586,
+      1.0,
+      0.6454545454545455,
+      0.9,
+      0.8409090909090909,
+      0.9,
+      0.8875,
+      0.945054945054945,
+      0.5316455696202531,
+      1.0,
+      0.6637168141592921,
+      0.9222222222222223,
+      0.5301204819277109,
+      1.0,
+      0.6551724137931034,
+      1.0,
+      0.9759036144578314,
+      0.9130434782608695,
+      1.0,
+      0.978494623655914,
+      0.9324324324324325,
+      0.8823529411764706,
+      0.9879518072289156,
+      0.9659090909090909,
+      0.9176470588235294,
+      1.0,
+      0.9285714285714286,
+      0.92,
+      0.9090909090909091,
+      0.6403508771929824,
+      0.5875,
+      1.0,
+      0.9540229885057471,
+      0.9166666666666666,
+      0.9404761904761905,
+      1.0,
+      0.9642857142857143,
+      0.9629629629629629,
+      1.0,
+      0.9166666666666666,
+      0.8735632183908046,
+      0.7115384615384616,
+      0.6506024096385542,
+      0.9,
+      0.896551724137931,
+      0.7857142857142857,
+      0.8048780487804879,
+      0.9047619047619048,
+      0.9239130434782609,
+      0.6857142857142857,
+      0.6216216216216216,
+      0.9130434782608695,
+      0.963855421686747,
+      0.927710843373494,
+      0.9,
+      0.9230769230769231,
+      0.9047619047619048,
+      0.6239316239316239,
+      0.5764705882352941,
+      0.92,
+      0.9222222222222223,
+      0.6306306306306306,
+      0.569620253164557,
+      1.0,
+      0.8941176470588236,
+      0.8928571428571429,
+      0.8987341772151899,
+      0.9230769230769231,
+      0.9302325581395349,
+      0.6578947368421053,
+      0.5657894736842105,
+      0.8947368421052632,
+      0.9411764705882353,
+      0.6581196581196581,
+      0.5679012345679012,
+      1.0,
+      0.9871794871794872,
+      0.9864864864864865,
+      1.0,
+      1.0,
+      0.9885057471264368,
+      0.9764705882352941,
+      0.9861111111111112,
+      0.92,
+      0.9743589743589743,
+      0.9523809523809523,
+      0.9259259259259259,
+      0.5585585585585585,
+      0.8829787234042553,
+      0.5238095238095238,
+      0.9130434782608695,
+      0.5652173913043478,
+      0.875,
+      0.5617977528089888,
+      0.9130434782608695,
+      0.8839285714285714,
+      0.9411764705882353,
+      0.7941176470588235,
+      1.0,
+      0.7964601769911505,
+      0.9222222222222223,
+      0.6901408450704225,
+      1.0,
+      0.9724770642201835,
+      0.978021978021978,
+      0.94,
+      1.0,
+      0.5775862068965517,
+      0.9285714285714286,
+      0.5108695652173914,
+      1.0,
+      0.9904761904761905,
+      1.0,
+      0.9803921568627451,
+      1.0,
+      0.9719626168224299,
+      0.9777777777777777,
+      0.9787234042553191,
+      1.0,
+      0.5384615384615384,
+      0.8064516129032258,
+      0.5,
+      0.92,
+      0.981651376146789,
+      0.9886363636363636,
+      0.9782608695652174,
+      1.0,
+      0.9818181818181818,
+      0.9770114942528736,
+      1.0,
+      1.0,
+      0.5982142857142857,
+      0.9125,
+      0.5632183908045977,
+      0.9259259259259259,
+      0.635593220338983,
+      0.8979591836734694,
+      0.6025641025641025,
+      0.9130434782608695,
+      0.6016949152542372,
+      0.9080459770114943,
+      0.5,
+      1.0,
+      0.96,
+      0.9775280898876404,
+      1.0,
+      0.9411764705882353,
+      0.6355140186915887,
+      0.8387096774193549,
+      0.8947368421052632,
+      0.5869565217391305,
+      0.6907216494845361,
+      0.8617021276595744,
+      0.8888888888888888,
+      0.6896551724137931,
+      0.5855855855855856,
+      0.8942307692307693,
+      0.9047619047619048,
+      0.524390243902439,
+      0.9726027397260274,
+      0.963855421686747,
+      0.9,
+      0.945054945054945,
+      0.5545454545454546,
+      0.8775510204081632,
+      0.9090909090909091,
+      0.5357142857142857,
+      0.5535714285714286,
+      0.8877551020408163,
+      0.9047619047619048,
+      0.5176470588235295,
+      0.9367088607594937,
+      0.9431818181818182,
+      1.0,
+      0.9512195121951219,
+      0.5701754385964912,
+      0.8829787234042553,
+      0.9090909090909091,
+      0.5180722891566265,
+      0.5948275862068966,
+      0.925531914893617,
+      0.8947368421052632,
+      0.5116279069767442,
+      0.8783783783783784,
+      0.9518072289156626,
+      1.0,
+      0.8977272727272727,
+      0.8795180722891566,
+      0.9777777777777777,
+      1.0,
+      0.8780487804878049,
+      1.0,
+      0.9770114942528736,
+      0.9130434782608695,
+      0.9487179487179487,
+      0.65625,
+      0.8470588235294118,
+      0.9047619047619048,
+      0.6470588235294118,
+      0.7865168539325843,
+      0.8735632183908046,
+      0.8888888888888888,
+      0.75,
+      0.5903614457831325,
+      0.8787878787878788,
+      0.9090909090909091,
+      0.6181818181818182,
+      0.925531914893617,
+      0.9746835443037974,
+      0.9047619047619048,
+      0.9342105263157895,
+      0.5681818181818182,
+      0.8586956521739131,
+      0.9166666666666666,
+      0.5663716814159292,
+      0.5617977528089888,
+      0.8764044943820225,
+      0.9230769230769231,
+      0.5826086956521739,
+      0.8681318681318682,
+      0.896551724137931,
+      1.0,
+      0.9125,
+      0.5529411764705883,
+      0.8681318681318682,
+      0.9090909090909091,
+      0.5862068965517241,
+      0.5632183908045977,
+      0.9069767441860465,
+      0.9,
+      0.6271186440677966,
+      1.0,
+      0.9733333333333334,
+      1.0,
+      0.9710144927536232,
+      0.9746835443037974,
+      0.9767441860465116,
+      1.0,
+      0.9753086419753086,
+      0.9318181818181818,
+      1.0,
+      0.9130434782608695,
+      0.95,
+      0.9166666666666666,
+      0.863013698630137,
+      0.9767441860465116,
+      1.0,
+      0.9423076923076923,
+      0.8360655737704918,
+      0.9354838709677419,
+      1.0,
+      0.6542056074766355,
+      0.6145833333333334,
+      0.925,
+      1.0,
+      0.9142857142857143,
+      0.819672131147541,
+      0.9534883720930233,
+      1.0,
+      0.9090909090909091,
+      0.7833333333333333,
+      0.9204545454545454,
+      1.0,
+      0.616822429906542,
+      0.5416666666666666,
+      0.7912087912087912,
+      0.9130434782608695,
+      0.9122807017543859,
+      0.7627118644067796,
+      0.9310344827586207,
+      1.0,
+      0.911504424778761,
+      0.78125,
+      0.9058823529411765,
+      1.0,
+      0.7087378640776699,
+      0.6818181818181818,
+      0.9024390243902439,
+      0.92,
+      0.7570093457943925,
+      0.717948717948718,
+      0.8947368421052632,
+      0.9,
+      0.6699029126213593,
+      0.627906976744186,
+      0.9069767441860465,
+      1.0,
+      0.7619047619047619,
+      0.9574468085106383,
+      0.8761904761904762,
+      1.0,
+      0.71875,
+      0.9418604651162791,
+      0.711340206185567,
+      1.0,
+      0.6891891891891891,
+      0.9213483146067416,
+      0.7962962962962963,
+      1.0,
+      0.6818181818181818,
+      0.9042553191489362,
+      0.7962962962962963,
+      1.0,
+      0.6382978723404256,
+      0.8085106382978723,
+      0.6633663366336634,
+      0.8947368421052632,
+      0.6825396825396826,
+      0.9263157894736842,
+      0.8189655172413793,
+      1.0,
+      0.6805555555555556,
+      0.9204545454545454,
+      0.8260869565217391,
+      1.0,
+      0.7752808988764045,
+      0.925,
+      0.7525773195876289,
+      0.9090909090909091,
+      0.8441558441558441,
+      0.9010989010989011,
+      0.8247422680412371,
+      0.8947368421052632,
+      0.6888888888888889,
+      0.9080459770114943,
+      0.7142857142857143,
+      1.0,
+      1.0,
+      0.6106194690265486,
+      0.9222222222222223,
+      0.532608695652174,
+      1.0,
+      0.9803921568627451,
+      0.9894736842105263,
+      0.9791666666666666,
+      1.0,
+      0.9813084112149533,
+      0.979381443298969,
+      0.96,
+      0.9047619047619048,
+      0.5929203539823009,
+      0.82,
+      0.5180722891566265,
+      1.0,
+      1.0,
+      0.9893617021276596,
+      0.9782608695652174,
+      1.0,
+      0.9818181818181818,
+      0.989247311827957,
+      0.9411764705882353,
+      0.9166666666666666,
+      0.6542056074766355,
+      0.9213483146067416,
+      0.569620253164557,
+      0.8947368421052632,
+      0.7181818181818181,
+      0.9278350515463918,
+      0.6571428571428571,
+      1.0,
+      0.6194690265486725,
+      0.9032258064516129,
+      0.525,
+      0.5157894736842106,
+      0.5652173913043478,
+      1.0,
+      0.9036144578313253,
+      0.4835164835164835,
+      0.5603448275862069,
+      1.0,
+      0.9080459770114943,
+      0.875,
+      0.9594594594594594,
+      0.9130434782608695,
+      0.891566265060241,
+      0.5056179775280899,
+      0.5916666666666667,
+      1.0,
+      0.9230769230769231,
+      0.5,
+      0.5798319327731093,
+      1.0,
+      0.9259259259259259,
+      0.8829787234042553,
+      0.8961038961038961,
+      0.92,
+      0.9876543209876543,
+      0.8522727272727273,
+      0.8928571428571429,
+      0.8888888888888888,
+      0.9767441860465116,
+      0.9772727272727273,
+      0.987012987012987,
+      1.0,
+      0.9875,
+      0.9885057471264368,
+      1.0,
+      1.0,
+      0.9910714285714286,
+      0.7894736842105263,
+      0.92,
+      0.5168539325842697,
+      0.5350877192982456,
+      0.989010989010989,
+      1.0,
+      1.0,
+      0.990909090909091,
+      0.9777777777777777,
+      1.0,
+      0.9807692307692307,
+      0.9734513274336283,
+      0.8902439024390244,
+      0.9285714285714286,
+      0.5697674418604651,
+      0.5963302752293578,
+      0.8901098901098901,
+      0.9047619047619048,
+      0.6486486486486487,
+      0.6545454545454545,
+      0.8850574712643678,
+      1.0,
+      0.5287356321839081,
+      0.5948275862068966,
+      0.5431034482758621,
+      0.9166666666666666,
+      0.8125,
+      0.47674418604651164,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      0.9823008849557522,
+      1.0,
+      0.9886363636363636,
+      0.9787234042553191,
+      0.6120689655172413,
+      0.9259259259259259,
+      0.9090909090909091,
+      0.5301204819277109,
+      0.6607142857142857,
+      0.9047619047619048,
+      0.9052631578947369,
+      0.6142857142857143,
+      0.5833333333333334,
+      1.0,
+      0.896551724137931,
+      0.47058823529411764,
+      0.5833333333333334,
+      0.8333333333333334,
+      0.4642857142857143,
+      0.9166666666666666,
+      0.5725806451612904,
+      0.8461538461538461,
+      0.4946236559139785,
+      0.8947368421052632,
+      0.8552631578947368,
+      0.8780487804878049,
+      0.8555555555555555,
+      1.0,
+      0.8522727272727273,
+      0.9111111111111111,
+      0.8433734939759037,
+      1.0,
+      0.9375,
+      0.8791208791208791,
+      0.8604651162790697,
+      0.9166666666666666,
+      0.9777777777777777,
+      0.9833333333333333,
+      0.9883720930232558,
+      1.0,
+      0.5301204819277109,
+      0.6120689655172413,
+      0.9058823529411765,
+      0.9230769230769231,
+      0.6111111111111112,
+      0.6842105263157895,
+      0.9347826086956522,
+      0.9047619047619048,
+      0.5061728395061729,
+      0.628099173553719,
+      0.9,
+      1.0,
+      0.6140350877192983,
+      0.9130434782608695,
+      0.9146341463414634,
+      0.5465116279069767,
+      0.7033898305084746,
+      0.8888888888888888,
+      0.9431818181818182,
+      0.6164383561643836,
+      0.6065573770491803,
+      1.0,
+      0.9176470588235294,
+      0.48863636363636365,
+      0.974025974025974,
+      0.9880952380952381,
+      1.0,
+      0.9605263157894737,
+      0.9240506329113924,
+      0.9736842105263158,
+      0.9285714285714286,
+      0.9111111111111111,
+      0.9772727272727273,
+      0.9310344827586207,
+      0.9047619047619048,
+      0.8717948717948718
+    ],
+    "cluster_jaccard_std": 0.15977604527590908,
+    "leave_one_slide_out_ari": {
+      "RECHERCHE-003": 0.30620947485250305,
+      "RECHERCHE-004": 0.7038686833916631,
+      "RECHERCHE-005": 0.7906908665105387,
+      "RECHERCHE-009": 0.8808757064398619,
+      "RECHERCHE-010": 0.799479261319187,
+      "RECHERCHE-011": 0.5644181140965888
+    },
+    "leave_one_slide_out_ari_mean": 0.6742570177683903,
+    "leave_one_slide_out_ari_samples": [
+      0.30620947485250305,
+      0.7038686833916631,
+      0.7906908665105387,
+      0.8808757064398619,
+      0.799479261319187,
+      0.5644181140965888
+    ],
+    "leave_one_slide_out_replicates": [
+      {
+        "replicate_id": "leave-slide-RECHERCHE-003",
+        "value": 0.30620947485250305
+      },
+      {
+        "replicate_id": "leave-slide-RECHERCHE-004",
+        "value": 0.7038686833916631
+      },
+      {
+        "replicate_id": "leave-slide-RECHERCHE-005",
+        "value": 0.7906908665105387
+      },
+      {
+        "replicate_id": "leave-slide-RECHERCHE-009",
+        "value": 0.8808757064398619
+      },
+      {
+        "replicate_id": "leave-slide-RECHERCHE-010",
+        "value": 0.799479261319187
+      },
+      {
+        "replicate_id": "leave-slide-RECHERCHE-011",
+        "value": 0.5644181140965888
+      }
+    ],
+    "seed_ari_mean": 0.9711304461168689,
+    "seed_ari_replicates": [
+      {
+        "replicate_id": "seed-00|seed-01",
+        "value": 0.9787033605852514
+      },
+      {
+        "replicate_id": "seed-00|seed-02",
+        "value": 0.9853483539607268
+      },
+      {
+        "replicate_id": "seed-00|seed-03",
+        "value": 0.9853483539607268
+      },
+      {
+        "replicate_id": "seed-00|seed-04",
+        "value": 0.9626284024981431
+      },
+      {
+        "replicate_id": "seed-00|seed-05",
+        "value": 0.9406935281057931
+      },
+      {
+        "replicate_id": "seed-00|seed-06",
+        "value": 0.9717178488568555
+      },
+      {
+        "replicate_id": "seed-00|seed-07",
+        "value": 0.9928472279178352
+      },
+      {
+        "replicate_id": "seed-00|seed-08",
+        "value": 0.9928472279178352
+      },
+      {
+        "replicate_id": "seed-00|seed-09",
+        "value": 0.9717178488568555
+      },
+      {
+        "replicate_id": "seed-01|seed-02",
+        "value": 0.9643962358193882
+      },
+      {
+        "replicate_id": "seed-01|seed-03",
+        "value": 0.9643962358193882
+      },
+      {
+        "replicate_id": "seed-01|seed-04",
+        "value": 0.9837957918146519
+      },
+      {
+        "replicate_id": "seed-01|seed-05",
+        "value": 0.9618458688856595
+      },
+      {
+        "replicate_id": "seed-01|seed-06",
+        "value": 0.9928402701377983
+      },
+      {
+        "replicate_id": "seed-01|seed-07",
+        "value": 0.9717247253670992
+      },
+      {
+        "replicate_id": "seed-01|seed-08",
+        "value": 0.9717247253670992
+      },
+      {
+        "replicate_id": "seed-01|seed-09",
+        "value": 0.9928402701377983
+      },
+      {
+        "replicate_id": "seed-02|seed-03",
+        "value": 1.0
+      },
+      {
+        "replicate_id": "seed-02|seed-04",
+        "value": 0.9485216987157115
+      },
+      {
+        "replicate_id": "seed-02|seed-05",
+        "value": 0.9412241389226909
+      },
+      {
+        "replicate_id": "seed-02|seed-06",
+        "value": 0.9575262914054692
+      },
+      {
+        "replicate_id": "seed-02|seed-07",
+        "value": 0.9924447252850267
+      },
+      {
+        "replicate_id": "seed-02|seed-08",
+        "value": 0.9924447252850267
+      },
+      {
+        "replicate_id": "seed-02|seed-09",
+        "value": 0.9575262914054692
+      },
+      {
+        "replicate_id": "seed-03|seed-04",
+        "value": 0.9485216987157115
+      },
+      {
+        "replicate_id": "seed-03|seed-05",
+        "value": 0.9412241389226909
+      },
+      {
+        "replicate_id": "seed-03|seed-06",
+        "value": 0.9575262914054692
+      },
+      {
+        "replicate_id": "seed-03|seed-07",
+        "value": 0.9924447252850267
+      },
+      {
+        "replicate_id": "seed-03|seed-08",
+        "value": 0.9924447252850267
+      },
+      {
+        "replicate_id": "seed-03|seed-09",
+        "value": 0.9575262914054692
+      },
+      {
+        "replicate_id": "seed-04|seed-05",
+        "value": 0.9779921879089634
+      },
+      {
+        "replicate_id": "seed-04|seed-06",
+        "value": 0.9909712731161464
+      },
+      {
+        "replicate_id": "seed-04|seed-07",
+        "value": 0.9556939564227359
+      },
+      {
+        "replicate_id": "seed-04|seed-08",
+        "value": 0.9556939564227359
+      },
+      {
+        "replicate_id": "seed-04|seed-09",
+        "value": 0.9909712731161464
+      },
+      {
+        "replicate_id": "seed-05|seed-06",
+        "value": 0.9690173672673251
+      },
+      {
+        "replicate_id": "seed-05|seed-07",
+        "value": 0.933765126547902
+      },
+      {
+        "replicate_id": "seed-05|seed-08",
+        "value": 0.933765126547902
+      },
+      {
+        "replicate_id": "seed-05|seed-09",
+        "value": 0.9690173672673251
+      },
+      {
+        "replicate_id": "seed-06|seed-07",
+        "value": 0.9647976056485545
+      },
+      {
+        "replicate_id": "seed-06|seed-08",
+        "value": 0.9647976056485545
+      },
+      {
+        "replicate_id": "seed-06|seed-09",
+        "value": 1.0
+      },
+      {
+        "replicate_id": "seed-07|seed-08",
+        "value": 1.0
+      },
+      {
+        "replicate_id": "seed-07|seed-09",
+        "value": 0.9647976056485545
+      },
+      {
+        "replicate_id": "seed-08|seed-09",
+        "value": 0.9647976056485545
+      }
+    ],
+    "seed_ari_samples": [
+      0.9787033605852514,
+      0.9853483539607268,
+      0.9853483539607268,
+      0.9626284024981431,
+      0.9406935281057931,
+      0.9717178488568555,
+      0.9928472279178352,
+      0.9928472279178352,
+      0.9717178488568555,
+      0.9643962358193882,
+      0.9643962358193882,
+      0.9837957918146519,
+      0.9618458688856595,
+      0.9928402701377983,
+      0.9717247253670992,
+      0.9717247253670992,
+      0.9928402701377983,
+      1.0,
+      0.9485216987157115,
+      0.9412241389226909,
+      0.9575262914054692,
+      0.9924447252850267,
+      0.9924447252850267,
+      0.9575262914054692,
+      0.9485216987157115,
+      0.9412241389226909,
+      0.9575262914054692,
+      0.9924447252850267,
+      0.9924447252850267,
+      0.9575262914054692,
+      0.9779921879089634,
+      0.9909712731161464,
+      0.9556939564227359,
+      0.9556939564227359,
+      0.9909712731161464,
+      0.9690173672673251,
+      0.933765126547902,
+      0.933765126547902,
+      0.9690173672673251,
+      0.9647976056485545,
+      0.9647976056485545,
+      1.0,
+      1.0,
+      0.9647976056485545,
+      0.9647976056485545
+    ],
+    "seed_ari_std": 0.01896557716656981,
+    "subsampling_ari_mean": 0.7589759091388588,
+    "subsampling_ari_min": 0.5005174363369148,
+    "subsampling_ari_samples": [
+      0.9384783496336994,
+      0.5667179977320077,
+      0.6034526396833514,
+      0.6148196372671052,
+      1.0,
+      0.5576913983012366,
+      0.5511837448869872,
+      0.8456265725981394,
+      0.7455064017101857,
+      0.9586343519543993,
+      0.5516759137243852,
+      0.9770440227940422,
+      0.9769000102597634,
+      0.5005174363369148,
+      0.9771195700990157,
+      0.9739925959747929,
+      0.5861063843605897,
+      0.6388739767540111,
+      0.5714178245088063,
+      0.6259779670329825,
+      0.6797549697805328,
+      0.689746710629665,
+      0.9396376157673666,
+      0.6282442294795103,
+      0.6234858904320492,
+      0.9134805070722467,
+      0.8366462672652047,
+      0.9670811786497786,
+      0.6542846349911758,
+      0.969822870388737,
+      0.9350116811368983,
+      0.5616711170166354,
+      0.9468561994522209,
+      0.9354629716185066,
+      0.6538310877051208,
+      0.7064334495707406,
+      0.6227227053539118,
+      0.9430208603731887,
+      0.8949864395761288,
+      0.5833394762422471,
+      0.8858907989827919,
+      0.9396212969904499,
+      0.6719285299408829,
+      0.7445908679849631,
+      0.6405621029273211,
+      0.9106645923611145,
+      0.5701107250297079,
+      0.5921340166825626,
+      0.8068271508563817,
+      0.5874152206813749,
+      0.5906802194339552,
+      0.9081839135561582,
+      0.887230949831571,
+      0.910979498346461,
+      0.9528560071240301,
+      0.6301100956005056,
+      0.8920034408238993,
+      0.9409762823588402,
+      0.6765082303314048,
+      0.788486064076666,
+      0.6728034294893117,
+      0.9276650277676869,
+      0.6123760279904203,
+      0.6639792431954159,
+      0.8236880040048975,
+      0.6613573587824242,
+      0.6240735362424574,
+      0.9854866685643298,
+      0.9547811279196015,
+      0.9135982523936207,
+      0.6315899938143437,
+      0.9142367173446317,
+      0.9670613890561769,
+      0.6582838551067388,
+      0.7549613580157375,
+      0.6830282801413181,
+      0.8981093420199947,
+      0.6081582931843184,
+      0.6425016848408504,
+      0.8584815169594827,
+      0.6513064643299491,
+      0.6365822348024628,
+      0.9886308000443561,
+      0.9772573726948591,
+      0.9285113951069807,
+      0.5843887555751693,
+      0.5690733090949762,
+      0.8364117984810056,
+      0.7468476736097137,
+      0.9578632118824278,
+      0.5899859397802802,
+      0.9897231251361995,
+      0.9637709064766223,
+      0.5153384374113521,
+      0.976674477376178,
+      0.9739702399942024,
+      0.5975350732641984,
+      0.634297162918372,
+      0.6005466914289533,
+      0.9449045303543955,
+      0.57912354194228,
+      0.6554558317739283,
+      0.616002097129789,
+      0.9388273339001856,
+      0.5878942734210431,
+      0.5900954454595768,
+      0.9219607862157483,
+      0.5826952566119057,
+      0.6086964303043455,
+      0.8804631648166472,
+      0.8856683175866094,
+      0.9620859178012166,
+      0.6050121179190088,
+      0.7185117117275771,
+      0.6176749930363978,
+      0.9166308819171306,
+      0.5697926362993152,
+      0.5822239235806239,
+      0.8502976334294857,
+      0.572832760481334,
+      0.5977704636982522,
+      0.9787153041839728,
+      0.9660355607430089,
+      0.9392611900575054,
+      0.8940942095407827,
+      0.8883753400581322,
+      0.6321871081822459,
+      0.8751501556894213,
+      0.848355587476649,
+      0.5391991368428004,
+      0.8525975272098548,
+      0.835582474280557,
+      0.6730234621844204,
+      0.7137821429743888,
+      0.6544130437238092,
+      0.8416589726642633,
+      0.709059183388214,
+      0.744133586751605,
+      0.7418811947504959,
+      0.593069988301176,
+      0.770225386169898,
+      0.7541894560065079,
+      0.736798028614778,
+      0.7940545491180787,
+      0.6821849254244176,
+      0.606889476639808,
+      0.9769610280750437,
+      0.9684099090905355,
+      0.5546066397266824,
+      0.9910813125176923,
+      0.9708526281493873,
+      0.6500737902446933,
+      0.708416394688531,
+      0.6176762128138957,
+      0.5676585239373741,
+      0.5784106348501132,
+      0.8612956887866168,
+      0.6038507366066664,
+      0.5638885019742124,
+      0.8871280623598865,
+      0.8679316703822264,
+      0.9768106861637923,
+      0.9871930446465994,
+      0.5116835518732153,
+      0.9871753839424,
+      0.9643330917637468,
+      0.5933456884842326,
+      0.6431801751321653,
+      0.5834256148848052,
+      0.5241674749276153,
+      1.0,
+      0.9765511538464327,
+      0.6101517387772144,
+      0.6552400427060759,
+      0.5776229083231608,
+      0.5409514589705537,
+      0.5277163279850041,
+      0.815490803804137,
+      0.8223992884775179,
+      0.8455623091065161,
+      0.9765203203871082,
+      0.6009397559790717,
+      0.6799689664451475,
+      0.6059978133968591,
+      0.5953571808799373,
+      0.6783761303482514,
+      0.5838630163138081,
+      0.9660970069488664,
+      0.9058049198233401,
+      0.9017642691810922
+    ],
+    "subsampling_ari_std": 0.15918590659118798,
+    "subsampling_pair_replicates": [
+      {
+        "ari": 0.9384783496336994,
+        "cluster_jaccard_mean": 0.9575174825174825,
+        "cluster_jaccard_min": 0.8846153846153846,
+        "replicate_id": "subsample-000|subsample-001"
+      },
+      {
+        "ari": 0.5667179977320077,
+        "cluster_jaccard_mean": 0.7355951707986756,
+        "cluster_jaccard_min": 0.47126436781609193,
+        "replicate_id": "subsample-000|subsample-002"
+      },
+      {
+        "ari": 0.6034526396833514,
+        "cluster_jaccard_mean": 0.7637202120971672,
+        "cluster_jaccard_min": 0.5060240963855421,
+        "replicate_id": "subsample-000|subsample-003"
+      },
+      {
+        "ari": 0.6148196372671052,
+        "cluster_jaccard_mean": 0.757356369121075,
+        "cluster_jaccard_min": 0.5641025641025641,
+        "replicate_id": "subsample-000|subsample-004"
+      },
+      {
+        "ari": 1.0,
+        "cluster_jaccard_mean": 1.0,
+        "cluster_jaccard_min": 1.0,
+        "replicate_id": "subsample-000|subsample-005"
+      },
+      {
+        "ari": 0.5576913983012366,
+        "cluster_jaccard_mean": 0.7075370241161689,
+        "cluster_jaccard_min": 0.5116279069767442,
+        "replicate_id": "subsample-000|subsample-006"
+      },
+      {
+        "ari": 0.5511837448869872,
+        "cluster_jaccard_mean": 0.7159362357370185,
+        "cluster_jaccard_min": 0.5301204819277109,
+        "replicate_id": "subsample-000|subsample-007"
+      },
+      {
+        "ari": 0.8456265725981394,
+        "cluster_jaccard_mean": 0.896655181597257,
+        "cluster_jaccard_min": 0.7419354838709677,
+        "replicate_id": "subsample-000|subsample-008"
+      },
+      {
+        "ari": 0.7455064017101857,
+        "cluster_jaccard_mean": 0.8458887603624445,
+        "cluster_jaccard_min": 0.6666666666666666,
+        "replicate_id": "subsample-000|subsample-009"
+      },
+      {
+        "ari": 0.9586343519543993,
+        "cluster_jaccard_mean": 0.9720269756838905,
+        "cluster_jaccard_min": 0.9361702127659575,
+        "replicate_id": "subsample-000|subsample-010"
+      },
+      {
+        "ari": 0.5516759137243852,
+        "cluster_jaccard_mean": 0.7264997727617027,
+        "cluster_jaccard_min": 0.45652173913043476,
+        "replicate_id": "subsample-000|subsample-011"
+      },
+      {
+        "ari": 0.9770440227940422,
+        "cluster_jaccard_mean": 0.9871711699661138,
+        "cluster_jaccard_min": 0.9777777777777777,
+        "replicate_id": "subsample-000|subsample-012"
+      },
+      {
+        "ari": 0.9769000102597634,
+        "cluster_jaccard_mean": 0.9867653367653367,
+        "cluster_jaccard_min": 0.9761904761904762,
+        "replicate_id": "subsample-000|subsample-013"
+      },
+      {
+        "ari": 0.5005174363369148,
+        "cluster_jaccard_mean": 0.6784217171717172,
+        "cluster_jaccard_min": 0.4659090909090909,
+        "replicate_id": "subsample-000|subsample-014"
+      },
+      {
+        "ari": 0.9771195700990157,
+        "cluster_jaccard_mean": 0.9864946647555344,
+        "cluster_jaccard_min": 0.9743589743589743,
+        "replicate_id": "subsample-000|subsample-015"
+      },
+      {
+        "ari": 0.9739925959747929,
+        "cluster_jaccard_mean": 0.9900511928909494,
+        "cluster_jaccard_min": 0.9770114942528736,
+        "replicate_id": "subsample-000|subsample-016"
+      },
+      {
+        "ari": 0.5861063843605897,
+        "cluster_jaccard_mean": 0.7365074741352535,
+        "cluster_jaccard_min": 0.5301204819277109,
+        "replicate_id": "subsample-000|subsample-017"
+      },
+      {
+        "ari": 0.6388739767540111,
+        "cluster_jaccard_mean": 0.7686868414428022,
+        "cluster_jaccard_min": 0.6111111111111112,
+        "replicate_id": "subsample-000|subsample-018"
+      },
+      {
+        "ari": 0.5714178245088063,
+        "cluster_jaccard_mean": 0.7311051567239636,
+        "cluster_jaccard_min": 0.46511627906976744,
+        "replicate_id": "subsample-000|subsample-019"
+      },
+      {
+        "ari": 0.6259779670329825,
+        "cluster_jaccard_mean": 0.7831959010994579,
+        "cluster_jaccard_min": 0.5930232558139535,
+        "replicate_id": "subsample-001|subsample-002"
+      },
+      {
+        "ari": 0.6797549697805328,
+        "cluster_jaccard_mean": 0.8072352514506769,
+        "cluster_jaccard_min": 0.6125,
+        "replicate_id": "subsample-001|subsample-003"
+      },
+      {
+        "ari": 0.689746710629665,
+        "cluster_jaccard_mean": 0.8081682654913145,
+        "cluster_jaccard_min": 0.6578947368421053,
+        "replicate_id": "subsample-001|subsample-004"
+      },
+      {
+        "ari": 0.9396376157673666,
+        "cluster_jaccard_mean": 0.957936507936508,
+        "cluster_jaccard_min": 0.8888888888888888,
+        "replicate_id": "subsample-001|subsample-005"
+      },
+      {
+        "ari": 0.6282442294795103,
+        "cluster_jaccard_mean": 0.7654010079403737,
+        "cluster_jaccard_min": 0.6138613861386139,
+        "replicate_id": "subsample-001|subsample-006"
+      },
+      {
+        "ari": 0.6234858904320492,
+        "cluster_jaccard_mean": 0.7787285632907597,
+        "cluster_jaccard_min": 0.6422018348623854,
+        "replicate_id": "subsample-001|subsample-007"
+      },
+      {
+        "ari": 0.9134805070722467,
+        "cluster_jaccard_mean": 0.9480583826883637,
+        "cluster_jaccard_min": 0.9032258064516129,
+        "replicate_id": "subsample-001|subsample-008"
+      },
+      {
+        "ari": 0.8366462672652047,
+        "cluster_jaccard_mean": 0.9043856904463914,
+        "cluster_jaccard_min": 0.8088235294117647,
+        "replicate_id": "subsample-001|subsample-009"
+      },
+      {
+        "ari": 0.9670811786497786,
+        "cluster_jaccard_mean": 0.980253036437247,
+        "cluster_jaccard_min": 0.9615384615384616,
+        "replicate_id": "subsample-001|subsample-010"
+      },
+      {
+        "ari": 0.6542846349911758,
+        "cluster_jaccard_mean": 0.7919743178170144,
+        "cluster_jaccard_min": 0.6067415730337079,
+        "replicate_id": "subsample-001|subsample-011"
+      },
+      {
+        "ari": 0.969822870388737,
+        "cluster_jaccard_mean": 0.9787735849056605,
+        "cluster_jaccard_min": 0.9433962264150944,
+        "replicate_id": "subsample-001|subsample-012"
+      },
+      {
+        "ari": 0.9350116811368983,
+        "cluster_jaccard_mean": 0.9610487338748208,
+        "cluster_jaccard_min": 0.9230769230769231,
+        "replicate_id": "subsample-001|subsample-013"
+      },
+      {
+        "ari": 0.5616711170166354,
+        "cluster_jaccard_mean": 0.732925123075763,
+        "cluster_jaccard_min": 0.5727272727272728,
+        "replicate_id": "subsample-001|subsample-014"
+      },
+      {
+        "ari": 0.9468561994522209,
+        "cluster_jaccard_mean": 0.9647066458982346,
+        "cluster_jaccard_min": 0.9166666666666666,
+        "replicate_id": "subsample-001|subsample-015"
+      },
+      {
+        "ari": 0.9354629716185066,
+        "cluster_jaccard_mean": 0.9609386936592819,
+        "cluster_jaccard_min": 0.9090909090909091,
+        "replicate_id": "subsample-001|subsample-016"
+      },
+      {
+        "ari": 0.6538310877051208,
+        "cluster_jaccard_mean": 0.7891135972461274,
+        "cluster_jaccard_min": 0.6385542168674698,
+        "replicate_id": "subsample-001|subsample-017"
+      },
+      {
+        "ari": 0.7064334495707406,
+        "cluster_jaccard_mean": 0.8220505830683023,
+        "cluster_jaccard_min": 0.7142857142857143,
+        "replicate_id": "subsample-001|subsample-018"
+      },
+      {
+        "ari": 0.6227227053539118,
+        "cluster_jaccard_mean": 0.7760925708734644,
+        "cluster_jaccard_min": 0.5783132530120482,
+        "replicate_id": "subsample-001|subsample-019"
+      },
+      {
+        "ari": 0.9430208603731887,
+        "cluster_jaccard_mean": 0.9698281369792998,
+        "cluster_jaccard_min": 0.9534883720930233,
+        "replicate_id": "subsample-002|subsample-003"
+      },
+      {
+        "ari": 0.8949864395761288,
+        "cluster_jaccard_mean": 0.9252447276075325,
+        "cluster_jaccard_min": 0.9024390243902439,
+        "replicate_id": "subsample-002|subsample-004"
+      },
+      {
+        "ari": 0.5833394762422471,
+        "cluster_jaccard_mean": 0.7485309311636317,
+        "cluster_jaccard_min": 0.5056179775280899,
+        "replicate_id": "subsample-002|subsample-005"
+      },
+      {
+        "ari": 0.8858907989827919,
+        "cluster_jaccard_mean": 0.9192881593639975,
+        "cluster_jaccard_min": 0.8764044943820225,
+        "replicate_id": "subsample-002|subsample-006"
+      },
+      {
+        "ari": 0.9396212969904499,
+        "cluster_jaccard_mean": 0.9498753058535667,
+        "cluster_jaccard_min": 0.9166666666666666,
+        "replicate_id": "subsample-002|subsample-007"
+      },
+      {
+        "ari": 0.6719285299408829,
+        "cluster_jaccard_mean": 0.8146563119629875,
+        "cluster_jaccard_min": 0.6292134831460674,
+        "replicate_id": "subsample-002|subsample-008"
+      },
+      {
+        "ari": 0.7445908679849631,
+        "cluster_jaccard_mean": 0.8630571193994839,
+        "cluster_jaccard_min": 0.7471264367816092,
+        "replicate_id": "subsample-002|subsample-009"
+      },
+      {
+        "ari": 0.6405621029273211,
+        "cluster_jaccard_mean": 0.7784187111782622,
+        "cluster_jaccard_min": 0.5365853658536586,
+        "replicate_id": "subsample-002|subsample-010"
+      },
+      {
+        "ari": 0.9106645923611145,
+        "cluster_jaccard_mean": 0.9532926521098708,
+        "cluster_jaccard_min": 0.925531914893617,
+        "replicate_id": "subsample-002|subsample-011"
+      },
+      {
+        "ari": 0.5701107250297079,
+        "cluster_jaccard_mean": 0.7394927536231884,
+        "cluster_jaccard_min": 0.5,
+        "replicate_id": "subsample-002|subsample-012"
+      },
+      {
+        "ari": 0.5921340166825626,
+        "cluster_jaccard_mean": 0.7571856474910245,
+        "cluster_jaccard_min": 0.5172413793103449,
+        "replicate_id": "subsample-002|subsample-013"
+      },
+      {
+        "ari": 0.8068271508563817,
+        "cluster_jaccard_mean": 0.8782632658292746,
+        "cluster_jaccard_min": 0.7978723404255319,
+        "replicate_id": "subsample-002|subsample-014"
+      },
+      {
+        "ari": 0.5874152206813749,
+        "cluster_jaccard_mean": 0.751960326980319,
+        "cluster_jaccard_min": 0.4878048780487805,
+        "replicate_id": "subsample-002|subsample-015"
+      },
+      {
+        "ari": 0.5906802194339552,
+        "cluster_jaccard_mean": 0.7620672338414274,
+        "cluster_jaccard_min": 0.4945054945054945,
+        "replicate_id": "subsample-002|subsample-016"
+      },
+      {
+        "ari": 0.9081839135561582,
+        "cluster_jaccard_mean": 0.9346091614265433,
+        "cluster_jaccard_min": 0.9101123595505618,
+        "replicate_id": "subsample-002|subsample-017"
+      },
+      {
+        "ari": 0.887230949831571,
+        "cluster_jaccard_mean": 0.9183612999812862,
+        "cluster_jaccard_min": 0.8780487804878049,
+        "replicate_id": "subsample-002|subsample-018"
+      },
+      {
+        "ari": 0.910979498346461,
+        "cluster_jaccard_mean": 0.952388468013468,
+        "cluster_jaccard_min": 0.9090909090909091,
+        "replicate_id": "subsample-002|subsample-019"
+      },
+      {
+        "ari": 0.9528560071240301,
+        "cluster_jaccard_mean": 0.9535642192762865,
+        "cluster_jaccard_min": 0.9090909090909091,
+        "replicate_id": "subsample-003|subsample-004"
+      },
+      {
+        "ari": 0.6301100956005056,
+        "cluster_jaccard_mean": 0.7769660280722228,
+        "cluster_jaccard_min": 0.5476190476190477,
+        "replicate_id": "subsample-003|subsample-005"
+      },
+      {
+        "ari": 0.8920034408238993,
+        "cluster_jaccard_mean": 0.9121009137965188,
+        "cluster_jaccard_min": 0.8888888888888888,
+        "replicate_id": "subsample-003|subsample-006"
+      },
+      {
+        "ari": 0.9409762823588402,
+        "cluster_jaccard_mean": 0.9444998991732204,
+        "cluster_jaccard_min": 0.8947368421052632,
+        "replicate_id": "subsample-003|subsample-007"
+      },
+      {
+        "ari": 0.6765082303314048,
+        "cluster_jaccard_mean": 0.8187206312206312,
+        "cluster_jaccard_min": 0.6590909090909091,
+        "replicate_id": "subsample-003|subsample-008"
+      },
+      {
+        "ari": 0.788486064076666,
+        "cluster_jaccard_mean": 0.88264653815893,
+        "cluster_jaccard_min": 0.7916666666666666,
+        "replicate_id": "subsample-003|subsample-009"
+      },
+      {
+        "ari": 0.6728034294893117,
+        "cluster_jaccard_mean": 0.7956156279287723,
+        "cluster_jaccard_min": 0.5625,
+        "replicate_id": "subsample-003|subsample-010"
+      },
+      {
+        "ari": 0.9276650277676869,
+        "cluster_jaccard_mean": 0.9581851799175082,
+        "cluster_jaccard_min": 0.9113924050632911,
+        "replicate_id": "subsample-003|subsample-011"
+      },
+      {
+        "ari": 0.6123760279904203,
+        "cluster_jaccard_mean": 0.7690852490421456,
+        "cluster_jaccard_min": 0.5402298850574713,
+        "replicate_id": "subsample-003|subsample-012"
+      },
+      {
+        "ari": 0.6639792431954159,
+        "cluster_jaccard_mean": 0.7822121054866255,
+        "cluster_jaccard_min": 0.5365853658536586,
+        "replicate_id": "subsample-003|subsample-013"
+      },
+      {
+        "ari": 0.8236880040048975,
+        "cluster_jaccard_mean": 0.8821022727272727,
+        "cluster_jaccard_min": 0.8409090909090909,
+        "replicate_id": "subsample-003|subsample-014"
+      },
+      {
+        "ari": 0.6613573587824242,
+        "cluster_jaccard_mean": 0.7851043322086225,
+        "cluster_jaccard_min": 0.5316455696202531,
+        "replicate_id": "subsample-003|subsample-015"
+      },
+      {
+        "ari": 0.6240735362424574,
+        "cluster_jaccard_mean": 0.7768787794857592,
+        "cluster_jaccard_min": 0.5301204819277109,
+        "replicate_id": "subsample-003|subsample-016"
+      },
+      {
+        "ari": 0.9854866685643298,
+        "cluster_jaccard_mean": 0.9722367731796753,
+        "cluster_jaccard_min": 0.9130434782608695,
+        "replicate_id": "subsample-003|subsample-017"
+      },
+      {
+        "ari": 0.9547811279196015,
+        "cluster_jaccard_mean": 0.9453079511234331,
+        "cluster_jaccard_min": 0.8823529411764706,
+        "replicate_id": "subsample-003|subsample-018"
+      },
+      {
+        "ari": 0.9135982523936207,
+        "cluster_jaccard_mean": 0.9530318945760123,
+        "cluster_jaccard_min": 0.9176470588235294,
+        "replicate_id": "subsample-003|subsample-019"
+      },
+      {
+        "ari": 0.6315899938143437,
+        "cluster_jaccard_mean": 0.7642354465709729,
+        "cluster_jaccard_min": 0.5875,
+        "replicate_id": "subsample-004|subsample-005"
+      },
+      {
+        "ari": 0.9142367173446317,
+        "cluster_jaccard_mean": 0.9527914614121511,
+        "cluster_jaccard_min": 0.9166666666666666,
+        "replicate_id": "subsample-004|subsample-006"
+      },
+      {
+        "ari": 0.9670613890561769,
+        "cluster_jaccard_mean": 0.9818121693121693,
+        "cluster_jaccard_min": 0.9629629629629629,
+        "replicate_id": "subsample-004|subsample-007"
+      },
+      {
+        "ari": 0.6582838551067388,
+        "cluster_jaccard_mean": 0.7880926890586218,
+        "cluster_jaccard_min": 0.6506024096385542,
+        "replicate_id": "subsample-004|subsample-008"
+      },
+      {
+        "ari": 0.7549613580157375,
+        "cluster_jaccard_mean": 0.846786014658176,
+        "cluster_jaccard_min": 0.7857142857142857,
+        "replicate_id": "subsample-004|subsample-009"
+      },
+      {
+        "ari": 0.6830282801413181,
+        "cluster_jaccard_mean": 0.7840027138940182,
+        "cluster_jaccard_min": 0.6216216216216216,
+        "replicate_id": "subsample-004|subsample-010"
+      },
+      {
+        "ari": 0.8981093420199947,
+        "cluster_jaccard_mean": 0.9261524358302776,
+        "cluster_jaccard_min": 0.9,
+        "replicate_id": "subsample-004|subsample-011"
+      },
+      {
+        "ari": 0.6081582931843184,
+        "cluster_jaccard_mean": 0.7570602600014364,
+        "cluster_jaccard_min": 0.5764705882352941,
+        "replicate_id": "subsample-004|subsample-012"
+      },
+      {
+        "ari": 0.6425016848408504,
+        "cluster_jaccard_mean": 0.7606182765043524,
+        "cluster_jaccard_min": 0.569620253164557,
+        "replicate_id": "subsample-004|subsample-013"
+      },
+      {
+        "ari": 0.8584815169594827,
+        "cluster_jaccard_mean": 0.921427241782789,
+        "cluster_jaccard_min": 0.8928571428571429,
+        "replicate_id": "subsample-004|subsample-014"
+      },
+      {
+        "ari": 0.6513064643299491,
+        "cluster_jaccard_mean": 0.7692484229356935,
+        "cluster_jaccard_min": 0.5657894736842105,
+        "replicate_id": "subsample-004|subsample-015"
+      },
+      {
+        "ari": 0.6365822348024628,
+        "cluster_jaccard_mean": 0.7654835513452644,
+        "cluster_jaccard_min": 0.5679012345679012,
+        "replicate_id": "subsample-004|subsample-016"
+      },
+      {
+        "ari": 0.9886308000443561,
+        "cluster_jaccard_mean": 0.9934164934164934,
+        "cluster_jaccard_min": 0.9864864864864865,
+        "replicate_id": "subsample-004|subsample-017"
+      },
+      {
+        "ari": 0.9772573726948591,
+        "cluster_jaccard_mean": 0.9877718616182105,
+        "cluster_jaccard_min": 0.9764705882352941,
+        "replicate_id": "subsample-004|subsample-018"
+      },
+      {
+        "ari": 0.9285113951069807,
+        "cluster_jaccard_mean": 0.9431664631664632,
+        "cluster_jaccard_min": 0.92,
+        "replicate_id": "subsample-004|subsample-019"
+      },
+      {
+        "ari": 0.5843887555751693,
+        "cluster_jaccard_mean": 0.7195975710083018,
+        "cluster_jaccard_min": 0.5238095238095238,
+        "replicate_id": "subsample-005|subsample-006"
+      },
+      {
+        "ari": 0.5690733090949762,
+        "cluster_jaccard_mean": 0.7287646555935515,
+        "cluster_jaccard_min": 0.5617977528089888,
+        "replicate_id": "subsample-005|subsample-007"
+      },
+      {
+        "ari": 0.8364117984810056,
+        "cluster_jaccard_mean": 0.9048056722689075,
+        "cluster_jaccard_min": 0.7941176470588235,
+        "replicate_id": "subsample-005|subsample-008"
+      },
+      {
+        "ari": 0.7468476736097137,
+        "cluster_jaccard_mean": 0.8522058110709488,
+        "cluster_jaccard_min": 0.6901408450704225,
+        "replicate_id": "subsample-005|subsample-009"
+      },
+      {
+        "ari": 0.9578632118824278,
+        "cluster_jaccard_mean": 0.9726247605605404,
+        "cluster_jaccard_min": 0.94,
+        "replicate_id": "subsample-005|subsample-010"
+      },
+      {
+        "ari": 0.5899859397802802,
+        "cluster_jaccard_mean": 0.754256800171343,
+        "cluster_jaccard_min": 0.5108695652173914,
+        "replicate_id": "subsample-005|subsample-011"
+      },
+      {
+        "ari": 0.9897231251361995,
+        "cluster_jaccard_mean": 0.9927170868347339,
+        "cluster_jaccard_min": 0.9803921568627451,
+        "replicate_id": "subsample-005|subsample-012"
+      },
+      {
+        "ari": 0.9637709064766223,
+        "cluster_jaccard_mean": 0.9821159497138817,
+        "cluster_jaccard_min": 0.9719626168224299,
+        "replicate_id": "subsample-005|subsample-013"
+      },
+      {
+        "ari": 0.5153384374113521,
+        "cluster_jaccard_mean": 0.6912282878411911,
+        "cluster_jaccard_min": 0.5,
+        "replicate_id": "subsample-005|subsample-014"
+      },
+      {
+        "ari": 0.976674477376178,
+        "cluster_jaccard_mean": 0.9871371523370925,
+        "cluster_jaccard_min": 0.9782608695652174,
+        "replicate_id": "subsample-005|subsample-015"
+      },
+      {
+        "ari": 0.9739702399942024,
+        "cluster_jaccard_mean": 0.9897074190177638,
+        "cluster_jaccard_min": 0.9770114942528736,
+        "replicate_id": "subsample-005|subsample-016"
+      },
+      {
+        "ari": 0.5975350732641984,
+        "cluster_jaccard_mean": 0.7499646506112023,
+        "cluster_jaccard_min": 0.5632183908045977,
+        "replicate_id": "subsample-005|subsample-017"
+      },
+      {
+        "ari": 0.634297162918372,
+        "cluster_jaccard_mean": 0.7622899962093561,
+        "cluster_jaccard_min": 0.6025641025641025,
+        "replicate_id": "subsample-005|subsample-018"
+      },
+      {
+        "ari": 0.6005466914289533,
+        "cluster_jaccard_mean": 0.7524352230664328,
+        "cluster_jaccard_min": 0.5,
+        "replicate_id": "subsample-005|subsample-019"
+      },
+      {
+        "ari": 0.9449045303543955,
+        "cluster_jaccard_mean": 0.9696761401189689,
+        "cluster_jaccard_min": 0.9411764705882353,
+        "replicate_id": "subsample-006|subsample-007"
+      },
+      {
+        "ari": 0.57912354194228,
+        "cluster_jaccard_mean": 0.7389792649888343,
+        "cluster_jaccard_min": 0.5869565217391305,
+        "replicate_id": "subsample-006|subsample-008"
+      },
+      {
+        "ari": 0.6554558317739283,
+        "cluster_jaccard_mean": 0.7827419596116981,
+        "cluster_jaccard_min": 0.6896551724137931,
+        "replicate_id": "subsample-006|subsample-009"
+      },
+      {
+        "ari": 0.616002097129789,
+        "cluster_jaccard_mean": 0.7272421258701747,
+        "cluster_jaccard_min": 0.524390243902439,
+        "replicate_id": "subsample-006|subsample-010"
+      },
+      {
+        "ari": 0.9388273339001856,
+        "cluster_jaccard_mean": 0.9453782766169299,
+        "cluster_jaccard_min": 0.9,
+        "replicate_id": "subsample-006|subsample-011"
+      },
+      {
+        "ari": 0.5878942734210431,
+        "cluster_jaccard_mean": 0.7192254174397031,
+        "cluster_jaccard_min": 0.5357142857142857,
+        "replicate_id": "subsample-006|subsample-012"
+      },
+      {
+        "ari": 0.5900954454595768,
+        "cluster_jaccard_mean": 0.7159338735494197,
+        "cluster_jaccard_min": 0.5176470588235295,
+        "replicate_id": "subsample-006|subsample-013"
+      },
+      {
+        "ari": 0.9219607862157483,
+        "cluster_jaccard_mean": 0.9577775477841084,
+        "cluster_jaccard_min": 0.9367088607594937,
+        "replicate_id": "subsample-006|subsample-014"
+      },
+      {
+        "ari": 0.5826952566119057,
+        "cluster_jaccard_mean": 0.7200793400620706,
+        "cluster_jaccard_min": 0.5180722891566265,
+        "replicate_id": "subsample-006|subsample-015"
+      },
+      {
+        "ari": 0.6086964303043455,
+        "cluster_jaccard_mean": 0.7316810625456303,
+        "cluster_jaccard_min": 0.5116279069767442,
+        "replicate_id": "subsample-006|subsample-016"
+      },
+      {
+        "ari": 0.8804631648166472,
+        "cluster_jaccard_mean": 0.9319782200053284,
+        "cluster_jaccard_min": 0.8783783783783784,
+        "replicate_id": "subsample-006|subsample-017"
+      },
+      {
+        "ari": 0.8856683175866094,
+        "cluster_jaccard_mean": 0.9338361576386848,
+        "cluster_jaccard_min": 0.8780487804878049,
+        "replicate_id": "subsample-006|subsample-018"
+      },
+      {
+        "ari": 0.9620859178012166,
+        "cluster_jaccard_mean": 0.9596932303079229,
+        "cluster_jaccard_min": 0.9130434782608695,
+        "replicate_id": "subsample-006|subsample-019"
+      },
+      {
+        "ari": 0.6050121179190088,
+        "cluster_jaccard_mean": 0.763782387955182,
+        "cluster_jaccard_min": 0.6470588235294118,
+        "replicate_id": "subsample-007|subsample-008"
+      },
+      {
+        "ari": 0.7185117117275771,
+        "cluster_jaccard_mean": 0.8247422403030694,
+        "cluster_jaccard_min": 0.75,
+        "replicate_id": "subsample-007|subsample-009"
+      },
+      {
+        "ari": 0.6176749930363978,
+        "cluster_jaccard_mean": 0.7491055129609346,
+        "cluster_jaccard_min": 0.5903614457831325,
+        "replicate_id": "subsample-007|subsample-010"
+      },
+      {
+        "ari": 0.9166308819171306,
+        "cluster_jaccard_mean": 0.9347969725687771,
+        "cluster_jaccard_min": 0.9047619047619048,
+        "replicate_id": "subsample-007|subsample-011"
+      },
+      {
+        "ari": 0.5697926362993152,
+        "cluster_jaccard_mean": 0.7274789546095818,
+        "cluster_jaccard_min": 0.5663716814159292,
+        "replicate_id": "subsample-007|subsample-012"
+      },
+      {
+        "ari": 0.5822239235806239,
+        "cluster_jaccard_mean": 0.735971966480027,
+        "cluster_jaccard_min": 0.5617977528089888,
+        "replicate_id": "subsample-007|subsample-013"
+      },
+      {
+        "ari": 0.8502976334294857,
+        "cluster_jaccard_mean": 0.9192958980674498,
+        "cluster_jaccard_min": 0.8681318681318682,
+        "replicate_id": "subsample-007|subsample-014"
+      },
+      {
+        "ari": 0.572832760481334,
+        "cluster_jaccard_mean": 0.7290927125612724,
+        "cluster_jaccard_min": 0.5529411764705883,
+        "replicate_id": "subsample-007|subsample-015"
+      },
+      {
+        "ari": 0.5977704636982522,
+        "cluster_jaccard_mean": 0.7493284447646102,
+        "cluster_jaccard_min": 0.5632183908045977,
+        "replicate_id": "subsample-007|subsample-016"
+      },
+      {
+        "ari": 0.9787153041839728,
+        "cluster_jaccard_mean": 0.9860869565217392,
+        "cluster_jaccard_min": 0.9710144927536232,
+        "replicate_id": "subsample-007|subsample-017"
+      },
+      {
+        "ari": 0.9660355607430089,
+        "cluster_jaccard_mean": 0.9816840930814044,
+        "cluster_jaccard_min": 0.9746835443037974,
+        "replicate_id": "subsample-007|subsample-018"
+      },
+      {
+        "ari": 0.9392611900575054,
+        "cluster_jaccard_mean": 0.9487154150197628,
+        "cluster_jaccard_min": 0.9130434782608695,
+        "replicate_id": "subsample-007|subsample-019"
+      },
+      {
+        "ari": 0.8940942095407827,
+        "cluster_jaccard_mean": 0.9391061378358287,
+        "cluster_jaccard_min": 0.863013698630137,
+        "replicate_id": "subsample-008|subsample-009"
+      },
+      {
+        "ari": 0.8883753400581322,
+        "cluster_jaccard_mean": 0.9284642842614815,
+        "cluster_jaccard_min": 0.8360655737704918,
+        "replicate_id": "subsample-008|subsample-010"
+      },
+      {
+        "ari": 0.6321871081822459,
+        "cluster_jaccard_mean": 0.7984472352024923,
+        "cluster_jaccard_min": 0.6145833333333334,
+        "replicate_id": "subsample-008|subsample-011"
+      },
+      {
+        "ari": 0.8751501556894213,
+        "cluster_jaccard_mean": 0.9218615543815696,
+        "cluster_jaccard_min": 0.819672131147541,
+        "replicate_id": "subsample-008|subsample-012"
+      },
+      {
+        "ari": 0.848355587476649,
+        "cluster_jaccard_mean": 0.903219696969697,
+        "cluster_jaccard_min": 0.7833333333333333,
+        "replicate_id": "subsample-008|subsample-013"
+      },
+      {
+        "ari": 0.5391991368428004,
+        "cluster_jaccard_mean": 0.7156853415107174,
+        "cluster_jaccard_min": 0.5416666666666666,
+        "replicate_id": "subsample-008|subsample-014"
+      },
+      {
+        "ari": 0.8525975272098548,
+        "cluster_jaccard_mean": 0.9015067622299465,
+        "cluster_jaccard_min": 0.7627118644067796,
+        "replicate_id": "subsample-008|subsample-015"
+      },
+      {
+        "ari": 0.835582474280557,
+        "cluster_jaccard_mean": 0.8996591944299843,
+        "cluster_jaccard_min": 0.78125,
+        "replicate_id": "subsample-008|subsample-016"
+      },
+      {
+        "ari": 0.6730234621844204,
+        "cluster_jaccard_mean": 0.8032487675715239,
+        "cluster_jaccard_min": 0.6818181818181818,
+        "replicate_id": "subsample-008|subsample-017"
+      },
+      {
+        "ari": 0.7137821429743888,
+        "cluster_jaccard_mean": 0.8174237264620934,
+        "cluster_jaccard_min": 0.717948717948718,
+        "replicate_id": "subsample-008|subsample-018"
+      },
+      {
+        "ari": 0.6544130437238092,
+        "cluster_jaccard_mean": 0.8011966583878979,
+        "cluster_jaccard_min": 0.627906976744186,
+        "replicate_id": "subsample-008|subsample-019"
+      },
+      {
+        "ari": 0.8416589726642633,
+        "cluster_jaccard_mean": 0.8988855116514691,
+        "cluster_jaccard_min": 0.7619047619047619,
+        "replicate_id": "subsample-009|subsample-010"
+      },
+      {
+        "ari": 0.709059183388214,
+        "cluster_jaccard_mean": 0.8429876678254615,
+        "cluster_jaccard_min": 0.711340206185567,
+        "replicate_id": "subsample-009|subsample-011"
+      },
+      {
+        "ari": 0.744133586751605,
+        "cluster_jaccard_mean": 0.8517084500230567,
+        "cluster_jaccard_min": 0.6891891891891891,
+        "replicate_id": "subsample-009|subsample-012"
+      },
+      {
+        "ari": 0.7418811947504959,
+        "cluster_jaccard_mean": 0.8455924493158535,
+        "cluster_jaccard_min": 0.6818181818181818,
+        "replicate_id": "subsample-009|subsample-013"
+      },
+      {
+        "ari": 0.593069988301176,
+        "cluster_jaccard_mean": 0.7512279223443061,
+        "cluster_jaccard_min": 0.6382978723404256,
+        "replicate_id": "subsample-009|subsample-014"
+      },
+      {
+        "ari": 0.770225386169898,
+        "cluster_jaccard_mean": 0.8569552473136866,
+        "cluster_jaccard_min": 0.6825396825396826,
+        "replicate_id": "subsample-009|subsample-015"
+      },
+      {
+        "ari": 0.7541894560065079,
+        "cluster_jaccard_mean": 0.85677426438296,
+        "cluster_jaccard_min": 0.6805555555555556,
+        "replicate_id": "subsample-009|subsample-016"
+      },
+      {
+        "ari": 0.736798028614778,
+        "cluster_jaccard_mean": 0.8404872818887357,
+        "cluster_jaccard_min": 0.7525773195876289,
+        "replicate_id": "subsample-009|subsample-017"
+      },
+      {
+        "ari": 0.7940545491180787,
+        "cluster_jaccard_mean": 0.8661834638503113,
+        "cluster_jaccard_min": 0.8247422680412371,
+        "replicate_id": "subsample-009|subsample-018"
+      },
+      {
+        "ari": 0.6821849254244176,
+        "cluster_jaccard_mean": 0.8278051450465244,
+        "cluster_jaccard_min": 0.6888888888888889,
+        "replicate_id": "subsample-009|subsample-019"
+      },
+      {
+        "ari": 0.606889476639808,
+        "cluster_jaccard_mean": 0.7663625967252361,
+        "cluster_jaccard_min": 0.532608695652174,
+        "replicate_id": "subsample-010|subsample-011"
+      },
+      {
+        "ari": 0.9769610280750437,
+        "cluster_jaccard_mean": 0.9872581269349845,
+        "cluster_jaccard_min": 0.9791666666666666,
+        "replicate_id": "subsample-010|subsample-012"
+      },
+      {
+        "ari": 0.9684099090905355,
+        "cluster_jaccard_mean": 0.9801724636284805,
+        "cluster_jaccard_min": 0.96,
+        "replicate_id": "subsample-010|subsample-013"
+      },
+      {
+        "ari": 0.5546066397266824,
+        "cluster_jaccard_mean": 0.708938636975208,
+        "cluster_jaccard_min": 0.5180722891566265,
+        "replicate_id": "subsample-010|subsample-014"
+      },
+      {
+        "ari": 0.9910813125176923,
+        "cluster_jaccard_mean": 0.9919056429232193,
+        "cluster_jaccard_min": 0.9782608695652174,
+        "replicate_id": "subsample-010|subsample-015"
+      },
+      {
+        "ari": 0.9708526281493873,
+        "cluster_jaccard_mean": 0.9780604910585935,
+        "cluster_jaccard_min": 0.9411764705882353,
+        "replicate_id": "subsample-010|subsample-016"
+      },
+      {
+        "ari": 0.6500737902446933,
+        "cluster_jaccard_mean": 0.7654602104786502,
+        "cluster_jaccard_min": 0.569620253164557,
+        "replicate_id": "subsample-010|subsample-017"
+      },
+      {
+        "ari": 0.708416394688531,
+        "cluster_jaccard_mean": 0.7994741422440825,
+        "cluster_jaccard_min": 0.6571428571428571,
+        "replicate_id": "subsample-010|subsample-018"
+      },
+      {
+        "ari": 0.6176762128138957,
+        "cluster_jaccard_mean": 0.7619237082500714,
+        "cluster_jaccard_min": 0.525,
+        "replicate_id": "subsample-010|subsample-019"
+      },
+      {
+        "ari": 0.5676585239373741,
+        "cluster_jaccard_mean": 0.746155330704971,
+        "cluster_jaccard_min": 0.5157894736842106,
+        "replicate_id": "subsample-011|subsample-012"
+      },
+      {
+        "ari": 0.5784106348501132,
+        "cluster_jaccard_mean": 0.7379768220285462,
+        "cluster_jaccard_min": 0.4835164835164835,
+        "replicate_id": "subsample-011|subsample-013"
+      },
+      {
+        "ari": 0.8612956887866168,
+        "cluster_jaccard_mean": 0.9097673006951424,
+        "cluster_jaccard_min": 0.875,
+        "replicate_id": "subsample-011|subsample-014"
+      },
+      {
+        "ari": 0.6038507366066664,
+        "cluster_jaccard_mean": 0.7550903918179199,
+        "cluster_jaccard_min": 0.5056179775280899,
+        "replicate_id": "subsample-011|subsample-015"
+      },
+      {
+        "ari": 0.5638885019742124,
+        "cluster_jaccard_mean": 0.7514394646747589,
+        "cluster_jaccard_min": 0.5,
+        "replicate_id": "subsample-011|subsample-016"
+      },
+      {
+        "ari": 0.8871280623598865,
+        "cluster_jaccard_mean": 0.9216842351239514,
+        "cluster_jaccard_min": 0.8829787234042553,
+        "replicate_id": "subsample-011|subsample-017"
+      },
+      {
+        "ari": 0.8679316703822264,
+        "cluster_jaccard_mean": 0.9026907362663177,
+        "cluster_jaccard_min": 0.8522727272727273,
+        "replicate_id": "subsample-011|subsample-018"
+      },
+      {
+        "ari": 0.9768106861637923,
+        "cluster_jaccard_mean": 0.9879464285714286,
+        "cluster_jaccard_min": 0.9772727272727273,
+        "replicate_id": "subsample-011|subsample-019"
+      },
+      {
+        "ari": 0.9871930446465994,
+        "cluster_jaccard_mean": 0.9948942939244663,
+        "cluster_jaccard_min": 0.9885057471264368,
+        "replicate_id": "subsample-012|subsample-013"
+      },
+      {
+        "ari": 0.5116835518732153,
+        "cluster_jaccard_mean": 0.6903538340232604,
+        "cluster_jaccard_min": 0.5168539325842697,
+        "replicate_id": "subsample-012|subsample-014"
+      },
+      {
+        "ari": 0.9871753839424,
+        "cluster_jaccard_mean": 0.9949800199800201,
+        "cluster_jaccard_min": 0.989010989010989,
+        "replicate_id": "subsample-012|subsample-015"
+      },
+      {
+        "ari": 0.9643330917637468,
+        "cluster_jaccard_mean": 0.9829995839951593,
+        "cluster_jaccard_min": 0.9734513274336283,
+        "replicate_id": "subsample-012|subsample-016"
+      },
+      {
+        "ari": 0.5933456884842326,
+        "cluster_jaccard_mean": 0.7462282620250691,
+        "cluster_jaccard_min": 0.5697674418604651,
+        "replicate_id": "subsample-012|subsample-017"
+      },
+      {
+        "ari": 0.6431801751321653,
+        "cluster_jaccard_mean": 0.7745164745164745,
+        "cluster_jaccard_min": 0.6486486486486487,
+        "replicate_id": "subsample-012|subsample-018"
+      },
+      {
+        "ari": 0.5834256148848052,
+        "cluster_jaccard_mean": 0.7521551724137931,
+        "cluster_jaccard_min": 0.5287356321839081,
+        "replicate_id": "subsample-012|subsample-019"
+      },
+      {
+        "ari": 0.5241674749276153,
+        "cluster_jaccard_mean": 0.68725357524726,
+        "cluster_jaccard_min": 0.47674418604651164,
+        "replicate_id": "subsample-013|subsample-014"
+      },
+      {
+        "ari": 1.0,
+        "cluster_jaccard_mean": 1.0,
+        "cluster_jaccard_min": 1.0,
+        "replicate_id": "subsample-013|subsample-015"
+      },
+      {
+        "ari": 0.9765511538464327,
+        "cluster_jaccard_mean": 0.9874151632118587,
+        "cluster_jaccard_min": 0.9787234042553191,
+        "replicate_id": "subsample-013|subsample-016"
+      },
+      {
+        "ari": 0.6101517387772144,
+        "cluster_jaccard_mean": 0.7443015706154468,
+        "cluster_jaccard_min": 0.5301204819277109,
+        "replicate_id": "subsample-013|subsample-017"
+      },
+      {
+        "ari": 0.6552400427060759,
+        "cluster_jaccard_mean": 0.7712562656641604,
+        "cluster_jaccard_min": 0.6142857142857143,
+        "replicate_id": "subsample-013|subsample-018"
+      },
+      {
+        "ari": 0.5776229083231608,
+        "cluster_jaccard_mean": 0.7376183231913456,
+        "cluster_jaccard_min": 0.47058823529411764,
+        "replicate_id": "subsample-013|subsample-019"
+      },
+      {
+        "ari": 0.5409514589705537,
+        "cluster_jaccard_mean": 0.6994047619047619,
+        "cluster_jaccard_min": 0.4642857142857143,
+        "replicate_id": "subsample-014|subsample-015"
+      },
+      {
+        "ari": 0.5277163279850041,
+        "cluster_jaccard_mean": 0.7020237473335945,
+        "cluster_jaccard_min": 0.4946236559139785,
+        "replicate_id": "subsample-014|subsample-016"
+      },
+      {
+        "ari": 0.815490803804137,
+        "cluster_jaccard_mean": 0.8972168734845243,
+        "cluster_jaccard_min": 0.8552631578947368,
+        "replicate_id": "subsample-014|subsample-017"
+      },
+      {
+        "ari": 0.8223992884775179,
+        "cluster_jaccard_mean": 0.9016893330899356,
+        "cluster_jaccard_min": 0.8433734939759037,
+        "replicate_id": "subsample-014|subsample-018"
+      },
+      {
+        "ari": 0.8455623091065161,
+        "cluster_jaccard_mean": 0.8984381655166539,
+        "cluster_jaccard_min": 0.8604651162790697,
+        "replicate_id": "subsample-014|subsample-019"
+      },
+      {
+        "ari": 0.9765203203871082,
+        "cluster_jaccard_mean": 0.9873708010335918,
+        "cluster_jaccard_min": 0.9777777777777777,
+        "replicate_id": "subsample-015|subsample-016"
+      },
+      {
+        "ari": 0.6009397559790717,
+        "cluster_jaccard_mean": 0.7427871808657629,
+        "cluster_jaccard_min": 0.5301204819277109,
+        "replicate_id": "subsample-015|subsample-017"
+      },
+      {
+        "ari": 0.6799689664451475,
+        "cluster_jaccard_mean": 0.7837165377211144,
+        "cluster_jaccard_min": 0.6111111111111112,
+        "replicate_id": "subsample-015|subsample-018"
+      },
+      {
+        "ari": 0.6059978133968591,
+        "cluster_jaccard_mean": 0.758568003264973,
+        "cluster_jaccard_min": 0.5061728395061729,
+        "replicate_id": "subsample-015|subsample-019"
+      },
+      {
+        "ari": 0.5953571808799373,
+        "cluster_jaccard_mean": 0.747056085057152,
+        "cluster_jaccard_min": 0.5465116279069767,
+        "replicate_id": "subsample-016|subsample-017"
+      },
+      {
+        "ari": 0.6783761303482514,
+        "cluster_jaccard_mean": 0.7879747234358914,
+        "cluster_jaccard_min": 0.6164383561643836,
+        "replicate_id": "subsample-016|subsample-018"
+      },
+      {
+        "ari": 0.5838630163138081,
+        "cluster_jaccard_mean": 0.7532101998772683,
+        "cluster_jaccard_min": 0.48863636363636365,
+        "replicate_id": "subsample-016|subsample-019"
+      },
+      {
+        "ari": 0.9660970069488664,
+        "cluster_jaccard_mean": 0.9806618819776713,
+        "cluster_jaccard_min": 0.9605263157894737,
+        "replicate_id": "subsample-017|subsample-018"
+      },
+      {
+        "ari": 0.9058049198233401,
+        "cluster_jaccard_mean": 0.9343543457800619,
+        "cluster_jaccard_min": 0.9111111111111111,
+        "replicate_id": "subsample-017|subsample-019"
+      },
+      {
+        "ari": 0.9017642691810922,
+        "cluster_jaccard_mean": 0.9212159966470311,
+        "cluster_jaccard_min": 0.8717948717948718,
+        "replicate_id": "subsample-018|subsample-019"
+      }
+    ]
+  },
+  "technical_confounding_eta2": {
+    "background_mean_intensity_eta2": 0.19036149997997906,
+    "border_distance_px_eta2": 0.06030399033805171,
+    "completeness_eta2": 0.041171322097066275,
+    "tissue_ratio_eta2": 0.04740328746092187
+  }
+}

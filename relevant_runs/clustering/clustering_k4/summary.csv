@@ -1,0 +1,3 @@
+model,split,n_samples,counts,silhouette,distance_median,criteria_passed,ari_subsampling,jaccard_min
+clustering_k4,train,411,"{'D': 131, 'A': 118, 'C': 31, 'B': 131}",0.23224247067707257,0.8874670869133044,4/5,0.7589759091388588,0.45652173913043476
+clustering_k4,val,57,"{'D': 55, 'A': 2, 'C': 0, 'B': 0}",0.20304482980244243,1.2780882650028047,,,
