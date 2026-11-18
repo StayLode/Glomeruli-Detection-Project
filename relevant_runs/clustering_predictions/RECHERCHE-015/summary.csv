@@ -1,4 +1,0 @@
-model,split,n_samples,counts,silhouette,distance_median
-clustering_k2,RECHERCHE-015,36,"{'A': 26, 'B': 10}",0.4467593531608758,1.4785071332268673
-clustering_k4,RECHERCHE-015,36,"{'A': 4, 'B': 2, 'C': 8, 'D': 22}",0.09867146569735977,1.2634744613974223
-clustering_k6,RECHERCHE-015,36,"{'A': 1, 'B': 0, 'C': 7, 'D': 8, 'E': 2, 'F': 18}",0.09169004577051026,1.0651445655614067
