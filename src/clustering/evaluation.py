@@ -5,7 +5,7 @@ import argparse
 import itertools
 import json
 from pathlib import Path
-from typing import Optional, Any, Dict, List, Sequence, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 import pandas as pd
@@ -39,23 +39,23 @@ def _fit_eval_model(
         config["features"],
         config["manifold"],
     )
-    feature_type = str(features_cfg["feature_type"])
-    default_method = "none" if feature_type == "stain_invariant_morph" else "pca"
-    manifold_method = str(manifold.get("method") or default_method)
-    default_scaling = "none" if features_cfg.get("block_weighting") == "equal" else "standard"
+    feature_type = features_cfg["feature_type"]
     return fit_feature_model(
         int(clustering["n_clusters"]),
         str(clustering.get("algorithm", "kmeans")),
         seed,
-        manifold.get("pca_variance", 20 if manifold_method == "pca" else None),
+        manifold.get("pca_variance", 0.95),
         feature_type,
         str(features_cfg.get("block_weighting", "none")),
-        str(clustering.get("input_scaling", default_scaling)),
+        str(
+            clustering.get(
+                "input_scaling",
+                "none" if features_cfg.get("block_weighting") == "equal" else "standard",
+            )
+        ),
         data["model_features"][indices] if feature_type != "hybrid" else None,
         data["deep_features_raw"][indices] if feature_type == "hybrid" else None,
         data["morphological_features_raw"][indices] if feature_type == "hybrid" else None,
-        manifold_method=manifold_method,
-        selected_features=features_cfg.get("selected_features"),
     )
 
 
@@ -99,54 +99,38 @@ def _internal_metrics(features: np.ndarray, labels: np.ndarray) -> Dict[str, Any
     }
 
 
-def _cramers_v(clusters: np.ndarray, slides: Sequence[str]) -> Dict[str, Any]:
-    slide_series = pd.Series(list(slides), dtype=str)
-    if len(clusters) == 0 or slide_series.nunique() < 2 or len(np.unique(clusters)) < 2:
-        return {
-            "status": "not_evaluable",
-            "reason": "requires at least two slides and two clusters",
-            "cramers_v_cluster_slide": None,
-            "nmi_cluster_slide": None,
-            "max_dominant_slide_fraction": None,
-        }
-    table = pd.crosstab(pd.Series(clusters, name="cluster"), slide_series)
-    chi2 = float(chi2_contingency(table)[0])
-    n = int(table.to_numpy().sum())
-    denom = min(table.shape[0] - 1, table.shape[1] - 1)
-    v = float(np.sqrt(chi2 / (n * denom))) if n > 0 and denom > 0 else None
-    dominant = float((table.div(table.sum(axis=1), axis=0)).max(axis=1).max())
-    return {
-        "status": "evaluated",
-        "reason": None,
-        "cramers_v_cluster_slide": v,
-        "nmi_cluster_slide": float(normalized_mutual_info_score(slide_series, clusters)),
-        "max_dominant_slide_fraction": dominant,
-    }
-
-
-def _eta_squared(values: pd.Series, labels: np.ndarray) -> Optional[float]:
-    numeric = pd.to_numeric(values, errors="coerce")
-    valid = numeric.notna().to_numpy()
-    if valid.sum() < 2 or len(np.unique(labels[valid])) < 2:
-        return None
-    y = numeric.to_numpy(dtype=float)[valid]
-    g = labels[valid]
-    grand = float(np.mean(y))
-    ss_total = float(np.sum((y - grand) ** 2))
-    if ss_total <= 1e-12:
+def _cramers_v(labels: Sequence[Any], groups: Sequence[Any]) -> float:
+    table = pd.crosstab(pd.Series(labels), pd.Series(groups)).to_numpy()
+    if min(table.shape) < 2:
         return 0.0
-    ss_between = sum(
-        float(np.sum(g == c)) * float((np.mean(y[g == c]) - grand) ** 2)
-        for c in np.unique(g)
+    chi2 = float(chi2_contingency(table, correction=False)[0])
+    return float(np.sqrt(chi2 / (table.sum() * min(table.shape[0] - 1, table.shape[1] - 1))))
+
+
+def _max_dominant_group_fraction(labels: Sequence[Any], groups: Sequence[Any]) -> float:
+    table = pd.crosstab(pd.Series(labels), pd.Series(groups)).to_numpy()
+    if table.size == 0:
+        return float("nan")
+    return float(np.max(table.max(axis=1) / np.maximum(table.sum(axis=1), 1)))
+
+
+def _eta_squared(values: Sequence[Any], labels: Sequence[Any]) -> Optional[float]:
+    value_array = np.asarray(values, dtype=float)
+    label_array = np.asarray(labels)
+    valid = np.isfinite(value_array)
+    value_array, label_array = value_array[valid], label_array[valid]
+    if len(value_array) < 2 or np.var(value_array) == 0 or len(np.unique(label_array)) < 2:
+        return None
+    mean = value_array.mean()
+    between = sum(
+        np.count_nonzero(label_array == label) * (value_array[label_array == label].mean() - mean) ** 2
+        for label in np.unique(label_array)
     )
-    return float(ss_between / ss_total)
+    return float(between / np.sum((value_array - mean) ** 2))
 
 
-def _mean_std(records: Sequence[Dict[str, Any]], key: str) -> Tuple[Optional[float], Optional[float]]:
-    values = [float(r[key]) for r in records if r.get(key) is not None and np.isfinite(r[key])]
-    if not values:
-        return None, None
-    return float(np.mean(values)), float(np.std(values, ddof=0))
+def _finite_eta(values: Sequence[float], labels: Sequence[Any]) -> Optional[float]:
+    return _eta_squared(values, labels)
 
 
 def evaluate_run(run_dir: Path, resampling_path: Path, seed: int) -> Tuple[Dict[str, Any], EvaluationRun]:
@@ -185,9 +169,11 @@ def evaluate_run(run_dir: Path, resampling_path: Path, seed: int) -> Tuple[Dict[
     lookup = {value: index for index, value in enumerate(ids)}
     if len(lookup) != len(ids):
         raise ValueError("Run contains duplicate annotation_id values")
+
     assignment_ids = assignments["annotation_id"].astype(str).tolist()
     if len(set(assignment_ids)) != len(assignment_ids) or set(assignment_ids) != set(ids):
         raise ValueError("Feature arrays and assignments have different annotation_id sets")
+
     feature_order = np.asarray([lookup[annotation_id] for annotation_id in assignment_ids])
     for key in (
         "deep_embeddings",
@@ -201,6 +187,7 @@ def evaluate_run(run_dir: Path, resampling_path: Path, seed: int) -> Tuple[Dict[
     ):
         if key in data and len(data[key]) == len(ids):
             data[key] = data[key][feature_order]
+    ids = data["annotation_id"].astype(str)
 
     feature_type = str(run_json["config"]["features"]["feature_type"])
     if feature_type == "hybrid" and not {"deep_features_raw", "morphological_features_raw"}.issubset(data):
@@ -209,7 +196,10 @@ def evaluate_run(run_dir: Path, resampling_path: Path, seed: int) -> Tuple[Dict[
     train_splits = list(run_json["config"]["clustering"].get("fit_splits", ["train"]))
     fit_mask = assignments["split"].astype(str).isin(train_splits).to_numpy()
     train_rows = np.asarray(
-        sorted(np.flatnonzero(fit_mask), key=lambda index: str(assignments.iloc[index]["annotation_id"])),
+        sorted(
+            np.flatnonzero(fit_mask),
+            key=lambda index: str(assignments.iloc[index]["annotation_id"]),
+        ),
         dtype=int,
     )
     train_ids = assignments.iloc[train_rows]["annotation_id"].astype(str).tolist()
@@ -228,185 +218,373 @@ def evaluate_run(run_dir: Path, resampling_path: Path, seed: int) -> Tuple[Dict[
     algorithm = str(config["clustering"].get("algorithm", "kmeans"))
     base_seed = int(config["clustering"].get("seed", 42))
 
-    eval_run = EvaluationRun(
+    full_models: List[FittedFeatureModel] = []
+    fit_records = []
+    seed_labels = []
+    for offset in range(10):
+        model = _fit_eval_model(data, config, train_rows, base_seed + offset)
+        full_models.append(model)
+        fit_records.append({"replicate_id": f"seed-{offset:02d}", **model.clusterer.fit_diagnostics_})
+        seed_labels.append(_predict_eval_model(model, data, train_rows, feature_type))
+
+    seed_ari = [
+        float(adjusted_rand_score(seed_labels[i], seed_labels[j]))
+        for i, j in itertools.combinations(range(len(seed_labels)), 2)
+    ]
+
+    subsampling_models: List[FittedFeatureModel] = []
+    subsampling_sample_indices: List[np.ndarray] = []
+    subsampling_records = resampling["subsampling_replicates"]
+    id_to_local = {value: i for i, value in enumerate(train_ids)}
+    for offset, record in enumerate(subsampling_records):
+        sample_ids = record["annotation_ids"]
+        indices = np.asarray([id_to_local[value] for value in sample_ids], dtype=int)
+        subsampling_sample_indices.append(indices)
+        model = _fit_eval_model(data, config, train_rows[indices], base_seed + 100 + offset)
+        subsampling_models.append(model)
+        fit_records.append({"replicate_id": record["replicate_id"], **model.clusterer.fit_diagnostics_})
+
+    subsampling_ari: List[float] = []
+    subsampling_jaccard: List[float] = []
+    subsampling_jaccard_mean_by_pair: List[float] = []
+    subsampling_jaccard_min_by_pair: List[float] = []
+    subsampling_pair_ids: List[str] = []
+    for i, j in itertools.combinations(range(len(subsampling_models)), 2):
+        ids_left = subsampling_records[i]["annotation_ids"]
+        ids_right = subsampling_records[j]["annotation_ids"]
+        shared = sorted(set(ids_left) & set(ids_right))
+        common_rows = np.asarray([id_to_local[value] for value in shared], dtype=int)
+        common_data_rows = train_rows[common_rows]
+        left = _predict_eval_model(subsampling_models[i], data, common_data_rows, feature_type)
+        right = _predict_eval_model(subsampling_models[j], data, common_data_rows, feature_type)
+        subsampling_ari.append(float(adjusted_rand_score(left, right)))
+        matched_jaccards = _matched_cluster_jaccards(left, right, n_clusters=n_clusters)
+        subsampling_jaccard.extend(matched_jaccards)
+        subsampling_jaccard_mean_by_pair.append(float(np.mean(matched_jaccards)))
+        subsampling_jaccard_min_by_pair.append(float(np.min(matched_jaccards)))
+        subsampling_pair_ids.append(
+            f"{subsampling_records[i]['replicate_id']}|{subsampling_records[j]['replicate_id']}"
+        )
+
+    full_train_labels = seed_labels[0]
+    loo_results = {}
+    train_id_indices = {annotation_id: i for i, annotation_id in enumerate(train_ids)}
+    for fold in resampling["leave_one_slide_out"]:
+        holdout_local = np.asarray(
+            [train_id_indices[value] for value in fold["holdout_annotation_ids"]],
+            dtype=int,
+        )
+        fit_local = np.asarray(
+            [train_id_indices[value] for value in fold["fit_annotation_ids"]],
+            dtype=int,
+        )
+        if len(holdout_local) == 0 or len(fit_local) <= n_clusters:
+            continue
+        loo = _fit_eval_model(data, config, train_rows[fit_local], base_seed)
+        fit_records.append({"replicate_id": fold["fold_id"], **loo.clusterer.fit_diagnostics_})
+        predicted = _predict_eval_model(loo, data, train_rows[holdout_local], feature_type)
+        loo_results[fold["held_out_slide_id"]] = float(
+            adjusted_rand_score(full_train_labels[holdout_local], predicted)
+        )
+
+    common_ids = data["common_annotation_id"].astype(str)
+    assignment_lookup = {
+        str(row.annotation_id): i for i, row in assignments.reset_index(drop=True).iterrows()
+    }
+    expected_splits = set(
+        config["clustering"].get("fit_splits", ["train"])
+        + config["clustering"].get("assign_splits", [])
+    )
+    expected_ids = {
+        str(annotation_id)
+        for annotation_id, split in zip(data["common_annotation_id"], data["common_split"])
+        if str(split) in expected_splits
+    }
+    if set(assignment_lookup) != expected_ids:
+        raise ValueError(
+            "Clustering assignments do not contain exactly the annotation IDs for configured splits"
+        )
+
+    common_indices, assignment_indices = [], []
+    for i, annotation_id in enumerate(common_ids):
+        if annotation_id in assignment_lookup:
+            common_indices.append(i)
+            assignment_indices.append(assignment_lookup[annotation_id])
+
+    common_features = data["common_morph_features"][common_indices]
+    common_labels = labels[assignment_indices]
+    common_splits = data["common_split"][common_indices].astype(str)
+    common_slides = data["common_slide_id"][common_indices].astype(str)
+    common_ids = common_ids[common_indices]
+    common_index_by_id = {value: index for index, value in enumerate(common_ids)}
+
+    paired_samples: Dict[str, List[float]] = {
+        name: []
+        for name in (
+            "train_silhouette",
+            "train_davies_bouldin",
+            "train_calinski_harabasz",
+            "train_cramers_v_slide",
+            "train_nmi_slide",
+            "train_dominant_slide_fraction",
+            "completeness_eta2",
+            "border_distance_px_eta2",
+            "tissue_ratio_eta2",
+            "background_mean_intensity_eta2",
+        )
+    }
+    paired_sample_records: Dict[str, List[Dict[str, Any]]] = {key: [] for key in paired_samples}
+
+    def record_paired(name: str, replicate_id: str, value: Any) -> None:
+        if value is None:
+            return
+        paired_samples[name].append(float(value))
+        paired_sample_records[name].append({"replicate_id": replicate_id, "value": float(value)})
+
+    for model, local_indices, record in zip(
+        subsampling_models, subsampling_sample_indices, subsampling_records
+    ):
+        sample_ids = record["annotation_ids"]
+        model_row_indices = train_rows[local_indices]
+        predicted = _predict_eval_model(model, data, model_row_indices, feature_type)
+        selected_common = [
+            (sample_pos, common_index_by_id[annotation_id])
+            for sample_pos, annotation_id in enumerate(sample_ids)
+            if annotation_id in common_index_by_id
+        ]
+        if len(selected_common) < 3:
+            continue
+        model_positions, common_positions = map(np.asarray, zip(*selected_common))
+        common_sample_features = common_features[common_positions]
+        sample_labels = predicted[model_positions]
+        sample_slides = common_slides[common_positions]
+        internal = _internal_metrics(common_sample_features, sample_labels)
+        replicate_id = str(record["replicate_id"])
+        for key in ("silhouette", "davies_bouldin", "calinski_harabasz"):
+            if internal[key] is not None:
+                record_paired(f"train_{key}", replicate_id, internal[key])
+        record_paired("train_cramers_v_slide", replicate_id, _cramers_v(sample_labels, sample_slides))
+        record_paired(
+            "train_dominant_slide_fraction",
+            replicate_id,
+            _max_dominant_group_fraction(sample_labels, sample_slides),
+        )
+        record_paired(
+            "train_nmi_slide",
+            replicate_id,
+            normalized_mutual_info_score(sample_labels, sample_slides),
+        )
+        sample_metadata = assignments.iloc[model_row_indices[model_positions]]
+        for column, output_name in (
+            ("completeness", "completeness_eta2"),
+            ("border_distance_px", "border_distance_px_eta2"),
+            ("tissue_ratio", "tissue_ratio_eta2"),
+            ("background_mean_intensity", "background_mean_intensity_eta2"),
+        ):
+            if column in sample_metadata:
+                record_paired(
+                    output_name, replicate_id, _finite_eta(sample_metadata[column], sample_labels)
+                )
+
+    common_metrics = {}
+    for split in TRAINING_SPLITS:
+        selected = common_splits == split
+        common_metrics[split] = _internal_metrics(common_features[selected], common_labels[selected])
+
+    train_common_positions = np.flatnonzero(common_splits == "train")
+    train_common = common_features[train_common_positions]
+    train_common_ids = common_ids[train_common_positions]
+    canonical_common_order = np.argsort(train_common_ids, kind="stable")
+    train_common = train_common[canonical_common_order]
+    train_common_ids = train_common_ids[canonical_common_order]
+    train_common_positions = train_common_positions[canonical_common_order]
+    train_local_positions = np.asarray([id_to_local[value] for value in train_common_ids])
+    seed_common_labels = [values[train_local_positions] for values in seed_labels]
+    baseline = random_geometry_baseline(
+        train_common,
+        common_labels[train_common_positions],
+        n_clusters,
+        algorithm,
+        seed,
+        replicates=20,
+        observed_seed_labels=seed_common_labels,
+    )
+
+    confounding: Dict[str, Any] = {}
+    for split in ("all", *TRAINING_SPLITS):
+        select = np.ones(len(common_labels), dtype=bool) if split == "all" else common_splits == split
+        if not select.any():
+            confounding[split] = {
+                "status": "not_evaluated",
+                "reason": "no samples from this split were assigned",
+            }
+            continue
+        confounding[split] = {
+            "status": "evaluated",
+            "cramers_v_cluster_slide": _cramers_v(common_labels[select], common_slides[select]),
+            "nmi_cluster_slide": float(
+                normalized_mutual_info_score(common_labels[select], common_slides[select])
+            ),
+            "max_dominant_slide_fraction": _max_dominant_group_fraction(
+                common_labels[select], common_slides[select]
+            ),
+            "dominant_slide_fraction_by_cluster": {
+                f"C{int(label)}": float(
+                    pd.Series(common_slides[select][common_labels[select] == label])
+                    .value_counts(normalize=True)
+                    .max()
+                )
+                for label in np.unique(common_labels[select])
+            },
+        }
+
+    technical = {}
+    if "completeness" in assignments:
+        technical["completeness_eta2"] = _eta_squared(
+            assignments.loc[fit_mask, "completeness"], assignments.loc[fit_mask, "cluster"]
+        )
+    for column in ("border_distance_px", "tissue_ratio", "background_mean_intensity"):
+        if column in assignments:
+            technical[f"{column}_eta2"] = _eta_squared(
+                assignments.loc[fit_mask, column], assignments.loc[fit_mask, "cluster"]
+            )
+
+    profiles = {}
+    profile_mask = common_splits == "train"
+    profile_labels = common_labels[profile_mask]
+    profile_slides = common_slides[profile_mask]
+    profile_ids = common_ids[profile_mask]
+    rng = np.random.default_rng(seed + 10000)
+    raw_common = data["common_morph_raw"][common_indices][profile_mask]
+    feature_names = data["common_feature_names"].astype(str)
+    cohort_medians = np.median(raw_common, axis=0)
+    for label in np.unique(profile_labels):
+        subset = raw_common[profile_labels == label]
+        cluster_medians = np.median(subset, axis=0)
+        descriptions = []
+        for feature_name in ("glom_area_um2", "mean_optical_density"):
+            if feature_name in feature_names:
+                feature_index = int(np.flatnonzero(feature_names == feature_name)[0])
+                direction = "higher" if cluster_medians[feature_index] > cohort_medians[feature_index] else "lower"
+                descriptions.append(f"{feature_name} {direction} than cohort median")
+        profiles[f"C{int(label)}"] = {
+            "n_glomeruli": int(len(subset)),
+            "n_slides": int(len(np.unique(profile_slides[profile_labels == label]))),
+            "descriptive_profile": "; ".join(descriptions) or "No predefined numeric descriptor available",
+            "features": {
+                name: {
+                    "median": float(np.median(subset[:, index])),
+                    "q1": float(np.percentile(subset[:, index], 25)),
+                    "q3": float(np.percentile(subset[:, index], 75)),
+                }
+                for index, name in enumerate(feature_names)
+            },
+            "random_examples": rng.choice(
+                profile_ids[profile_labels == label],
+                size=min(8, np.count_nonzero(profile_labels == label)),
+                replace=False,
+            ).tolist(),
+        }
+
+    clustering_report = json.loads((run_dir / "clustering_report.json").read_text())
+    report_train = clustering_report.get("train_metrics", {})
+    if "model_diagnostics" in clustering_report:
+        fit_records.insert(0, {"replicate_id": "saved_run", **clustering_report["model_diagnostics"]})
+
+    metrics = {
+        "evaluation_schema_version": CLUSTERING_EVALUATION_SCHEMA_VERSION,
+        "resampling_method": resampling["method"],
+        "paired_interval_label": (
+            "empirical 2.5th-97.5th percentile range of matched replicate differences; "
+            "not a confidence interval for the mean"
+        ),
+        "source_run": str(run_dir),
+        "cohort_hash": cohort_hash,
+        "resampling_hash": resampling_hash,
+        "common_evaluation_space_hash": run_json.get("common_evaluation_space_hash"),
+        "model_diagnostics": {
+            "all_fits_valid": all(item["valid"] for item in fit_records),
+            "n_fits": len(fit_records),
+            "invalid_fit_ids": [item["replicate_id"] for item in fit_records if not item["valid"]],
+            "fits": fit_records,
+        },
+        "stability": {
+            "seed_ari_mean": float(np.mean(seed_ari)),
+            "seed_ari_std": float(np.std(seed_ari, ddof=1)),
+            "seed_ari_samples": seed_ari,
+            "seed_ari_replicates": [
+                {
+                    "replicate_id": f"seed-{i:02d}|seed-{j:02d}",
+                    "value": seed_ari[position],
+                }
+                for position, (i, j) in enumerate(itertools.combinations(range(10), 2))
+            ],
+            "subsampling_ari_mean": float(np.mean(subsampling_ari)),
+            "subsampling_ari_std": float(np.std(subsampling_ari, ddof=1)),
+            "subsampling_ari_min": float(np.min(subsampling_ari)),
+            "subsampling_ari_samples": subsampling_ari,
+            "subsampling_pair_replicates": [
+                {
+                    "replicate_id": pair_id,
+                    "ari": ari_value,
+                    "cluster_jaccard_mean": jaccard_mean,
+                    "cluster_jaccard_min": jaccard_min,
+                }
+                for pair_id, ari_value, jaccard_mean, jaccard_min in zip(
+                    subsampling_pair_ids,
+                    subsampling_ari,
+                    subsampling_jaccard_mean_by_pair,
+                    subsampling_jaccard_min_by_pair,
+                )
+            ],
+            "cluster_jaccard_mean": float(np.mean(subsampling_jaccard)),
+            "cluster_jaccard_std": float(np.std(subsampling_jaccard, ddof=1)),
+            "cluster_jaccard_min": float(np.min(subsampling_jaccard)),
+            "cluster_jaccard_samples": subsampling_jaccard,
+            "leave_one_slide_out_ari": loo_results,
+            "leave_one_slide_out_ari_mean": float(np.mean(list(loo_results.values())))
+            if loo_results
+            else float("nan"),
+            "leave_one_slide_out_ari_samples": list(loo_results.values()),
+            "leave_one_slide_out_replicates": [
+                {"replicate_id": f"leave-slide-{slide}", "value": value}
+                for slide, value in sorted(loo_results.items())
+            ],
+        },
+        "common_space_internal_metrics": common_metrics,
+        "own_space_train_metrics": {
+            "silhouette": report_train.get("silhouette_score"),
+            "davies_bouldin": report_train.get("davies_bouldin_score"),
+            "calinski_harabasz": report_train.get("calinski_harabasz_score"),
+        },
+        "random_baseline": baseline,
+        "slide_confounding": confounding,
+        "technical_confounding_eta2": technical,
+        "cluster_profiles": profiles,
+        "cluster_profiles_scope": "train",
+        "paired_metric_samples": paired_samples,
+        "paired_metric_records": paired_sample_records,
+    }
+
+    run = EvaluationRun(
         "clustering_eval",
         "train_val",
         config,
-        str(run_dir),
-        config.get("output", {}).get("evaluation_name", "evaluation"),
-        [run_dir, resampling_path],
+        output_root=config.get("output", {}).get("evaluation_root", "runs/clustering/evaluations"),
+        run_name=config.get("output", {}).get("evaluation_name", run_dir.name),
+        input_paths=[run_dir, resampling_path],
     )
-    try:
-        full_models: List[FittedFeatureModel] = []
-        fit_records = []
-        seed_labels = []
-        for offset in range(10):
-            model = _fit_eval_model(data, config, train_rows, base_seed + offset)
-            full_models.append(model)
-            fit_records.append({"replicate_id": f"seed-{offset:02d}", **model.clusterer.fit_diagnostics_})
-            seed_labels.append(_predict_eval_model(model, data, train_rows, feature_type))
-
-        seed_ari = [
-            {"pair": f"{i}-{j}", "value": float(adjusted_rand_score(seed_labels[i], seed_labels[j]))}
-            for i, j in itertools.combinations(range(len(seed_labels)), 2)
-        ]
-
-        id_to_row = {str(assignments.iloc[row]["annotation_id"]): int(row) for row in train_rows}
-        sub_models: List[FittedFeatureModel] = []
-        sub_indices: List[np.ndarray] = []
-        for rep in resampling["subsamples"]:
-            idx = np.asarray([id_to_row[str(aid)] for aid in rep["annotation_ids"]], dtype=int)
-            sub_indices.append(idx)
-            sub_models.append(_fit_eval_model(data, config, idx, int(rep["seed"])))
-
-        pair_records = []
-        for i, j in itertools.combinations(range(len(sub_models)), 2):
-            shared = np.intersect1d(sub_indices[i], sub_indices[j])
-            if len(shared) < 2:
-                continue
-            pred_i = _predict_eval_model(sub_models[i], data, shared, feature_type)
-            pred_j = _predict_eval_model(sub_models[j], data, shared, feature_type)
-            jaccards = _matched_cluster_jaccards(pred_i, pred_j, n_clusters)
-            pair_records.append({
-                "pair": f"{i}-{j}",
-                "n_shared": int(len(shared)),
-                "ari": float(adjusted_rand_score(pred_i, pred_j)),
-                "cluster_jaccard_mean": float(np.mean(jaccards)),
-                "cluster_jaccard_min": float(np.min(jaccards)),
-            })
-
-        loso_records = []
-        train_slides = sorted(assignments.iloc[train_rows]["slide_id"].astype(str).unique())
-        for fold_idx, held_slide in enumerate(train_slides):
-            keep = np.asarray(
-                [r for r in train_rows if str(assignments.iloc[r]["slide_id"]) != held_slide],
-                dtype=int,
-            )
-            if len(keep) < n_clusters:
-                continue
-            loso_model = _fit_eval_model(data, config, keep, base_seed + fold_idx)
-            pred_keep = _predict_eval_model(loso_model, data, keep, feature_type)
-            ref_keep = seed_labels[0][np.isin(train_rows, keep)]
-            loso_records.append({
-                "held_out_slide": held_slide,
-                "n_train": int(len(keep)),
-                "value": float(adjusted_rand_score(ref_keep, pred_keep)),
-            })
-
-        common_lookup = {str(aid): idx for idx, aid in enumerate(data["common_annotation_id"].astype(str))}
-        common_order = np.asarray([common_lookup[aid] for aid in assignment_ids], dtype=int)
-        common_features = data["common_morph_features"][common_order]
-
-        common_split_metrics: Dict[str, Any] = {}
-        paired_records: Dict[str, List[Dict[str, Any]]] = {
-            "train_silhouette": [],
-            "train_davies_bouldin": [],
-            "train_calinski_harabasz": [],
-            "train_cramers_v_slide": [],
-            "train_nmi_slide": [],
-            "train_dominant_slide_fraction": [],
-            "completeness_eta2": [],
-            "border_distance_px_eta2": [],
-            "tissue_ratio_eta2": [],
-            "background_mean_intensity_eta2": [],
-        }
-
-        for split_name in TRAINING_SPLITS:
-            mask = assignments["split"].astype(str).to_numpy() == split_name
-            common_split_metrics[split_name] = _internal_metrics(common_features[mask], labels[mask])
-
-        for rep_idx, (idx, model) in enumerate(zip(sub_indices, sub_models)):
-            pred = _predict_eval_model(model, data, idx, feature_type)
-            m = _internal_metrics(common_features[idx], pred)
-            conf = _cramers_v(pred, assignments.iloc[idx]["slide_id"].astype(str))
-            sub_df = assignments.iloc[idx]
-            paired_records["train_silhouette"].append({"replicate_id": f"sub-{rep_idx:02d}", "value": m["silhouette"]})
-            paired_records["train_davies_bouldin"].append({"replicate_id": f"sub-{rep_idx:02d}", "value": m["davies_bouldin"]})
-            paired_records["train_calinski_harabasz"].append({"replicate_id": f"sub-{rep_idx:02d}", "value": m["calinski_harabasz"]})
-            paired_records["train_cramers_v_slide"].append({"replicate_id": f"sub-{rep_idx:02d}", "value": conf["cramers_v_cluster_slide"]})
-            paired_records["train_nmi_slide"].append({"replicate_id": f"sub-{rep_idx:02d}", "value": conf["nmi_cluster_slide"]})
-            paired_records["train_dominant_slide_fraction"].append({"replicate_id": f"sub-{rep_idx:02d}", "value": conf["max_dominant_slide_fraction"]})
-            for col, rec_key in (
-                ("completeness", "completeness_eta2"),
-                ("border_distance_px", "border_distance_px_eta2"),
-                ("tissue_ratio", "tissue_ratio_eta2"),
-                ("background_mean_intensity", "background_mean_intensity_eta2"),
-            ):
-                val = _eta_squared(sub_df[col], pred) if col in sub_df else None
-                paired_records[rec_key].append({"replicate_id": f"sub-{rep_idx:02d}", "value": val})
-
-        own_train_input = (
-            full_models[0].block_transformer.transform(
-                data["deep_features_raw"][train_rows],
-                data["morphological_features_raw"][train_rows],
-            )
-            if feature_type == "hybrid"
-            else full_models[0].block_transformer.transform(data["model_features"][train_rows])
-        )
-        own_train_space = full_models[0].clusterer.transform(own_train_input)
-        own_space_train = _internal_metrics(own_train_space, labels[train_rows])
-
-        baseline_summary = random_geometry_baseline(
-            common_features[train_rows],
-            labels[train_rows],
-            n_clusters=n_clusters,
-            algorithm=algorithm,
-            seed=base_seed,
-            n_replicates=25,
-            seed_ari_observed=_mean_std(seed_ari, "value")[0],
-        )
-
-        train_df = assignments.iloc[train_rows]
-        tech_eta2 = {
-            f"{col}_eta2": _eta_squared(train_df[col], labels[train_rows]) if col in train_df else None
-            for col in ("completeness", "border_distance_px", "tissue_ratio", "background_mean_intensity")
-        }
-
-        seed_ari_mean, seed_ari_std = _mean_std(seed_ari, "value")
-        sub_ari_mean, sub_ari_std = _mean_std(pair_records, "ari")
-        jaccard_mean, _ = _mean_std(pair_records, "cluster_jaccard_mean")
-        jaccard_min_vals = [r["cluster_jaccard_min"] for r in pair_records if r.get("cluster_jaccard_min") is not None]
-        jaccard_min = float(np.min(jaccard_min_vals)) if jaccard_min_vals else None
-        loso_ari_mean, loso_ari_std = _mean_std(loso_records, "value")
-
-        metrics: Dict[str, Any] = {
+    run.metadata.update(
+        {
             "evaluation_schema_version": CLUSTERING_EVALUATION_SCHEMA_VERSION,
-            "run_dir": str(run_dir),
             "cohort_hash": cohort_hash,
             "resampling_hash": resampling_hash,
-            "feature_type": feature_type,
-            "n_clusters": n_clusters,
-            "stability": {
-                "seed_ari_mean": seed_ari_mean,
-                "seed_ari_std": seed_ari_std,
-                "seed_ari_replicates": seed_ari,
-                "subsampling_ari_mean": sub_ari_mean,
-                "subsampling_ari_std": sub_ari_std,
-                "cluster_jaccard_mean": jaccard_mean,
-                "cluster_jaccard_min": jaccard_min,
-                "subsampling_pair_replicates": pair_records,
-                "leave_one_slide_out_ari_mean": loso_ari_mean,
-                "leave_one_slide_out_ari_std": loso_ari_std,
-                "leave_one_slide_out_replicates": loso_records,
-                "fit_diagnostics": fit_records,
-            },
-            "common_space_internal_metrics": common_split_metrics,
-            "own_space_train_metrics": own_space_train,
-            "slide_confounding": {
-                "train": _cramers_v(labels[train_rows], train_df["slide_id"].astype(str)),
-            },
-            "technical_confounding_eta2": tech_eta2,
-            "random_baseline": baseline_summary,
-            "paired_metric_records": paired_records,
+            "common_evaluation_space_hash": run_json.get("common_evaluation_space_hash"),
         }
-        write_json(eval_run.run_dir / "resampling.json", resampling)
-        eval_run.metadata.update(
-            cohort_hash=cohort_hash,
-            resampling_hash=resampling_hash,
-            common_evaluation_space_hash=run_json.get("common_evaluation_space_hash"),
-        )
-        eval_run.complete(metrics, [eval_run.run_dir / "resampling.json"])
-        return metrics, eval_run
-    except Exception as error:
-        eval_run.fail(error)
-        raise
+    )
+    write_json(run.run_json, run.metadata)
+    (run.run_dir / "resampling.json").write_text(
+        json.dumps(resampling, indent=2) + "\n", encoding="utf-8"
+    )
+    run.complete(metrics, [run.run_dir / "resampling.json"])
+    return metrics, run

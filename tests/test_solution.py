@@ -337,7 +337,7 @@ class SolutionTests(unittest.TestCase):
                     model = joblib.load(run / "pipeline.joblib")
                     self.assertEqual(model.feature_type, "stain_invariant_morph")
                     self.assertIsNone(model.clusterer.pca)
-                    self.assertEqual(model.clusterer.scaler.n_samples_in_, ntrain)
+                    self.assertEqual(model.clusterer.scaler.n_samples_seen_, ntrain)
                     self.assertEqual(
                         model.clusterer.scaler.n_features_in_, len(STAIN_INVARIANT_MORPH_FEATURES)
                     )
