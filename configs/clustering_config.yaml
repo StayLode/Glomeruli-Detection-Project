@@ -1,4 +1,5 @@
-# Classic representation only. No clinical class labels are provided by the XML.
+# Final Stain-Invariant Morphological Clustering configuration (K=2, 4, 6).
+# No clinical class labels are provided by the XML.
 data:
   manifest_csv: dataset/manifest.csv
   xml_dir: glomeruli_grading
@@ -13,21 +14,24 @@ data:
   min_component_area: 400
   overlap_threshold: 0.5
 features:
-  feature_type: hybrid
-  deep_backbone: resnet34
-  pretrained: true
-  batch_size: 32
-  normalize_embeddings: true
+  feature_type: stain_invariant_morph
+  selected_features:
+    - glom_area_um2
+    - glom_perimeter_um
+    - circularity
+    - solidity
+    - extent
+    - aspect_ratio
+    - stain_heterogeneity
   morph_units: native
-  block_weighting: equal
-  embedding_cache_dir: runs/clustering/cache/train_val/embeddings
+  block_weighting: none
   common_space_cache: runs/clustering/cache/train_val/common_spaces
 manifold:
-  method: pca
-  pca_variance: 20
+  method: none
+  pca_variance: null
 clustering:
   algorithm: kmeans
-  input_scaling: none
+  input_scaling: standard
   k_values: [2, 4, 6]
   seed: 42
   fit_splits: [train]

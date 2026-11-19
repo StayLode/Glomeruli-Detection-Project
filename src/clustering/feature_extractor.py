@@ -1,14 +1,17 @@
 """
 Feature extraction module for glomeruli crops.
 
-Extracts:
-1. Deep Representations: CNN embeddings via pre-trained ResNet backbones (Torchvision).
-2. Morphological & Histological Features: Area, circularity, solidity, optical density,
-   color channel statistics, and texture indicators.
-3. Hybrid Representations: Fused multimodal feature vectors for manifold learning.
+Supports:
+1. Stain-Invariant Morphological & Structural Features (default final model):
+   7 physical/geometric and internal texture descriptors immune to slide-level
+   staining and illumination shifts.
+2. Full 10-feature Native Morphological & Photometric Dataset (for shared
+   evaluation space and descriptive profiling).
+3. Deep / Hybrid Representations via pre-trained ResNet backbones (retained for
+   baseline comparison).
 """
 
-from typing import Dict, Any, List, Optional, Tuple
+from typing import Dict, Any, List, Optional, Sequence, Tuple
 import hashlib
 import logging
 import cv2
@@ -20,6 +23,49 @@ from sklearn.preprocessing import StandardScaler
 
 logger = logging.getLogger(__name__)
 
+CANONICAL_MORPH_FEATURES: List[str] = [
+    "glom_area_um2",
+    "glom_perimeter_um",
+    "circularity",
+    "solidity",
+    "extent",
+    "aspect_ratio",
+    "mean_intensity",
+    "mean_optical_density",
+    "stain_heterogeneity",
+    "red_green_ratio",
+]
+
+STAIN_INVARIANT_MORPH_FEATURES: List[str] = [
+    "glom_area_um2",
+    "glom_perimeter_um",
+    "circularity",
+    "solidity",
+    "extent",
+    "aspect_ratio",
+    "stain_heterogeneity",
+]
+
+
+def select_morphological_columns(
+    morph: np.ndarray,
+    morph_names: Sequence[str],
+    selected_features: Optional[Sequence[str]] = None,
+) -> Tuple[np.ndarray, List[str]]:
+    """Select an ordered subset of morphological feature columns."""
+    selected = list(selected_features or STAIN_INVARIANT_MORPH_FEATURES)
+    if not selected:
+        raise ValueError("selected_features cannot be empty")
+    matrix = np.asarray(morph, dtype=np.float32)
+    if matrix.ndim != 2:
+        raise ValueError("morph feature matrix must be 2D")
+    name_to_idx = {str(name): idx for idx, name in enumerate(morph_names)}
+    missing = [name for name in selected if name not in name_to_idx]
+    if missing:
+        raise ValueError(f"Missing required morphological features: {missing}")
+    indices = [name_to_idx[name] for name in selected]
+    return matrix[:, indices].astype(np.float32), selected
+
 
 def extract_single_morphological_features(
     crop_rgb: np.ndarray,
@@ -27,16 +73,7 @@ def extract_single_morphological_features(
     morph_units: str = "legacy_resized",
     pixel_size_um: float = 1.0,
 ) -> Dict[str, float]:
-    """
-    Extract histopathological morphological and photometric features for a single glomerulus.
-
-    Args:
-        crop_rgb: (H, W, 3) uint8 image.
-        mask_binary: (H, W) uint8 binary mask (0 or 255).
-
-    Returns:
-        Dictionary of numerical morphological features.
-    """
+    """Extract histopathological morphological and photometric features for a single glomerulus."""
     if morph_units not in {"legacy_resized", "native"}:
         raise ValueError(f"Unsupported morph_units: {morph_units}")
     if not np.isfinite(pixel_size_um) or pixel_size_um <= 0:
@@ -48,7 +85,6 @@ def extract_single_morphological_features(
     contours, _ = cv2.findContours(mask_binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     if not contours:
-        # Default fallback for empty mask
         area_name = "glom_area_um2" if morph_units == "native" else "glom_area"
         perimeter_name = "glom_perimeter_um" if morph_units == "native" else "glom_perimeter"
         return {
@@ -64,7 +100,6 @@ def extract_single_morphological_features(
             "red_green_ratio": 1.0,
         }
 
-    # Use largest connected contour
     cnt = max(contours, key=cv2.contourArea)
     area_px = float(cv2.contourArea(cnt))
     perimeter_px = float(cv2.arcLength(cnt, True))
@@ -74,33 +109,25 @@ def extract_single_morphological_features(
         area *= pixel_size_um ** 2
         perimeter *= pixel_size_um
 
-    # Circularity: 4 * pi * Area / (Perimeter^2)
     circularity = float(4.0 * np.pi * area / (perimeter ** 2)) if perimeter > 0 else 0.0
     circularity = min(1.0, max(0.0, circularity))
 
-    # Convex hull & Solidity
     hull = cv2.convexHull(cnt)
     hull_area = float(cv2.contourArea(hull))
     solidity = float(area_px / hull_area) if hull_area > 0 else 0.0
 
-    # Bounding rectangle & Aspect ratio
     _, _, bw, bh = cv2.boundingRect(cnt)
     aspect_ratio = float(bw) / float(bh) if bh > 0 else 1.0
     extent = float(area_px) / float(bw * bh) if (bw * bh) > 0 else 0.0
 
-    # Photometric / Stain features inside the glomerular mask
     glom_pixels = crop_rgb[mask_binary == 255]
     if len(glom_pixels) > 0:
-        mean_rgb = np.mean(glom_pixels, axis=0)  # [R, G, B]
+        mean_rgb = np.mean(glom_pixels, axis=0)
         std_rgb = np.std(glom_pixels, axis=0)
         mean_intensity = float(np.mean(mean_rgb))
         stain_heterogeneity = float(np.mean(std_rgb))
-
-        # Optical density: -log10((I + 1) / 256)
         od = -np.log10((glom_pixels.astype(np.float32) + 1.0) / 256.0)
         mean_od = float(np.mean(od))
-
-        # Red/Green ratio (PAS / eosinophilic collagen indicator)
         rg_ratio = float((mean_rgb[0] + 1e-3) / (mean_rgb[1] + 1e-3))
     else:
         mean_intensity = float(np.mean(crop_rgb))
@@ -144,136 +171,27 @@ def extract_morphological_dataset(
     if not records:
         return np.empty((0, 0), dtype=np.float32), []
     feature_names = list(records[0])
-    matrix = np.asarray([[record[name] for name in feature_names] for record in records],
-                        dtype=np.float32)
+    matrix = np.asarray([[record[name] for name in feature_names] for record in records], dtype=np.float32)
     return matrix, feature_names
 
 
-class GlomeruliFeatureExtractor:
-    """
-    Extracts deep representation embeddings and morphological features from glomeruli crops.
-    """
+class StainInvariantMorphTransformer:
+    """Validate and pass through selected stain-invariant morphological features."""
 
-    def __init__(
-        self,
-        backbone_name: str = "resnet34",
-        pretrained: bool = True,
-        device: Optional[Any] = 0,
-        batch_size: int = 32,
-        normalize_embeddings: bool = True,
-    ) -> None:
-        self.device = torch.device(
-            f"cuda:{device}" if torch.cuda.is_available() and device not in (None, "cpu") else "cpu"
-        )
-        self.batch_size = batch_size
-        self.normalize_embeddings = normalize_embeddings
-        self.backbone_name = backbone_name.lower()
+    def __init__(self, selected_features: Optional[Sequence[str]] = None) -> None:
+        self.selected_features = list(selected_features or STAIN_INVARIANT_MORPH_FEATURES)
+        self.n_features = len(self.selected_features)
 
-        logger.info(f"Initializing Feature Extractor (Backbone: {self.backbone_name}) on device: {self.device}")
+    def fit_transform(self, features: np.ndarray) -> np.ndarray:
+        return self.transform(features)
 
-        # Build feature extractor backbone up to Global Average Pooling
-        if self.backbone_name == "resnet50":
-            weights = tv_models.ResNet50_Weights.DEFAULT if pretrained else None
-            base = tv_models.resnet50(weights=weights)
-            self.embedding_dim = 2048
-        elif self.backbone_name == "resnet18":
-            weights = tv_models.ResNet18_Weights.DEFAULT if pretrained else None
-            base = tv_models.resnet18(weights=weights)
-            self.embedding_dim = 512
-        else:  # resnet34 (default)
-            weights = tv_models.ResNet34_Weights.DEFAULT if pretrained else None
-            base = tv_models.resnet34(weights=weights)
-            self.embedding_dim = 512
-
-        # Extract all layers except the final classification FC
-        self.encoder = nn.Sequential(
-            base.conv1,
-            base.bn1,
-            base.relu,
-            base.maxpool,
-            base.layer1,
-            base.layer2,
-            base.layer3,
-            base.layer4,
-            base.avgpool,
-        ).to(self.device)
-
-        self.encoder.eval()
-
-        # ImageNet normalization parameters
-        self.mean = torch.tensor([0.485, 0.456, 0.406], device=self.device).view(1, 3, 1, 1)
-        self.std = torch.tensor([0.229, 0.224, 0.225], device=self.device).view(1, 3, 1, 1)
-
-    def weights_sha256(self) -> str:
-        """Hash the exact encoder parameters used to generate deep embeddings."""
-        digest = hashlib.sha256()
-        for name, tensor in sorted(self.encoder.state_dict().items()):
-            digest.update(name.encode("utf-8"))
-            digest.update(tensor.detach().cpu().contiguous().numpy().tobytes())
-        return digest.hexdigest()
-
-    @torch.no_grad()
-    def extract_deep_embeddings(self, crops_rgb: List[np.ndarray]) -> np.ndarray:
-        """
-        Extract deep CNN embeddings for a collection of (H, W, 3) RGB crops.
-
-        Args:
-            crops_rgb: List of numpy uint8 images.
-
-        Returns:
-            (N, embedding_dim) float32 numpy array.
-        """
-        if not crops_rgb:
-            return np.empty((0, self.embedding_dim), dtype=np.float32)
-
-        all_embeddings = []
-        n_crops = len(crops_rgb)
-
-        for i in range(0, n_crops, self.batch_size):
-            batch_crops = crops_rgb[i : i + self.batch_size]
-
-            # Convert to float tensor [B, 3, H, W] normalized to [0, 1]
-            batch_tensors = []
-            for crop in batch_crops:
-                if crop.shape[0] != 224 or crop.shape[1] != 224:
-                    crop_resized = cv2.resize(crop, (224, 224), interpolation=cv2.INTER_AREA)
-                else:
-                    crop_resized = crop
-                t = torch.from_numpy(crop_resized).permute(2, 0, 1).float() / 255.0
-                batch_tensors.append(t)
-
-            batch_stack = torch.stack(batch_tensors).to(self.device)
-            # Apply ImageNet normalization
-            batch_norm = (batch_stack - self.mean) / self.std
-
-            # Forward pass through encoder
-            features = self.encoder(batch_norm)  # (B, embedding_dim, 1, 1)
-            features = torch.flatten(features, 1)  # (B, embedding_dim)
-
-            if self.normalize_embeddings:
-                features = nn.functional.normalize(features, p=2, dim=1)
-
-            all_embeddings.append(features.cpu().numpy())
-
-        return np.vstack(all_embeddings).astype(np.float32)
-
-    def extract_morphological_dataset(
-        self,
-        crops_rgb: List[np.ndarray],
-        masks_binary: List[np.ndarray],
-        morph_units: str = "legacy_resized",
-        pixel_sizes_um: Optional[List[float]] = None,
-    ) -> Tuple[np.ndarray, List[str]]:
-        """
-        Extract tabular morphological features for all crops and masks.
-
-        Returns:
-            features_matrix: (N, n_features) float32 array.
-            feature_names: List of column names.
-        """
-        return extract_morphological_dataset(
-            crops_rgb, masks_binary, morph_units, pixel_sizes_um
-        )
+    def transform(self, features: np.ndarray) -> np.ndarray:
+        arr = np.asarray(features, dtype=np.float32)
+        if arr.ndim != 2 or arr.shape[1] != self.n_features:
+            raise ValueError(f"Expected 2D matrix with {self.n_features} stain-invariant features")
+        if not np.isfinite(arr).all():
+            raise ValueError("Stain-invariant features contain NaN or infinite values")
+        return arr
 
 
 class FeatureBlockTransformer:
@@ -292,9 +210,7 @@ class FeatureBlockTransformer:
         self.block_variance: Dict[str, float] = {}
         self.block_variance_fraction: Dict[str, float] = {}
 
-    def fit_transform(
-        self, deep: np.ndarray, morph: np.ndarray
-    ) -> np.ndarray:
+    def fit_transform(self, deep: np.ndarray, morph: np.ndarray) -> np.ndarray:
         deep, morph = self._validate(deep, morph)
         self.deep_width, self.morph_width = deep.shape[1], morph.shape[1]
         self.deep_scaler = StandardScaler().fit(deep)
@@ -337,3 +253,83 @@ class FeatureBlockTransformer:
         if deep.shape[1] == 0 or morph.shape[1] == 0:
             raise ValueError("Feature blocks cannot be empty")
         return deep, morph
+
+
+class GlomeruliFeatureExtractor:
+    """Extracts deep CNN embeddings (ResNet) and morphological features from glomeruli crops."""
+
+    def __init__(
+        self,
+        backbone_name: str = "resnet34",
+        pretrained: bool = True,
+        device: str = "cpu",
+        batch_size: int = 32,
+        normalize_embeddings: bool = True,
+    ) -> None:
+        self.backbone_name = backbone_name
+        self.pretrained = pretrained
+        self.device = torch.device(device if torch.cuda.is_available() or device == "cpu" else "cpu")
+        self.batch_size = batch_size
+        self.normalize_embeddings = normalize_embeddings
+        self.model, self.embed_dim = self._build_backbone(backbone_name, pretrained)
+        self.model.to(self.device)
+        self.model.eval()
+        self.mean = np.array([0.485, 0.456, 0.406], dtype=np.float32)
+        self.std = np.array([0.229, 0.224, 0.225], dtype=np.float32)
+
+    @staticmethod
+    def _build_backbone(name: str, pretrained: bool) -> Tuple[nn.Module, int]:
+        if name == "resnet18":
+            weights = tv_models.ResNet18_Weights.DEFAULT if pretrained else None
+            net = tv_models.resnet18(weights=weights)
+            dim = 512
+        elif name == "resnet34":
+            weights = tv_models.ResNet34_Weights.DEFAULT if pretrained else None
+            net = tv_models.resnet34(weights=weights)
+            dim = 512
+        elif name == "resnet50":
+            weights = tv_models.ResNet50_Weights.DEFAULT if pretrained else None
+            net = tv_models.resnet50(weights=weights)
+            dim = 2048
+        else:
+            raise ValueError(f"Unsupported backbone: {name}")
+        net.fc = nn.Identity()
+        return net, dim
+
+    def weights_sha256(self) -> str:
+        digest = hashlib.sha256()
+        for name, tensor in sorted(self.model.state_dict().items()):
+            digest.update(name.encode())
+            digest.update(tensor.detach().cpu().numpy().tobytes())
+        return digest.hexdigest()
+
+    @torch.no_grad()
+    def extract_deep_embeddings(self, crops_rgb: List[np.ndarray]) -> np.ndarray:
+        if not crops_rgb:
+            return np.empty((0, self.embed_dim), dtype=np.float32)
+        embeddings = []
+        for start in range(0, len(crops_rgb), self.batch_size):
+            batch = crops_rgb[start : start + self.batch_size]
+            tensors = []
+            for img in batch:
+                resized = cv2.resize(img, (224, 224), interpolation=cv2.INTER_AREA) if img.shape[:2] != (224, 224) else img
+                arr = (resized.astype(np.float32) / 255.0 - self.mean) / self.std
+                tensors.append(torch.from_numpy(arr.transpose(2, 0, 1)))
+            x = torch.stack(tensors, dim=0).to(self.device)
+            feat = self.model(x).cpu().numpy().astype(np.float32)
+            if self.normalize_embeddings:
+                norms = np.linalg.norm(feat, axis=1, keepdims=True)
+                feat = feat / np.maximum(norms, 1e-12)
+            embeddings.append(feat)
+        return np.vstack(embeddings)
+
+    def extract_hybrid(
+        self,
+        crops_rgb: List[np.ndarray],
+        masks_binary: List[np.ndarray],
+        morph_units: str = "native",
+        pixel_sizes_um: Optional[List[float]] = None,
+    ) -> Tuple[np.ndarray, np.ndarray, List[str]]:
+        deep = self.extract_deep_embeddings(crops_rgb)
+        morph, morph_names = extract_morphological_dataset(crops_rgb, masks_binary, morph_units, pixel_sizes_um)
+        return deep, morph, morph_names
