@@ -1,4 +1,5 @@
 {
+  "feature_type": "stain_invariant_morph",
   "label_mapping": {
     "0": "A",
     "1": "B"
@@ -12,16 +13,18 @@
       "relative_band_width": 0.15
     },
     "train_cluster_medians": {
-      "0": 0.5475485816394907,
-      "1": 0.5293086861555747
+      "0": 0.5491383991083931,
+      "1": 0.525236206797408
     }
   },
   "model_diagnostics": {
     "algorithm": "kmeans",
     "counts": [
-      381,
-      30
+      379,
+      32
     ],
+    "input_scaling": "standard",
+    "manifold_method": "none",
     "n_iter": 3,
     "occupied_clusters": 2,
     "requested_clusters": 2,
@@ -31,11 +34,20 @@
   "n_clusters": 2,
   "n_fit_samples": 411,
   "n_samples": 468,
-  "pca_components": 20,
-  "pca_explained_variance_ratio_sum": 0.7361488359370724,
+  "pca_components": null,
+  "pca_explained_variance_ratio_sum": null,
+  "selected_features": [
+    "glom_area_um2",
+    "glom_perimeter_um",
+    "circularity",
+    "solidity",
+    "extent",
+    "aspect_ratio",
+    "stain_heterogeneity"
+  ],
   "train_metrics": {
-    "calinski_harabasz_score": 74.23241040858345,
-    "davies_bouldin_score": 1.21707540563319,
-    "silhouette_score": 0.3649269662220996
+    "calinski_harabasz_score": 180.9087598898315,
+    "davies_bouldin_score": 0.8954604186981144,
+    "silhouette_score": 0.5554918789685286
   }
 }

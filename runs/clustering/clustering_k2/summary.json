@@ -1,16 +1,16 @@
 [
   {
-    "ari_subsampling": 0.8894161253356868,
+    "ari_subsampling": 0.9650163378456373,
     "counts": {
-      "A": 381,
-      "B": 30
+      "A": 379,
+      "B": 32
     },
-    "criteria_passed": "4/5",
-    "distance_median": 1.0118922848202887,
-    "jaccard_min": 0.07482993197278912,
+    "criteria_passed": "5/5",
+    "distance_median": 1.8497317890717455,
+    "jaccard_min": 0.8235294117647058,
     "model": "clustering_k2",
     "n_samples": 411,
-    "silhouette": 0.4677879148710075,
+    "silhouette": 0.4592970022558928,
     "split": "train"
   },
   {
@@ -20,7 +20,7 @@
       "B": 0
     },
     "criteria_passed": null,
-    "distance_median": 1.7432580663265227,
+    "distance_median": 1.7097336577317919,
     "jaccard_min": null,
     "model": "clustering_k2",
     "n_samples": 57,

@@ -1,9 +1,10 @@
 {
+  "feature_type": "stain_invariant_morph",
   "label_mapping": {
-    "0": "D",
-    "1": "A",
-    "2": "C",
-    "3": "B"
+    "0": "A",
+    "1": "B",
+    "2": "D",
+    "3": "C"
   },
   "label_ordering": {
     "limitation": "Experimental ordering only: A has the highest train-cluster median peripheral clear fraction and the final letter has the lowest. The letters are shown as a low-to-high necrosis-compatibility proxy for visualization; this is not a measurement of Bowman's space or a validated clinical grade.",
@@ -14,21 +15,23 @@
       "relative_band_width": 0.15
     },
     "train_cluster_medians": {
-      "0": 0.4928387907942929,
-      "1": 0.612582306550048,
-      "2": 0.5291924887004333,
-      "3": 0.5611416257128591
+      "0": 0.5786913899232464,
+      "1": 0.5374349197037471,
+      "2": 0.5263714474553867,
+      "3": 0.5295732655127293
     }
   },
   "model_diagnostics": {
     "algorithm": "kmeans",
     "counts": [
-      131,
-      118,
-      31,
-      131
+      97,
+      101,
+      33,
+      180
     ],
-    "n_iter": 11,
+    "input_scaling": "standard",
+    "manifold_method": "none",
+    "n_iter": 22,
     "occupied_clusters": 4,
     "requested_clusters": 4,
     "valid": true
@@ -37,11 +40,20 @@
   "n_clusters": 4,
   "n_fit_samples": 411,
   "n_samples": 468,
-  "pca_components": 20,
-  "pca_explained_variance_ratio_sum": 0.7361488359370724,
+  "pca_components": null,
+  "pca_explained_variance_ratio_sum": null,
+  "selected_features": [
+    "glom_area_um2",
+    "glom_perimeter_um",
+    "circularity",
+    "solidity",
+    "extent",
+    "aspect_ratio",
+    "stain_heterogeneity"
+  ],
   "train_metrics": {
-    "calinski_harabasz_score": 83.50568950606309,
-    "davies_bouldin_score": 1.6146062946432833,
-    "silhouette_score": 0.16665692626224077
+    "calinski_harabasz_score": 189.82746578073383,
+    "davies_bouldin_score": 1.2081442610760718,
+    "silhouette_score": 0.2471124547453581
   }
 }

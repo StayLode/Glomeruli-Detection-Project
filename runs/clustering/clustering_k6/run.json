@@ -3,13 +3,13 @@
   "assign_splits": [
     "val"
   ],
-  "backbone_weights_hash": "774b358e1485fb925f1f5b43f40aef5e35ee2e73aa35bd4795b1dfe4113f444b",
-  "code_provenance_hash": "700e19ef28940f0440987545b6540c48654092eb4bce9b57dbb34fa8994f6485",
-  "cohort_hash": "afde6a117285c8d5a0c2acd4760ff4069134d7db3e43da0a6fdd61fcb56e4dd5",
+  "backbone_weights_hash": null,
+  "code_provenance_hash": "e1a5e1422fbc8b44b1bff644799523ec16e7f6978a96cbf5d4dd4999546ada72",
+  "cohort_hash": "5e9424260f724493ff63c8fd40070475cd29c05d6d79f945a0e4f63f1928bf5d",
   "cohort_provenance_mode": "schema_v2",
   "cohort_schema_version": 2,
-  "common_evaluation_space_hash": "45747d594781a0a531816a32348fcff362456e861a4d11e160384021d9b81e29",
-  "completed_at": "2026-11-12T11:11:53.802042+00:00",
+  "common_evaluation_space_hash": "071c657b95bf95a3228ece53e7f8b1b823f9a49502a6725d509aab74aba8f13f",
+  "completed_at": "2026-11-19T18:46:33.500608+00:00",
   "config": {
     "clustering": {
       "algorithm": "kmeans",
@@ -19,7 +19,7 @@
       "fit_splits": [
         "train"
       ],
-      "input_scaling": "none",
+      "input_scaling": "standard",
       "k_values": [
         2,
         4,
@@ -40,7 +40,7 @@
       "min_component_area": 400,
       "overlap_threshold": 0.5,
       "padding_mode": "reflect",
-      "source_manifest_csv": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/dataset/manifest.csv",
+      "source_manifest_csv": "/content/Glomeruli-Detection-Project/dataset/manifest.csv",
       "splits": [
         "train",
         "val"
@@ -48,15 +48,19 @@
       "xml_dir": "glomeruli_grading"
     },
     "features": {
-      "batch_size": 32,
-      "block_weighting": "equal",
+      "block_weighting": "none",
       "common_space_cache": "runs/clustering/cache/train_val/common_spaces",
-      "deep_backbone": "resnet34",
-      "embedding_cache_dir": "runs/clustering/cache/train_val/embeddings",
-      "feature_type": "hybrid",
+      "feature_type": "stain_invariant_morph",
       "morph_units": "native",
-      "normalize_embeddings": true,
-      "pretrained": true
+      "selected_features": [
+        "glom_area_um2",
+        "glom_perimeter_um",
+        "circularity",
+        "solidity",
+        "extent",
+        "aspect_ratio",
+        "stain_heterogeneity"
+      ]
     },
     "labels": {
       "max_saturation": 0.2,
@@ -66,8 +70,8 @@
       "relative_band_width": 0.15
     },
     "manifold": {
-      "method": "pca",
-      "pca_variance": 20
+      "method": "none",
+      "pca_variance": null
     },
     "output": {
       "evaluation_name": "evaluation",
@@ -77,207 +81,216 @@
       "save_gallery": true
     }
   },
-  "created_at": "20261112T111151.814581Z",
+  "created_at": "20261119T184633.377849Z",
   "feature_schema_version": 2,
-  "feature_type": "hybrid",
+  "feature_type": "stain_invariant_morph",
   "fit_splits": [
     "train"
   ],
-  "git_commit": "3c4a63cb715bda7b93c7f7eca3bdf755d5734c11",
-  "git_relevant_diff_sha256": "383cbaa894f727eb392869cb54b2030d109f05f7b857e5abe6a6d10d585e9701",
-  "git_worktree_status": " M configs/clustering_config.yaml\n M src/clustering/__init__.py\n D src/clustering/cluster_visualizer.py\n M src/clustering/feature_extractor.py\n M src/clustering/manifold_clustering.py\n?? configs/clustering_k2.yaml\n?? configs/clustering_k4.yaml\n?? configs/clustering_k6.yaml\n?? scripts/predict_clustering.py\n?? scripts/train_clustering.py\n?? src/clustering/cohort.py\n?? src/clustering/common_space.py\n?? src/clustering/comparison.py\n?? src/clustering/crops.py\n?? src/clustering/data.py\n?? src/clustering/embedding_cache.py\n?? src/clustering/evaluation.py\n?? src/clustering/labels.py\n?? src/clustering/metrics.py\n?? src/clustering/modeling.py\n?? src/clustering/pipeline.py\n?? src/clustering/prediction.py\n?? src/clustering/random_baseline.py\n?? src/clustering/reporting.py\n?? src/clustering/resampling.py\n?? src/clustering/splits.py\n?? src/clustering/training.py\n?? src/utils/evaluation.py\n?? tests/test_solution.py\n",
+  "git_commit": "fcb7294437ae1f2c64a9d0517fd8d91b66f67da7",
+  "git_relevant_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "git_worktree_status": "",
   "hardware": {
-    "cpu_count": 96,
+    "cpu_count": 2,
     "cuda_available": true,
-    "gpu": "NVIDIA A40",
+    "gpu": "Tesla T4",
     "processor": "x86_64"
   },
   "inputs": {
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/runs/clustering/cohort_train_val/cohort.csv": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/runs/clustering/cohort_train_val/cohort.csv",
-      "sha256": "de73c4ae1533c1766555ed6f00dabaec31c6c6e9a477ff2b11ca865604a08969",
-      "size_bytes": 253888
+    "/content/Glomeruli-Detection-Project/runs/clustering/cohort_train_val/cohort.csv": {
+      "path": "/content/Glomeruli-Detection-Project/runs/clustering/cohort_train_val/cohort.csv",
+      "sha256": "1b3fec2cb8b0818cd81fc0f32cec22ed738b5902e598536ab38980417b589006",
+      "size_bytes": 238912
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/runs/clustering/train_val_manifest.csv": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/runs/clustering/train_val_manifest.csv",
-      "sha256": "e5810eb0a628e634ecf0a97c06d71b36b09dc973ad28c42baf38b903e1faf4b5",
-      "size_bytes": 816182
+    "/content/Glomeruli-Detection-Project/runs/clustering/train_val_manifest.csv": {
+      "path": "/content/Glomeruli-Detection-Project/runs/clustering/train_val_manifest.csv",
+      "sha256": "504b2282a05058ac300cb329c31bb5a112dc5f4d5b120e1a61476e2d00b9f151",
+      "size_bytes": 726758
     }
   },
   "n_clusters": 6,
   "outputs": {
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/runs/clustering/clustering_k6/assignments.csv": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/runs/clustering/clustering_k6/assignments.csv",
-      "sha256": "6d0c90ed90e1630560f68fac2175dfd16dd580f06f604c771ddfe6fdd6b25c4a",
-      "size_bytes": 241812
+    "/content/Glomeruli-Detection-Project/runs/clustering/clustering_k6/assignments.csv": {
+      "path": "/content/Glomeruli-Detection-Project/runs/clustering/clustering_k6/assignments.csv",
+      "sha256": "a8aa5645a8878cf1ad7e01cd3dbf4eab3c4c2bd31fcb674e1287a11fd4ac1beb",
+      "size_bytes": 226789
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/runs/clustering/clustering_k6/clustering_report.json": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/runs/clustering/clustering_k6/clustering_report.json",
-      "sha256": "3e5fcb480e323321333d004f12b853fc298f4cd23f8a08bdeb41a486a52c17a9",
-      "size_bytes": 1427
+    "/content/Glomeruli-Detection-Project/runs/clustering/clustering_k6/clustering_report.json": {
+      "path": "/content/Glomeruli-Detection-Project/runs/clustering/clustering_k6/clustering_report.json",
+      "sha256": "d19fccfa5adc5d1844202e3a61d80a474b7769efe1cc1f11d86c008f8da60984",
+      "size_bytes": 1695
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/runs/clustering/clustering_k6/features.npz": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/runs/clustering/clustering_k6/features.npz",
-      "sha256": "fb3ab0499a09b0d85151ff265479c340d779d96b5b18bb73b67e3fa186f4dc43",
-      "size_bytes": 1837186
+    "/content/Glomeruli-Detection-Project/runs/clustering/clustering_k6/features.npz": {
+      "path": "/content/Glomeruli-Detection-Project/runs/clustering/clustering_k6/features.npz",
+      "sha256": "ad04c7cd924968740f832e928d72164aba78b93dfbe93fa8323c1d66863613f3",
+      "size_bytes": 82876
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/runs/clustering/clustering_k6/label_mapping.json": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/runs/clustering/clustering_k6/label_mapping.json",
-      "sha256": "9bfdcf099bfec777f6b4db071a3f72b82adf29e56320dd2081da0f287b7b37e6",
+    "/content/Glomeruli-Detection-Project/runs/clustering/clustering_k6/label_mapping.json": {
+      "path": "/content/Glomeruli-Detection-Project/runs/clustering/clustering_k6/label_mapping.json",
+      "sha256": "d2efd3d25ae00f2de2ef82d86b8d9008bebc4223ef5c8a6d766f6b82b19c5df2",
       "size_bytes": 802
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/runs/clustering/clustering_k6/metrics.json": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/runs/clustering/clustering_k6/metrics.json",
-      "sha256": "3e5fcb480e323321333d004f12b853fc298f4cd23f8a08bdeb41a486a52c17a9",
-      "size_bytes": 1427
+    "/content/Glomeruli-Detection-Project/runs/clustering/clustering_k6/metrics.json": {
+      "path": "/content/Glomeruli-Detection-Project/runs/clustering/clustering_k6/metrics.json",
+      "sha256": "d19fccfa5adc5d1844202e3a61d80a474b7769efe1cc1f11d86c008f8da60984",
+      "size_bytes": 1695
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/runs/clustering/clustering_k6/pipeline.joblib": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/runs/clustering/clustering_k6/pipeline.joblib",
-      "sha256": "5583c389969699e24f2183f6bb6072b48abfd4af9ddeca00cd9761f183872688",
-      "size_bytes": 85412751
+    "/content/Glomeruli-Detection-Project/runs/clustering/clustering_k6/pipeline.joblib": {
+      "path": "/content/Glomeruli-Detection-Project/runs/clustering/clustering_k6/pipeline.joblib",
+      "sha256": "31a2fd63b94f2d62d453b0788a8fd16212319089e30875898a5c349a77a76f31",
+      "size_bytes": 5785
     }
   },
   "packages": {
-    "joblib": "1.5.3",
-    "matplotlib": "3.9.4",
-    "numpy": "2.0.2",
+    "joblib": "1.6.0",
+    "matplotlib": "3.10.0",
+    "numpy": "2.4.6",
     "opencv-python": "5.0.0.93",
-    "pandas": "2.3.3",
+    "pandas": "2.2.3",
     "scikit-learn": "1.6.1",
-    "scipy": "1.13.1",
-    "shapely": "2.0.7",
-    "torch": "2.8.0+cu128",
-    "torchvision": "0.23.0+cu128",
-    "umap-learn": null
+    "scipy": "1.16.3",
+    "shapely": "2.2.0",
+    "torch": "2.14.1+cu130",
+    "torchvision": "0.29.1+cu130",
+    "umap-learn": "0.5.12"
   },
-  "platform": "Linux-5.14.0-503.40.1.el9_5.x86_64-x86_64-with-glibc2.34",
+  "platform": "Linux-6.6.159+-x86_64-with-glibc2.39",
   "preprocessing_schema_version": 2,
-  "python": "3.9.21",
+  "python": "3.13.16",
+  "selected_features": [
+    "glom_area_um2",
+    "glom_perimeter_um",
+    "circularity",
+    "solidity",
+    "extent",
+    "aspect_ratio",
+    "stain_heterogeneity"
+  ],
   "source_files": {
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/configs/clustering_config.yaml": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/configs/clustering_config.yaml",
-      "sha256": "19b79666f626387324b6a2e680853740f71711d9124906236166fc943471e271",
-      "size_bytes": 1240
+    "/content/Glomeruli-Detection-Project/configs/clustering_config.yaml": {
+      "path": "/content/Glomeruli-Detection-Project/configs/clustering_config.yaml",
+      "sha256": "45126013513a21117e19c1428cc8485b538a5afaf912e10bfc4e399113e96a20",
+      "size_bytes": 1307
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/scripts/predict_clustering.py": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/scripts/predict_clustering.py",
+    "/content/Glomeruli-Detection-Project/scripts/predict_clustering.py": {
+      "path": "/content/Glomeruli-Detection-Project/scripts/predict_clustering.py",
       "sha256": "2f3adaea9066ac907807efd43bc56403639f27e229e1f42381a789dfa5acdca2",
       "size_bytes": 1725
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/scripts/train_clustering.py": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/scripts/train_clustering.py",
+    "/content/Glomeruli-Detection-Project/scripts/train_clustering.py": {
+      "path": "/content/Glomeruli-Detection-Project/scripts/train_clustering.py",
       "sha256": "d2e18f0488b21682beb66d26d78797085de2649ea32be3e7ee84aa028bc82a95",
       "size_bytes": 960
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/__init__.py": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/__init__.py",
+    "/content/Glomeruli-Detection-Project/src/clustering/__init__.py": {
+      "path": "/content/Glomeruli-Detection-Project/src/clustering/__init__.py",
       "sha256": "09610df6de419eb016c48e0efc84a5c4f4c6ab3b537ad55d6abfc302a06c0fad",
       "size_bytes": 285
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/cohort.py": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/cohort.py",
+    "/content/Glomeruli-Detection-Project/src/clustering/cohort.py": {
+      "path": "/content/Glomeruli-Detection-Project/src/clustering/cohort.py",
       "sha256": "ed6d8f56d7d31758be7702857f57bb970a1dd9b15ee008e711973b24587faea9",
       "size_bytes": 23214
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/common_space.py": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/common_space.py",
+    "/content/Glomeruli-Detection-Project/src/clustering/common_space.py": {
+      "path": "/content/Glomeruli-Detection-Project/src/clustering/common_space.py",
       "sha256": "90db7151ce5666e38289d0dc58985f0db20ee057ffe07af5df3060432aeb2123",
       "size_bytes": 5137
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/comparison.py": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/comparison.py",
+    "/content/Glomeruli-Detection-Project/src/clustering/comparison.py": {
+      "path": "/content/Glomeruli-Detection-Project/src/clustering/comparison.py",
       "sha256": "3a988e7bce51bdab7f02a836a655d3359ce96ae14e375706081a91f5ea1407a6",
       "size_bytes": 11371
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/crops.py": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/crops.py",
+    "/content/Glomeruli-Detection-Project/src/clustering/crops.py": {
+      "path": "/content/Glomeruli-Detection-Project/src/clustering/crops.py",
       "sha256": "1124249686aa66cfbd8906d4cf408250fff8325131e166ec33d907cbf8e5b962",
       "size_bytes": 2116
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/data.py": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/data.py",
+    "/content/Glomeruli-Detection-Project/src/clustering/data.py": {
+      "path": "/content/Glomeruli-Detection-Project/src/clustering/data.py",
       "sha256": "d679664daba301272869c886360fc0062b9c6594f5cf44b4c9f4c5ddc9ab640c",
       "size_bytes": 12430
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/embedding_cache.py": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/embedding_cache.py",
+    "/content/Glomeruli-Detection-Project/src/clustering/embedding_cache.py": {
+      "path": "/content/Glomeruli-Detection-Project/src/clustering/embedding_cache.py",
       "sha256": "f468de03806386c7b762d891b78f5156082be6724d5cc1143e2ea793cf70bac6",
       "size_bytes": 3552
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/evaluation.py": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/evaluation.py",
-      "sha256": "e2ea85392427c1b9e15793ffd8bd111e33bea34b9a9d817032d7700d0c38d30d",
-      "size_bytes": 25934
+    "/content/Glomeruli-Detection-Project/src/clustering/evaluation.py": {
+      "path": "/content/Glomeruli-Detection-Project/src/clustering/evaluation.py",
+      "sha256": "c5c21db5bf089c247f6d59755d89e8419ed08b3b68486f0ec547116c61842a26",
+      "size_bytes": 26184
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/feature_extractor.py": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/feature_extractor.py",
-      "sha256": "09b81d43bb426dfe1d83e67572f4f5edbb684e96d09a8d777d955e41d5ad483e",
-      "size_bytes": 13812
+    "/content/Glomeruli-Detection-Project/src/clustering/feature_extractor.py": {
+      "path": "/content/Glomeruli-Detection-Project/src/clustering/feature_extractor.py",
+      "sha256": "3e3f4c89b51350a7e5439decc31eb2b0921c5a616d15d5d2bce345fd664f35f0",
+      "size_bytes": 14236
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/labels.py": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/labels.py",
+    "/content/Glomeruli-Detection-Project/src/clustering/labels.py": {
+      "path": "/content/Glomeruli-Detection-Project/src/clustering/labels.py",
       "sha256": "148ea2b9a7f8469767fbc7c0332d0ab0f7a3ff3df191e49c6c38d0063eac840b",
       "size_bytes": 2379
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/manifold_clustering.py": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/manifold_clustering.py",
-      "sha256": "80a4827d8a3fcf7c72744240e753896ef8d3f9c1707c4a39a7661e876ad10528",
-      "size_bytes": 3649
+    "/content/Glomeruli-Detection-Project/src/clustering/manifold_clustering.py": {
+      "path": "/content/Glomeruli-Detection-Project/src/clustering/manifold_clustering.py",
+      "sha256": "47078577b486b9d5a96de4c4100eb93bf5726ee59c535cd7f1517c47203d80ba",
+      "size_bytes": 5000
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/metrics.py": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/metrics.py",
+    "/content/Glomeruli-Detection-Project/src/clustering/metrics.py": {
+      "path": "/content/Glomeruli-Detection-Project/src/clustering/metrics.py",
       "sha256": "070b9413924d6f1c272f40ecaa8c3eaa1c02451f42f62f19db4a7b6ba4e4730b",
       "size_bytes": 6127
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/modeling.py": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/modeling.py",
-      "sha256": "32bfa3c2e70f8a8d79d768080ed435741ff43cc0d2f222bcddbc327c4dbc7f22",
-      "size_bytes": 1213
+    "/content/Glomeruli-Detection-Project/src/clustering/modeling.py": {
+      "path": "/content/Glomeruli-Detection-Project/src/clustering/modeling.py",
+      "sha256": "2eab53b89c70947e30817d85ff63b6a2b8be2f1e49f65fec2f92db2f7ade490f",
+      "size_bytes": 2850
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/pipeline.py": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/pipeline.py",
-      "sha256": "6ead495393f9f60098dd12755ef304f03017d2acec1498bac0d88fbcc9e705ff",
-      "size_bytes": 1896
+    "/content/Glomeruli-Detection-Project/src/clustering/pipeline.py": {
+      "path": "/content/Glomeruli-Detection-Project/src/clustering/pipeline.py",
+      "sha256": "9b42f2f0a5ba58578052357f9e13f3f85497825c983f69957b9d3a3e6b625e24",
+      "size_bytes": 2003
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/prediction.py": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/prediction.py",
-      "sha256": "bced2fecaa0b6693b1760562a20832ddd2b1ad5b7024706b844e3c89c7c790f3",
-      "size_bytes": 12521
+    "/content/Glomeruli-Detection-Project/src/clustering/prediction.py": {
+      "path": "/content/Glomeruli-Detection-Project/src/clustering/prediction.py",
+      "sha256": "add894d98a3d469cd628c93a16ea96f87395f94ef8bc195c7ecb41badb0ae5bf",
+      "size_bytes": 15393
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/random_baseline.py": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/random_baseline.py",
+    "/content/Glomeruli-Detection-Project/src/clustering/random_baseline.py": {
+      "path": "/content/Glomeruli-Detection-Project/src/clustering/random_baseline.py",
       "sha256": "94b0cced92d9b870b618a939d3c7cfd124be533e44bfe587336f5c15e61eb835",
       "size_bytes": 7685
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/reporting.py": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/reporting.py",
-      "sha256": "7aea4b20497025e248e11f8bf99a9576148c201e2d4806b8b66e98125fa616c2",
-      "size_bytes": 7128
+    "/content/Glomeruli-Detection-Project/src/clustering/reporting.py": {
+      "path": "/content/Glomeruli-Detection-Project/src/clustering/reporting.py",
+      "sha256": "2aa76ab99d42fb00af6091c027a6c9ced46d17eec38236550e98e7cd009ba1f3",
+      "size_bytes": 9545
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/resampling.py": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/resampling.py",
+    "/content/Glomeruli-Detection-Project/src/clustering/resampling.py": {
+      "path": "/content/Glomeruli-Detection-Project/src/clustering/resampling.py",
       "sha256": "ba5cf1005e62e95d814286c287ce03482979727696a7cd216d85ba804cc57514",
       "size_bytes": 2929
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/splits.py": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/splits.py",
+    "/content/Glomeruli-Detection-Project/src/clustering/splits.py": {
+      "path": "/content/Glomeruli-Detection-Project/src/clustering/splits.py",
       "sha256": "89264295f2e5dd88b062a006dfa1850cdbc7fdaca58af8db6e6cf7163d78c1d0",
       "size_bytes": 1621
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/training.py": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/clustering/training.py",
-      "sha256": "682ad97026a32300384db95e35f4b3d50a61f0ae2fa3cb9341240cf05d1fbac8",
-      "size_bytes": 17492
+    "/content/Glomeruli-Detection-Project/src/clustering/training.py": {
+      "path": "/content/Glomeruli-Detection-Project/src/clustering/training.py",
+      "sha256": "7769da12374801e50ec17c1172ba3e9e54938f722530bd0369e146a7fb832d18",
+      "size_bytes": 22652
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/utils/evaluation.py": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/src/utils/evaluation.py",
+    "/content/Glomeruli-Detection-Project/src/utils/evaluation.py": {
+      "path": "/content/Glomeruli-Detection-Project/src/utils/evaluation.py",
       "sha256": "bf2db9465aece25451a386c878b25858374a269497674a527a4ce0fbfc7f8c28",
       "size_bytes": 8432
     },
-    "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/tests/test_solution.py": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/tests/test_solution.py",
-      "sha256": "38aaf7b942274d64b35044a2afa34f5bf33ce5960307487488bec24b18133e3b",
-      "size_bytes": 14873
+    "/content/Glomeruli-Detection-Project/tests/test_solution.py": {
+      "path": "/content/Glomeruli-Detection-Project/tests/test_solution.py",
+      "sha256": "d0614c4169b02909da1bec4febb18db79c3cf851a21b5eb3f5ced5e7a49fa797",
+      "size_bytes": 18970
     }
   },
   "split": "train_val",

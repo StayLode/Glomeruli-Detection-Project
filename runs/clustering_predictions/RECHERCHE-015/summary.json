@@ -1,41 +1,41 @@
 [
   {
     "counts": {
-      "A": 26,
-      "B": 10
+      "A": 25,
+      "B": 11
     },
-    "distance_median": 1.4785071332268673,
+    "distance_median": 2.084688920454094,
     "model": "clustering_k2",
     "n_samples": 36,
-    "silhouette": 0.4467593531608758,
+    "silhouette": 0.4453389761785302,
     "split": "RECHERCHE-015"
   },
   {
     "counts": {
-      "A": 4,
-      "B": 2,
-      "C": 8,
-      "D": 22
+      "A": 3,
+      "B": 8,
+      "C": 15,
+      "D": 10
     },
-    "distance_median": 1.2634744613974223,
+    "distance_median": 1.6341512048115772,
     "model": "clustering_k4",
     "n_samples": 36,
-    "silhouette": 0.09867146569735977,
+    "silhouette": 0.024658862663105966,
     "split": "RECHERCHE-015"
   },
   {
     "counts": {
-      "A": 1,
-      "B": 0,
-      "C": 7,
+      "A": 0,
+      "B": 5,
+      "C": 9,
       "D": 8,
-      "E": 2,
-      "F": 18
+      "E": 12,
+      "F": 2
     },
-    "distance_median": 1.0651445655614067,
+    "distance_median": 1.522703523309543,
     "model": "clustering_k6",
     "n_samples": 36,
-    "silhouette": 0.09169004577051026,
+    "silhouette": 0.04405150747637575,
     "split": "RECHERCHE-015"
   }
 ]

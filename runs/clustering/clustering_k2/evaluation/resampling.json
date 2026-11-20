@@ -3,7 +3,7 @@
   "method": "subsampling_without_replacement",
   "sample_fraction": 0.8,
   "seed": 42,
-  "cohort_hash": "afde6a117285c8d5a0c2acd4760ff4069134d7db3e43da0a6fdd61fcb56e4dd5",
+  "cohort_hash": "5e9424260f724493ff63c8fd40070475cd29c05d6d79f945a0e4f63f1928bf5d",
   "train_ids": [
     "RECHERCHE-003#0",
     "RECHERCHE-003#15",

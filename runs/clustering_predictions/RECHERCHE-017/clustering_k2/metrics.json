@@ -9,8 +9,8 @@
     "A": 46,
     "B": 10
   },
-  "distance_median": 1.142318528099874,
-  "distance_q95": 3.192250052377021,
+  "distance_median": 2.2983023669097653,
+  "distance_q95": 8.821550368786998,
   "internal_common": {
     "calinski_harabasz": 22.24969664450666,
     "davies_bouldin": 1.2862730224749142,

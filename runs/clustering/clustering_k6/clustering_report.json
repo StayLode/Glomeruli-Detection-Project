@@ -1,11 +1,12 @@
 {
+  "feature_type": "stain_invariant_morph",
   "label_mapping": {
-    "0": "F",
-    "1": "C",
-    "2": "B",
+    "0": "C",
+    "1": "B",
+    "2": "A",
     "3": "D",
     "4": "E",
-    "5": "A"
+    "5": "F"
   },
   "label_ordering": {
     "limitation": "Experimental ordering only: A has the highest train-cluster median peripheral clear fraction and the final letter has the lowest. The letters are shown as a low-to-high necrosis-compatibility proxy for visualization; this is not a measurement of Bowman's space or a validated clinical grade.",
@@ -16,25 +17,27 @@
       "relative_band_width": 0.15
     },
     "train_cluster_medians": {
-      "0": 0.4192097343128054,
-      "1": 0.5431389648820484,
-      "2": 0.5902607416097758,
-      "3": 0.5291924887004333,
-      "4": 0.5211530098776169,
-      "5": 0.632637869110044
+      "0": 0.5413057961359093,
+      "1": 0.5548616932103939,
+      "2": 0.5786913899232464,
+      "3": 0.5294248836107162,
+      "4": 0.528615650421136,
+      "5": 0.5183366208592493
     }
   },
   "model_diagnostics": {
     "algorithm": "kmeans",
     "counts": [
-      49,
-      114,
-      68,
-      31,
-      89,
-      60
+      121,
+      71,
+      69,
+      17,
+      117,
+      16
     ],
-    "n_iter": 13,
+    "input_scaling": "standard",
+    "manifold_method": "none",
+    "n_iter": 14,
     "occupied_clusters": 6,
     "requested_clusters": 6,
     "valid": true
@@ -43,11 +46,20 @@
   "n_clusters": 6,
   "n_fit_samples": 411,
   "n_samples": 468,
-  "pca_components": 20,
-  "pca_explained_variance_ratio_sum": 0.7361488359370724,
+  "pca_components": null,
+  "pca_explained_variance_ratio_sum": null,
+  "selected_features": [
+    "glom_area_um2",
+    "glom_perimeter_um",
+    "circularity",
+    "solidity",
+    "extent",
+    "aspect_ratio",
+    "stain_heterogeneity"
+  ],
   "train_metrics": {
-    "calinski_harabasz_score": 68.44633909630078,
-    "davies_bouldin_score": 1.8444204389353303,
-    "silhouette_score": 0.1336831213392359
+    "calinski_harabasz_score": 153.71390333058153,
+    "davies_bouldin_score": 1.4357573681412414,
+    "silhouette_score": 0.2100093277272081
   }
 }

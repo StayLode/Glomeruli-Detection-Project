@@ -126,47 +126,47 @@
   "legacy_provenance": null,
   "models": {
     "clustering_k2": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/runs/clustering/clustering_k2/pipeline.joblib",
-      "sha256": "9ab5c33b54dd3c69bd2f095625d884f585d4738529ee53b20acd3f191b5965c5",
-      "size_bytes": 85412047
+      "path": "/content/Glomeruli-Detection-Project/runs/clustering/clustering_k2/pipeline.joblib",
+      "sha256": "1b236d0230ce4e479c47dd88be5140cfacf88fad95b2294bc96968d992185643",
+      "size_bytes": 5481
     },
     "clustering_k4": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/runs/clustering/clustering_k4/pipeline.joblib",
-      "sha256": "0719a3146483da6315b2d02d854d9939190a434e1df3de15cc2855b45866bd83",
-      "size_bytes": 85412399
+      "path": "/content/Glomeruli-Detection-Project/runs/clustering/clustering_k4/pipeline.joblib",
+      "sha256": "58c7acf4e882c8293017452f9ea157dff5747e529e8d9b76cdfc61da14b7ebe9",
+      "size_bytes": 5641
     },
     "clustering_k6": {
-      "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/runs/clustering/clustering_k6/pipeline.joblib",
-      "sha256": "5583c389969699e24f2183f6bb6072b48abfd4af9ddeca00cd9761f183872688",
-      "size_bytes": 85412751
+      "path": "/content/Glomeruli-Detection-Project/runs/clustering/clustering_k6/pipeline.joblib",
+      "sha256": "31a2fd63b94f2d62d453b0788a8fd16212319089e30875898a5c349a77a76f31",
+      "size_bytes": 5785
     }
   },
   "outputs": {
-    "clustering_k2/assignments.csv": "339eeba0bf3d8fe06c92dc0173de4ee4e04f30d8a5c906b03cb0e9c7130629ad",
-    "clustering_k2/clusters.xml": "54692aac4fbc09b709a3e67fd145f8ab56385341612ace5a0994d97acf7ec331",
-    "clustering_k2/gallery.png": "eb74accdeada482f5238d258d8107e7b6611e7236d7092db165a294a8970f988",
-    "clustering_k2/metrics.json": "63059464f68c0705879186a0cbc014934c845e7661598b3c9cd6a337963d3257",
-    "clustering_k4/assignments.csv": "7e8b04e09b91f1eb30c10c7d058c83c7f5d12a0efef356e6fbdc2b7b4bc54955",
-    "clustering_k4/clusters.xml": "df8d32f83dc1cc89f037606c44e71a01aef013b0710e5fefc9144902899192f5",
-    "clustering_k4/gallery.png": "6f747d2d72e131ee158d22b677930f9968413eeae2449d0f51baddbd19682784",
-    "clustering_k4/metrics.json": "40ace9548fb605b805f6db119b12529e2b7f24834a216171efc161989f2456cb",
-    "clustering_k6/assignments.csv": "e85af770e4fbf2755c707107c89575146ced147bb414971801c7c6d149747584",
-    "clustering_k6/clusters.xml": "be9c7f667aafebadd47f9279ecb57bbd102eb21d30ff6197a061df3159f87c71",
-    "clustering_k6/gallery.png": "93e2898e09915fb7ac84ad336ff86d67e1ee85c2fbdeef03eee37380e7fc785d",
-    "clustering_k6/metrics.json": "700b80adf05d6faa2a6acb2dab1133c22f3179bae8bdae7ae41d0e03d2f81500",
+    "clustering_k2/assignments.csv": "f5c71abe8a40612938cdb577fdf308f3e5ca293be499012a40d798d49bff1926",
+    "clustering_k2/clusters.xml": "f450baf5c15d09a8d38edeeb5bf5aaa64796463d59b9937a0cf3692065bd5907",
+    "clustering_k2/gallery.png": "38689abbf3c3abfd05b48b6c0885a4581302c3a3bb78f658d6263deac6cdb96a",
+    "clustering_k2/metrics.json": "30941c33ce9289b183bb96ddcd33c744c9cfad22e35c072680aa981d1f0fc086",
+    "clustering_k4/assignments.csv": "80811f9833ae2046b399220e4c7e72ee20f93106cb4e280161a2670b7d58adc8",
+    "clustering_k4/clusters.xml": "5fb7f2c6ddc77fac15d83d92d7fc6b1d013480fdd7a81f6022b32ca2688e4e53",
+    "clustering_k4/gallery.png": "9debb45b8a9a457461dd0cf8ea7f7f7ffa7e8f186676cc900cb4da6a13d97ced",
+    "clustering_k4/metrics.json": "3fb915ca4104ada2a99521b16439bc70216598470371bed5a102b0414dc116f4",
+    "clustering_k6/assignments.csv": "2dea804dc70dfcc61de548244871a6b945861e7c2701bfa97c97c9ace8addedb",
+    "clustering_k6/clusters.xml": "bc97d052e142e8415ed0d67389d6a81c2130656483a7e1276478f17bbdd65566",
+    "clustering_k6/gallery.png": "d2e42e81617f940a993a0fc3fba695faf021b840178bbcd20bf160532e134ce1",
+    "clustering_k6/metrics.json": "472fdfc569ee0ae256001db5a39ee045cc05b16331181259ea8b9ea609d50d9c",
     "excluded_predictions.csv": "abff07ada3ed3ec6817edccd71a9df4bcfacf9a78c78bbc4b89a5121763015c2",
-    "report.md": "1f32437a48745a59178a67c1cd5a742dcce64af6e43d5eaa18bdd64af5e66c8d",
-    "summary.csv": "ad2fb46a4e78d837cf16a157926a30399781385db0b6142814603689cc9d145e",
-    "summary.json": "02ccd5eade44f4ffe7a70885f0cd9111c968a86f8845bfac9f6d746ac1cfba5c"
+    "report.md": "11f9d001cf5e38f1d3b0cef4aebfcd7a6fe3412e46020644e1aefb95627715a2",
+    "summary.csv": "a4b912532d34317fa487bb2256ff23eea6eb972cbb85185894dbabda35b4c288",
+    "summary.json": "6b7c49917232c2bc0a791bdae34a4e0085f410126b38c445450de987a93a7fb8"
   },
   "slide_id": "RECHERCHE-015",
   "source_predictions": {
-    "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/runs/wsi_inference/RECHERCHE-015_predictions.json",
-    "sha256": "0fdf97ad29371e9f5f9253404167ffd8265d38eed82da06bd0982071e68fb79b",
-    "size_bytes": 85914
+    "path": "/content/Glomeruli-Detection-Project/runs/wsi_inference/RECHERCHE-015_predictions.json",
+    "sha256": "77cd906916a59ac2724e370c58d502c0707058b32aed4abaf46df944d02e28a7",
+    "size_bytes": 85883
   },
   "source_slide": {
-    "path": "/mnt/beegfs/mla_group_09/Glomeruli-Detection-Project/glomeruli_grading/RECHERCHE-015.svs",
+    "path": "/content/drive/MyDrive/glomeruli_grading/RECHERCHE-015.svs",
     "sha256": "2dfff61bdf73b4d4019b1370464769d0f73372743bce3091074d52d59dd6d8f6",
     "size_bytes": 465916841
   },
