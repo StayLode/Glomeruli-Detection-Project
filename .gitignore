@@ -37,3 +37,4 @@ __pycache__/
 /.aws/
 /.tools/
 .DS_Store
+dataset/yolo/**/*.cache
