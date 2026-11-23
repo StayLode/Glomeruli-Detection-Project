@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Fit classic PCA20 K=2/4/6 on train and assign validation; exclude test WSIs."""
+"""Fit morphological K=2/4/6 clustering on train and assign validation; exclude test WSIs."""
+
 import argparse
 from pathlib import Path
 import sys

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Assign frozen PCA20 experimental classes to YOLO + U-Net WSI predictions."""
+"""Assign frozen exploratory cluster labels to YOLO + U-Net WSI predictions."""
+
 import argparse
 from pathlib import Path
 import sys
