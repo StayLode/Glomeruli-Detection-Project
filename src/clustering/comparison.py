@@ -175,10 +175,10 @@ def compare_runs(run_paths: List[Path], descriptive_only: bool = False) -> List[
             left_value, right_value = _value(left_metrics, metric_path), _value(right_metrics, metric_path)
             deltas = None
             interval = None
-            status = "NON confrontabile: coorti diverse" if not_comparable else "non conclusiva"
+            status = "NOT comparable: different cohorts" if not_comparable else "inconclusive"
             own_space = metric_path.startswith("own_space_train_metrics.")
             if own_space and not not_comparable:
-                status = "NON confrontabile: spazi di feature diversi"
+                status = "NOT comparable: different feature spaces"
             if not not_comparable and not own_space and left_value is not None and right_value is not None:
                 delta = right_value - left_value
                 if samples_path:
@@ -194,20 +194,20 @@ def compare_runs(run_paths: List[Path], descriptive_only: bool = False) -> List[
                         favorable = interval[0] > 0 if direction == "higher" else interval[1] < 0
                         unfavorable = interval[1] < 0 if direction == "higher" else interval[0] > 0
                         if metric_path.endswith("silhouette") and abs(float(np.mean(deltas))) < 0.02:
-                            status = "non conclusiva: differenza silhouette < 0,02"
+                            status = "inconclusive: silhouette difference < 0.02"
                         elif favorable:
-                            status = "favorevole"
+                            status = "favorable"
                         elif unfavorable:
-                            status = "sfavorevole"
+                            status = "unfavorable"
                     elif len(shared_ids) == 1:
                         deltas = [
                             right_samples[shared_ids[0]] - left_samples[shared_ids[0]]
                         ]
-                        status = "non conclusiva: meno di due repliche appaiate valide"
+                        status = "inconclusive: fewer than two valid paired replicates"
                     else:
-                        status = "non conclusiva: nessuna replica appaiata valida"
+                        status = "inconclusive: no valid paired replicates"
                 else:
-                    status = "direzionale soltanto: singola misura, nessun intervallo appaiato"
+                    status = "directional only: single measurement, no paired interval"
                 rows.append({
                     "baseline_run": str(run_paths[left_index]),
                     "candidate_run": str(run_paths[right_index]),
@@ -241,9 +241,10 @@ def compare_runs(run_paths: List[Path], descriptive_only: bool = False) -> List[
                     "paired_interval_type": None,
                     "n_paired_replicates": 0,
                     "favorable_direction": direction,
-                    "status": status if not not_comparable else "NON confrontabile: coorti diverse",
+                    "status": status if not not_comparable else "NOT comparable: different cohorts",
                     "paired_differences": None,
                 })
     return rows
+
 
 

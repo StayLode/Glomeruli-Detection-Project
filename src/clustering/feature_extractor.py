@@ -1,15 +1,15 @@
 """
 Feature extraction module for glomeruli crops.
-
 Supports:
 1. Stain-Invariant Morphological & Structural Features (default final model):
-   7 physical/geometric and internal texture descriptors immune to slide-level
-   staining and illumination shifts.
-2. Full 10-feature Native Morphological & Photometric Dataset (for shared
-   evaluation space and descriptive profiling).
-3. Deep / Hybrid Representations via pre-trained ResNet backbones (retained for
-   baseline comparison).
+   6 pure mask-geometry descriptors (area, perimeter, circularity, solidity, extent,
+   aspect ratio) invariant to staining/illumination, plus internal RGB standard deviation
+   (`stain_heterogeneity`), which captures intra-glomerular contrast and may still vary
+   with slide-level staining/illumination.
+2. Full 10-feature Native Morphological & Photometric Dataset (for shared evaluation space and descriptive profiling).
+3. Deep / Hybrid Representations via pre-trained ResNet backbones (retained for baseline comparison).
 """
+
 
 from typing import Dict, Any, List, Optional, Sequence, Tuple
 import hashlib

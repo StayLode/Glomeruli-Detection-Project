@@ -1,4 +1,9 @@
-"""Exploratory labels ordered by peripheral clear-pixel fraction, never a diagnosis."""
+"""Fraction of bright, low-saturation pixels in an inner peripheral mask band.
+
+Used strictly as an experimental post-hoc proxy to order cluster letters (A, B, ...)
+on the training split; it is not a clustering feature and not a clinical measurement.
+"""
+
 
 import numpy as np
 import cv2

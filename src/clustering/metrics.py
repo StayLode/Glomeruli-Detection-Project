@@ -28,26 +28,34 @@ def _metric_result(features: np.ndarray, labels: np.ndarray) -> Dict[str, Any]:
     n_labels = len(np.unique(labels))
     if len(features) == 0:
         return {
-            "status": "not_evaluated", "reason": "nessun campione assegnato",
-            "silhouette": None, "davies_bouldin": None, "calinski_harabasz": None,
+            "status": "not_evaluated",
+            "reason": "no samples assigned",
+            "silhouette": None,
+            "davies_bouldin": None,
+            "calinski_harabasz": None,
         }
     if n_labels < 2:
-        reason = "è presente un solo cluster nel split"
+        reason = "only a single cluster is present in the split"
     elif n_labels >= len(labels):
-        reason = "ogni campione forma un cluster distinto o il campione è troppo piccolo"
+        reason = "every sample forms a distinct cluster or the sample size is too small"
     else:
         reason = None
     if reason:
         return {
-            "status": "not_evaluable", "reason": reason,
-            "silhouette": None, "davies_bouldin": None, "calinski_harabasz": None,
+            "status": "not_evaluable",
+            "reason": reason,
+            "silhouette": None,
+            "davies_bouldin": None,
+            "calinski_harabasz": None,
         }
     return {
-        "status": "evaluated", "reason": None,
+        "status": "evaluated",
+        "reason": None,
         "silhouette": float(silhouette_score(features, labels)),
         "davies_bouldin": float(davies_bouldin_score(features, labels)),
         "calinski_harabasz": float(calinski_harabasz_score(features, labels)),
     }
+
 
 def _cramers_v(frame: pd.DataFrame) -> Dict[str, Any]:
     n_slides = frame["slide_id"].nunique()
@@ -56,13 +64,13 @@ def _cramers_v(frame: pd.DataFrame) -> Dict[str, Any]:
         return {
             "value": None,
             "status": "not_evaluable",
-            "reason": "un solo slide: l'associazione cluster-slide non è stimabile",
+            "reason": "single slide: cluster-slide association is not estimable",
         }
     if n_clusters < 2:
         return {
             "value": None,
             "status": "not_evaluable",
-            "reason": "un solo cluster occupato: manca variabilità nei cluster",
+            "reason": "single occupied cluster: no cluster variability",
         }
     table = pd.crosstab(frame["cluster"], frame["slide_id"]).to_numpy()
     chi2 = float(chi2_contingency(table, correction=False)[0])
@@ -70,8 +78,9 @@ def _cramers_v(frame: pd.DataFrame) -> Dict[str, Any]:
     return {
         "value": float(np.sqrt(chi2 / denominator)) if denominator else None,
         "status": "evaluated" if denominator else "not_evaluable",
-        "reason": None if denominator else "tabella priva di gradi di libertà",
+        "reason": None if denominator else "contingency table has zero degrees of freedom",
     }
+
 
 def _eta_squared(values: Sequence[Any], labels: Sequence[Any]) -> Optional[float]:
     value_array = np.asarray(values, dtype=float)
@@ -133,6 +142,6 @@ def _distance_profiles(frame: pd.DataFrame, n_clusters: int) -> Dict[str, Any]:
             "median": float(np.median(values)) if len(values) else None,
             "q95": float(np.quantile(values, 0.95)) if len(values) else None,
             "max": float(values.max()) if len(values) else None,
-            "unit": "distanza euclidea nello spazio PCA20 del modello; non è probabilità",
+            "unit": "euclidean distance in the model’s standardized space; it is not probability",
         }
     return profiles

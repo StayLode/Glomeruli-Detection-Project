@@ -219,11 +219,11 @@ def build_clustering_cohort(
                     "reason": "duplicato_best_view", "completeness": view["completeness"],
                 })
         if best["completeness"] < min_completeness:
-            annotation_reasons[annotation_id] = "completezza"
+            annotation_reasons[annotation_id] = "completeness"
             exclusions.append({
                 "annotation_id": annotation_id, "slide_id": best["slide_id"],
                 "patch_id": best["patch_id"], "component_label": best["component_label"],
-                "reason": "completezza", "completeness": best["completeness"],
+                "reason": "completeness", "completeness": best["completeness"],
                 "window_coverage": best["window_coverage"],
             })
             continue

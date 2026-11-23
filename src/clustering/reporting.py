@@ -36,7 +36,7 @@ def _distance_profiles(frame: pd.DataFrame, n_clusters: int):
             "median": float(np.median(values)) if len(values) else None,
             "q95": float(np.quantile(values, 0.95)) if len(values) else None,
             "max": float(values.max()) if len(values) else None,
-            "unit": "distanza euclidea nello spazio standardizzato del modello; non è probabilità",
+            "unit": "euclidean distance in the model’s standardized space; it is not probability",
         }
     return profiles
 
@@ -110,7 +110,7 @@ def save_gallery(path, crops, frame, k, mapping):
         caption_ax = fig.add_subplot(grid[grid_row + 1, grid_column])
         caption_ax.axis("off")
         if i is None:
-            image_ax.text(0.5, 0.5, "nessun campione", ha="center", va="center", fontsize=12)
+            image_ax.text(0.5, 0.5, "no samples", ha="center", va="center", fontsize=12)
             image_ax.axis("off")
             continue
         row = frame.iloc[i]
@@ -170,7 +170,7 @@ def save_projection(path, projected, rows, mapping):
                 )
     ax.set_xlabel(x_label)
     ax.set_ylabel(y_label)
-    ax.set_title("Proiezione 2D dello spazio del modello (Train vs Validation)")
+    ax.set_title("2D Projection of Model Feature Space (Train vs Validation)")
     ax.legend(frameon=True, fontsize=8.5, ncol=2)
     ax.grid(True, linestyle="--", alpha=0.25)
     fig.tight_layout()
@@ -183,27 +183,27 @@ def write_report(root, records, title, note=""):
     pd.DataFrame(records).to_csv(root / "summary.csv", index=False)
     write_json(root / "summary.json", records)
     lines = [
-        f" **{title}** ",
+        f"**{title}**",
         "",
         LABEL_LIMITATION,
         "",
         note,
         "",
-        "| Modello | Split/slide | N | Conteggi lettere | Silhouette comune | Mediana distanza | Criteri train |",
+        "| Model | Split/slide | N | Letter counts | Common silhouette | Median distance | Train criteria |",
         "| --- | --- | --- | --- | --- | --- | --- |",
     ]
     for r in records:
-        silhouette = f"{r['silhouette']:.4f}" if r.get("silhouette") is not None else "non valutabile"
-        distance = f"{r['distance_median']:.4f}" if r.get("distance_median") is not None else "non valutabile"
+        silhouette = f"{r['silhouette']:.4f}" if r.get("silhouette") is not None else "not evaluable"
+        distance = f"{r['distance_median']:.4f}" if r.get("distance_median") is not None else "not evaluable"
         lines.append(
             f"| {r['model']} | {r['split']} | {r['n_samples']} | {r['counts']} | {silhouette} | {distance} | {r.get('criteria_passed', '—')} |"
         )
     lines += [
         "",
-        "Le lettere vengono ordinate sul train e mantenute fisse negli altri split. Non sono una classificazione clinica validata.",
-        "I modelli ai diversi K sono indipendenti: lettere uguali non garantiscono identici sottogruppi fra K.",
-        "Un solo cluster occupato rende silhouette/DB/CH non valutabili; una sola slide rende Cramér's V non stimabile.",
-        "Le distanze appartengono allo spazio del modello e non sono probabilità. I cinque criteri sono criteri sul train.",
-        "Gli XML descrivono posizioni/contorni, non classi di salute o necrosi. Le WSI test vengono elaborate da run_wsi_inference e predict_clustering.",
+        "Letters are ordered on the train split and kept fixed on other splits. They do not constitute a validated clinical classification.",
+        "Models at different K values are independent: identical letters do not guarantee identical subgroups across K.",
+        "A single occupied cluster renders silhouette/DB/CH not evaluable; a single slide renders Cramér's V not estimable.",
+        "Distances belong to the model feature space and are not probabilities. The five criteria are evaluated on the train split.",
+        "XML files describe positions/contours, not health or necrosis classes. Test WSIs are processed by run_wsi_inference and predict_clustering.",
     ]
     (root / "report.md").write_text("\n".join(lines) + "\n")

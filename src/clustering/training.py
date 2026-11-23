@@ -403,9 +403,10 @@ def run_training(
                 write_report(
                     run.run_dir,
                     records,
-                    f"{run.run_dir.name}: train e validation",
-                    "Fit solo sul train; mapping delle lettere congelato prima delle assegnazioni held-out. La rim fraction è un proxy esplorativo, non una diagnosi.",
+                    f"{run.run_dir.name}: train and validation",
+                    "Fit on train only; letter mapping frozen prior to held-out assignments. The peripheral clear fraction is an exploratory proxy, not a diagnosis.",
                 )
+
                 inputs = {
                     str(data["manifest_csv"]): file_identity(data["manifest_csv"])["sha256"],
                     str(data["cohort_path"]): file_identity(data["cohort_path"])["sha256"],
@@ -427,18 +428,19 @@ def run_training(
                 run.fail(error)
                 raise
 
-    all_records = [r for k in k_values for r in completed[k]]
+        all_records = [r for k in k_values for r in completed[k]]
     title = (
-        "Stain-Invariant Morphological Clustering: confronto K=2/4/6"
+        "Stain-Invariant Morphological Clustering: K=2/4/6 comparison"
         if feature_type == "stain_invariant_morph"
-        else "PCA20 classica: confronto K=2/4/6"
+        else "Classic PCA20: K=2/4/6 comparison"
     )
     write_report(
         root,
         all_records,
         title,
-        "Fit: sei slide train; assegnazioni validation: RECHERCHE-016. Le WSI 015/017 sono riservate a inference e predict_clustering. Gallery: validation, poi train.",
+        "Fit: six train slides; validation assignments: RECHERCHE-016. WSIs 015/017 are reserved for inference and predict_clustering. Gallery: validation, then train.",
     )
+
     if len(k_values) > 1:
         compared = compare_runs([targets[k] / "evaluation" for k in k_values])
         pd.DataFrame(compared).to_csv(root / "k_comparison.csv", index=False)

@@ -301,7 +301,7 @@ def run_prediction(
         output,
         records,
         "Clustering delle predizioni YOLO + U-Net",
-        f"Glomeruli assegnati: {len(accepted)}/{len(document['detections'])}; esclusioni: {len(rejected)}. Nessun fit sulle predizioni WSI.",
+        f"Assigned glomeruli: {len(accepted)}/{len(document['detections'])}; excluded: {len(rejected)}. No fitting performed on WSI predictions.",
     )
     write_json(
         output / "run.json",
